@@ -1,17 +1,17 @@
-run = ["python", "manage.py", "runserver", "0.0.0.0:3000"]
-entrypoint = "manage.py"
-modules = ["python-3.10:v18-20230807-322e88b", "python-3.12"]
+run = "python manage.py runserver 0.0.0.0:3000"
+modules = ["python-3.12"]
 
 hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
+packages = ["gettext"]
 
 [unitTest]
 language = "python3"
 
 [deployment]
-run = ["python", "manage.py", "runserver", "0.0.0.0:3000"]
+run = ["sh", "-c", "python manage.py runserver 0.0.0.0:3000"]
 deploymentTarget = "gce"
 
 [[ports]]
