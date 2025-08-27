@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-27 07:59+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: dashboard/models.py:6
+msgid "اسم المبني"
+msgstr ""
+
+#: dashboard/models.py:7
+msgid "العنوان"
+msgstr ""
+
+#: dashboard/models.py:10
+msgid "مبني"
+msgstr ""
+
+#: dashboard/models.py:11
+msgid "المباني"
+msgstr ""
+
+#: dashboard/models.py:19
+msgid "مكتب"
+msgstr ""
+
+#: dashboard/models.py:20
+msgid "شقة"
+msgstr ""
+
+#: dashboard/models.py:21
+msgid "محل"
+msgstr ""
+
+#: dashboard/models.py:23
+msgid "المبني"
+msgstr ""
+
+#: dashboard/models.py:24
+msgid "رقم الوحدة"
+msgstr ""
+
+#: dashboard/models.py:25
+msgid "نوع الوحدة"
+msgstr ""
+
+#: dashboard/models.py:26
+msgid "الطابق"
+msgstr ""
+
+#: dashboard/models.py:27
+msgid "متاحة الإيجار"
+msgstr ""
+
+#: dashboard/models.py:30
+msgid "وحدة"
+msgstr ""
+
+#: dashboard/models.py:31
+msgid "الوحدات"
+msgstr ""
+
+#: dashboard/models.py:39
+msgid "فرد"
+msgstr ""
+
+#: dashboard/models.py:40
+msgid "شركة"
+msgstr ""
+
+#: dashboard/models.py:42
+msgid "اسم المستأجر"
+msgstr ""
+
+#: dashboard/models.py:43
+msgid "نوع المستأجر"
+msgstr ""
+
+#: dashboard/models.py:44
+msgid "رقم الهاتف"
+msgstr ""
+
+#: dashboard/models.py:45
+msgid "البريد الإلكتروني"
+msgstr ""
+
+#: dashboard/models.py:46
+msgid "المفوض بالتوقيع"
+msgstr ""
+
+#: dashboard/models.py:46
+msgid "يملا فقط في حال كان المستأجر شركة"
+msgstr ""
+
+#: dashboard/models.py:49
+msgid "مستأجر"
+msgstr ""
+
+#: dashboard/models.py:50
+msgid "المستأجرين"
+msgstr ""
+
+#: dashboard/models.py:60
+msgid "نشط"
+msgstr ""
+
+#: dashboard/models.py:61
+msgid "قريب الانتهاء"
+msgstr ""
+
+#: dashboard/models.py:62
+msgid "منتهي"
+msgstr ""
+
+#: dashboard/models.py:63
+msgid "ملغي"
+msgstr ""
+
+#: dashboard/models.py:65
+msgid "الوحدة"
+msgstr ""
+
+#: dashboard/models.py:66
+msgid "المستأجر"
+msgstr ""
+
+#: dashboard/models.py:67
+msgid "رقم العقد"
+msgstr ""
+
+#: dashboard/models.py:68
+msgid "رقم نموذج العقد"
+msgstr ""
+
+#: dashboard/models.py:69
+msgid "مبلغ الإيجار الشهري"
+msgstr ""
+
+#: dashboard/models.py:70
+msgid "تاريخ بدء العقد"
+msgstr ""
+
+#: dashboard/models.py:71
+msgid "تاريخ انتهاء العقد"
+msgstr ""
+
+#: dashboard/models.py:72
+msgid "رقم عداد الكهرباء"
+msgstr ""
+
+#: dashboard/models.py:73
+msgid "رقم عداد الماء"
+msgstr ""
+
+#: dashboard/models.py:74
+msgid "حالة العقد"
+msgstr ""
+
+#: dashboard/models.py:77
+msgid "رسوم المكتب"
+msgstr ""
+
+#: dashboard/models.py:78
+msgid "الرسوم الإدارة"
+msgstr ""
+
+#: dashboard/models.py:79
+msgid "رسوم تسجيل العقد (٣٪؜)"
+msgstr ""
+
+#: dashboard/models.py:82
+msgid "عقد إيجار"
+msgstr ""
+
+#: dashboard/models.py:83
+msgid "عقود الإيجار"
+msgstr ""
+
+#: rent_management/settings.py:117
+msgid "العربية"
+msgstr ""
+
+#: rent_management/settings.py:118
+msgid "English"
+msgstr ""
