@@ -148,62 +148,21 @@
                     </tr>
                   </thead>
                   <tbody>
-
+                    {% for lease in leases %}
                       <tr class="border-b hover:bg-gray-50">
-                        <td class="p-4">#12345</td>
-                        <td class="p-4">محمد أحمد</td>
-                        <td class="p-4">شقة 101</td>
-                        <td class="p-4">2023-12-31</td>
-                        <td class="p-4">1500 ريال</td>
+                        <td class="p-4">{{ lease.contract_number }}</td>
+                        <td class="p-4">{{ lease.tenant.name }}</td>
+                        <td class="p-4">{{ lease.unit }}</td>
+                        <td class="p-4">{{ lease.end_date|date:"d/m/Y" }}</td>
+                        <td class="p-4">{{ lease.monthly_rent }} ر.ع</td>
                         <td class="p-4">
-                          <span class="status-badge status-active">نشط</span>
+                          <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
                         </td>
                         <td class="p-4">
                           <a href="#" class="text-[var(--primary-color)] hover:underline">تفاصيل</a>
                         </td>
                       </tr>
-
-                        <tr class="border-b hover:bg-gray-50">
-                          <td class="p-4">#12346</td>
-                          <td class="p-4">أحمد محمد</td>
-                          <td class="p-4">شقة 102</td>
-                          <td class="p-4">2023-11-15</td>
-                          <td class="p-4">1600 ريال</td>
-                          <td class="p-4">
-                            <span class="status-badge status-expired">قريب الانتهاء</span>
-                          </td>
-                          <td class="p-4">
-                            <a href="#" class="text-[var(--primary-color)] hover:underline">تجديد</a>
-                          </td>
-                        </tr>
-
-                          <tr class="border-b hover:bg-gray-50">
-                            <td class="p-4">#12347</td>
-                            <td class="p-4">سارة أحمد</td>
-                            <td class="p-4">شقة 103</td>
-                            <td class="p-4">2023-10-01</td>
-                            <td class="p-4">1700 ريال</td>
-                            <td class="p-4">
-                              <span class="status-badge status-canceled">منتهي</span>
-                            </td>
-                            <td class="p-4">
-                              <a href="#" class="text-[var(--primary-color)] hover:underline">أرشفة</a>
-                            </td>
-                          </tr>
-
-                            <tr class="hover:bg-gray-50">
-                              <td class="p-4">#12348</td>
-                              <td class="p-4">علي أحمد</td>
-                              <td class="p-4">شقة 104</td>
-                              <td class="p-4">2023-09-15</td>
-                              <td class="p-4">1800 ريال</td>
-                              <td class="p-4">
-                                <span class="status-badge status-canceled">ملغي</span>
-                              </td>
-                              <td class="p-4">
-                                <a href="#" class="text-[var(--primary-color)] hover:underline">عرض</a>
-                              </td>
-                            </tr>
+                    {% endfor %}
                         </tbody>
                         </table>
               </div>
