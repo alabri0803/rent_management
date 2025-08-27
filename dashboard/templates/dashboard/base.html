@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الإيجارات - لوحة التحكم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+       body {
+         font-family: 'Tajawal', sans-serif;
+         background-color: #f8f5f2;
+      }
+      :root {
+        --primary-color: #993333;
+        --secondary-color: #d4af37;
+      }
+      .sidebar {
+        background-color: var(--primary-color);
+      }
+      .sidebar a {
+        color: all 0.3s ease;
+      }
+      .sidebar a:hover, .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-right: 4px solid var(--secondary-color);
+        padding-right: 1.25rem;
+      }
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        transition: background-color 0.3s;
+      }
+      .btn-primary:hover {
+        background-color: #7a2929;
+      }
+      .card {
+        background-color: white;
+        border-radius:12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+      }
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+      .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .status-expired {
+        background-color: #fef9c3;
+        color: #991b1b;
+      }
+      .status-canceled {
+        background-color: #e5e7eb;
+        color: #4b5563;
+      }
+      .table th {
+        background-color: #f9fafb;
+      }
+    </style>
+  </head>
+  <body class="flex h-screen">
+
+      <aside class="sidebar w-64 text-white p-4 flex-shrink-0">
+        <div class="text-center mb-10">
+          <h1 class="text-2xl font-bold text-white">نظام إدارة الإيجارات</h1>
+          <p class="text-sm opacity-80">لوحة تحكم المشرف</p>
+        </div>
+        <nav>
+          <a href="#" class="block py-2 px-4 rounded-lg mb-2 active">
+            <i class="fas fa-tachometer-alt ml-2"></i>
+            لوحة المعلومات
+          </a>
+          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
+            <i class="fas fa-file-contract ml-2"></i>
+            إدارة العقود
+          </a>
+          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
+            <i class="fas fa-users ml-2"></i>
+            المستأجرين
+          </a>
+          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
+            <i class="fas fa-building ml-2"></i>
+            الوحدات العقارية
+          </a>
+          <a href="#" class="block py-2 px-4 rounded-lg">
+            <i class="fas fa-dollar-sign ml-2"></i>
+            المدفوعات والتقارير
+          </a>
+        </nav>
+        <div class="mt-auto text-center">
+          <a href="#" class="text-sm opacity-70 hover:opacity-100">
+            تسجيل الخروج
+          </a>
+        </div>
+      </aside>
+
+        <main class="flex-1 p-8 overflow-y-auto">
+          <header class="flex justify-between items-center mb-8">
+            <div>
+              <h2 class="text-3xl font-bold text-gray-800">إدارة العقود الإيجار</h2>
+              <p class="text-gray-600">عرض وتعديل جميع عقود الإيجار الحالية والمنتهية</p>
+            </div>
+            <div>
+              <a href="#" class="btn-primary py-2 px-5 rounded-lg font-semibold shadow-md">
+                <i class="fas fa-plus mr-2"></i>
+                إضافة عقد إيجار جديد
+              </a>
+            </div>
+          </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div class="card p-6">
+                <h3 class="text-gray-600 text-sm font-medium">العقود النشطة</h3>
+                <p class="text-3xl font-bold text-gray-800 mt-2">48</p>
+              </div>
+              <div class="card p-6">
+                <h3 class="text-gray-600 text-sm font-medium">قريبة الانتهاء</h3>
+                <p class="text-3xl font-bold text-gray-800 mt-2">5</p>
+              </div>
+              <div class="card p-6">
+                <h3 class="text-gray-600 text-sm font-medium">العقود المنتهية</h3>
+                <p class="text-3xl font-b bold text-gray-800 mt-2">12</p>
+              </div>
+            </div>
+
+              <div class="card overflow-hidden">
+                <div class="p-4">
+                  <input type="text" placeholder="ابحث عن عقد برقم أو اسم المستأجر" class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+                </div>
+                <table class="w-full text-right">
+                  <thead class="border-b">
+                    <tr>
+                      <th class="p-4 font-semibold text-sm text-gray-600">رقم العقد</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">المستأجر</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">الوحدة</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">تاريخ الانتهاء</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">الإيجار الشهري</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">الحالة</th>
+                      <th class="p-4 font-semibold text-sm text-gray-600">الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                      <tr class="border-b hover:bg-gray-50">
+                        <td class="p-4">#12345</td>
+                        <td class="p-4">محمد أحمد</td>
+                        <td class="p-4">شقة 101</td>
+                        <td class="p-4">2023-12-31</td>
+                        <td class="p-4">1500 ريال</td>
+                        <td class="p-4">
+                          <span class="status-badge status-active">نشط</span>
+                        </td>
+                        <td class="p-4">
+                          <a href="#" class="text-[var(--primary-color)] hover:underline">تفاصيل</a>
+                        </td>
+                      </tr>
+
+                        <tr class="border-b hover:bg-gray-50">
+                          <td class="p-4">#12346</td>
+                          <td class="p-4">أحمد محمد</td>
+                          <td class="p-4">شقة 102</td>
+                          <td class="p-4">2023-11-15</td>
+                          <td class="p-4">1600 ريال</td>
+                          <td class="p-4">
+                            <span class="status-badge status-expired">قريب الانتهاء</span>
+                          </td>
+                          <td class="p-4">
+                            <a href="#" class="text-[var(--primary-color)] hover:underline">تجديد</a>
+                          </td>
+                        </tr>
+
+                          <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4">#12347</td>
+                            <td class="p-4">سارة أحمد</td>
+                            <td class="p-4">شقة 103</td>
+                            <td class="p-4">2023-10-01</td>
+                            <td class="p-4">1700 ريال</td>
+                            <td class="p-4">
+                              <span class="status-badge status-canceled">منتهي</span>
+                            </td>
+                            <td class="p-4">
+                              <a href="#" class="text-[var(--primary-color)] hover:underline">أرشفة</a>
+                            </td>
+                          </tr>
+
+                            <tr class="hover:bg-gray-50">
+                              <td class="p-4">#12348</td>
+                              <td class="p-4">علي أحمد</td>
+                              <td class="p-4">شقة 104</td>
+                              <td class="p-4">2023-09-15</td>
+                              <td class="p-4">1800 ريال</td>
+                              <td class="p-4">
+                                <span class="status-badge status-canceled">ملغي</span>
+                              </td>
+                              <td class="p-4">
+                                <a href="#" class="text-[var(--primary-color)] hover:underline">عرض</a>
+                              </td>
+                            </tr>
+                        </tbody>
+                        </table>
+              </div>
+        </main>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    </body>
+    </html>
+    
+    
