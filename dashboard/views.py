@@ -1,3 +1,9 @@
 from django.shortcuts import render
+from .models import Lease
 
-# Create your views here.
+def lease_management(request):
+  lease = Lease.objects.all()
+  context = {
+    'lease': lease
+  }
+  return render(request, 'dashboard/lease_list.html', context)
