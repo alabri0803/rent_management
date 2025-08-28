@@ -16,7 +16,7 @@ class LeaseListView(ListView):
 
   def get_queryset(self):
     for lease in Lease.objects.all():
-      lease.save().will call update_status()
+      lease.save().update_status()
     return Lease.objects.all().order_by('-start_date')
 
 class LeaseDetailView(DetailView):

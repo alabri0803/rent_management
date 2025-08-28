@@ -68,31 +68,14 @@
   </head>
   <body class="flex h-screen">
 
-      <aside class="sidebar w-64 text-white p-4 flex-shrink-0">
+      <aside class="sidebar w-64 text-white p-6 flex-shrink-0 flex flex-col">
         <div class="text-center mb-10">
           <h1 class="text-2xl font-bold text-white">نظام إدارة الإيجارات</h1>
           <p class="text-sm opacity-80">لوحة تحكم المشرف</p>
         </div>
         <nav>
-          <a href="#" class="block py-2 px-4 rounded-lg mb-2 active">
-            <i class="fas fa-tachometer-alt ml-2"></i>
-            لوحة المعلومات
-          </a>
-          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
-            <i class="fas fa-file-contract ml-2"></i>
+          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' %}active{% endif %}">
             إدارة العقود
-          </a>
-          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
-            <i class="fas fa-users ml-2"></i>
-            المستأجرين
-          </a>
-          <a href="#" class="block py-2 px-4 rounded-lg mb-2">
-            <i class="fas fa-building ml-2"></i>
-            الوحدات العقارية
-          </a>
-          <a href="#" class="block py-2 px-4 rounded-lg">
-            <i class="fas fa-dollar-sign ml-2"></i>
-            المدفوعات والتقارير
           </a>
         </nav>
         <div class="mt-auto text-center">
@@ -101,79 +84,17 @@
           </a>
         </div>
       </aside>
-
         <main class="flex-1 p-8 overflow-y-auto">
-          <header class="flex justify-between items-center mb-8">
-            <div>
-              <h2 class="text-3xl font-bold text-gray-800">إدارة العقود الإيجار</h2>
-              <p class="text-gray-600">عرض وتعديل جميع عقود الإيجار الحالية والمنتهية</p>
-            </div>
-            <div>
-              <a href="#" class="btn-primary py-2 px-5 rounded-lg font-semibold shadow-md">
-                <i class="fas fa-plus mr-2"></i>
-                إضافة عقد إيجار جديد
-              </a>
-            </div>
-          </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div class="card p-6">
-                <h3 class="text-gray-600 text-sm font-medium">العقود النشطة</h3>
-                <p class="text-3xl font-bold text-gray-800 mt-2">48</p>
-              </div>
-              <div class="card p-6">
-                <h3 class="text-gray-600 text-sm font-medium">قريبة الانتهاء</h3>
-                <p class="text-3xl font-bold text-gray-800 mt-2">5</p>
-              </div>
-              <div class="card p-6">
-                <h3 class="text-gray-600 text-sm font-medium">العقود المنتهية</h3>
-                <p class="text-3xl font-b bold text-gray-800 mt-2">12</p>
-              </div>
-              <div class="card p-6">
-                <h3 class="text-gray-600 text-sm font-medium">إجمالي الوحدات</h3>
-                <p class="text-3xl font-bold text-gray-800 mt-2">70</p>
-              </div>
-            </div>
-
-              <div class="card overflow-hidden">
-                <div class="p-4">
-                  <input type="text" placeholder="ابحث عن عقد برقم أو اسم المستأجر" class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
-                </div>
-                <table class="w-full text-right">
-                  <thead class="border-b">
-                    <tr>
-                      <th class="p-4 font-semibold text-sm text-gray-600">رقم العقد</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">المستأجر</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">الوحدة</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">تاريخ الانتهاء</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">الإيجار الشهري</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">الحالة</th>
-                      <th class="p-4 font-semibold text-sm text-gray-600">الإجراءات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for lease in leases %}
-                      <tr class="border-b hover:bg-gray-50">
-                        <td class="p-4">{{ lease.contract_number }}</td>
-                        <td class="p-4">{{ lease.tenant.name }}</td>
-                        <td class="p-4">{{ lease.unit }}</td>
-                        <td class="p-4">{{ lease.end_date|date:"d/m/Y" }}</td>
-                        <td class="p-4">{{ lease.monthly_rent }} ر.ع</td>
-                        <td class="p-4">
-                          <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
-                        </td>
-                        <td class="p-4">
-                          <a href="#" class="text-[var(--primary-color)] hover:underline">تفاصيل</a>
-                        </td>
-                      </tr>
-                    {% endfor %}
-                        </tbody>
-                        </table>
-              </div>
+          {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+          <div class="p-4 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
+            {{ message }}
+          </div>
+            {% endfor %}
+          </div>
+          {% endif %}
           {% block content %}{% endblock %}
-        </main>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+          </main>
     </body>
     </html>
-    
-    
