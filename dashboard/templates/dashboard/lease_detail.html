@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}تفاصيل العقد{% endblock %}
+{% block content %}
+<div class="card p-8">
+  <div class="flex justify-between items-start">
+    <h2 class="text-3xl font-bold text-gray-800">تفاصيل العقد: {{ lease.contract_number }}</h2>
+    <span class="status-badge {{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
+  </div>
+  <div class="flex space-x-2 space-x-reverse">
+    <a href="{% url 'lease_update' lease.pk %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">تعديل</a>
+    <a href="{% url 'lease_renew' lease.pk %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">تجديد</a>
+    <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">حذف</a>
+  </div>
+</div>
+<div class="border-t my-6"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div>
+    <h3 class="font-bold text-xl mb-4">بيانات المستأجر</h3>
+    <p><strong>الاسم:</strong> {{ lease.tenant.name }}</p>
+    <p><strong>الهاتف:</strong> {{ lease.tenant.phone }}</p>
+    <p><strong>البريد:</strong> {{ lease.tenant.email }}</p>
+  </div>
+  <div>
+    <h3 class="font-bold text-xl mb-4">بيانات الوحدة</h3>
+    <p><strong>المبني:</strong> {{ lease.unit.building.name }}</p>
+    <p><strong>رقم الوحدة:</strong> {{ lease.unit.unit_number }}</p>
+    <p><strong>نوع الوحدة:</strong> {{ lease.unit.get_unit_type_display }}</p>
+  </div>
+  <div>
+    <h3 class="font-bold text-xl mb-4">بيانات العقد</h3>
+    <p><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"m/d/Y" }}</p>
+    <p><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"m/d/Y" }}</p>
+    <p><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</p>
+  </div>
+  <div>
+    <h3 class="font-bold text-xl mb-4">الرسوم</h3>
+    <p><strong>رسوم المكتب:</strong> {{ lease.office_fee }} ر.ع</p>
+    <p><strong>رسوم إدارية:</strong> {{ lease.admin_fee }} ر.ع</p>
+    <p><strong>رسوم التسجيل (٣٪):</strong> {{ lease.registration_fee }} ر.ع</p>
+  </div>
+</div>
+{% endblock %}
