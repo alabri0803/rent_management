@@ -1,3 +1,45 @@
 {% extends 'dashboard/base.html' %}
+{% block title %}إدارة العقود{% endblock %}
 {% block content %}
+<header class="flex justify-between items-center mb-8">
+  <div>
+    <h2 class="text-3xl font-bold text-gray-800">إدارة العقود الإيجار</h2>
+    <p class="text-gray-500">عرض وتعديل جميع عقود الإيجار.</p>
+  </div>
+  <div>
+    <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 font-semibold shadow-md">إضافة عقد إيجار جديد</a>
+  </div>
+</header>
+<div class="card overflow-hidden">
+  <table class="table w-full text-right">
+    <thead class="border-b">
+      <tr>
+        <th class="p-4 font-semibold text-sm text-gray-600">رقم العقد</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">المستأجر</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">تاريخ الانتهاء</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">الحالة</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">إجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for lease in leases %}
+      <tr class="border-b hover:bg-gray-50">
+        <td class="p-4">{{ lease.contract_number }}</td>
+        <td class="p-4">{{ lease.tenant.name }}</td>
+        <td class="p-4">{{ lease.end_date|date:"d/m/Y" }}</td>
+        <td class="p-4">
+          <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
+        </td>
+        <td class="p-4">
+          <a href="{{ lease.get_absolute_url }}" class="text-[var(--primary-color)] hover:underline">تفاصيل</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="p-4 text-center text-gray-500">لا توجد عقود لعرضها.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
