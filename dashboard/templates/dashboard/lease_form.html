@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card p-8 max-w-4xl mx-auto">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6">{{ title }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for field in form %}
+      <div class="mb-4">
+        <label for="{{ field.id_for_label }}" class="block text-gray-700 font-medium mb-2">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="mt-8 flex justify-end">
+      <a href="{% url 'lease_list' %}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 ml-4">إلغاء</a>
+    <button type="submit" class="btn-primar py-2 px-6 rounded-lg font-semibold">حفظ</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
