@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
+from django.urls import reverse
 
 # السجل التجاري
 class Building(models.Model):
@@ -52,8 +55,6 @@ class Tenant(models.Model):
   def __str__(self):
     return self.name
     
-
-
 # عقود الإيجار
 class Lease(models.Model):
   STATUS_CHOICES = [
@@ -87,14 +88,43 @@ class Lease(models.Model):
     self.registration_fee = (self.monthly_rent * 12) * 0.03
     super().save(*args, **kwargs)
 
+  def update_status(self):
+    today = timezone.now().date()
+    if self.status == 'canceled':
+      return 
+    if self.end_date < today:
+      self.status = 'expired'
+    elif self.end_date - relativedelta(months=1) <= today:
+      self.status = 'expired_soon'
+    else:
+      self.status = 'active'
+      
   def get_status_color(self):
     if self.status == 'active':
-      return 'success' # أخضر
-    elif self.status == 'expired_soon':
-      return 'warning' # أصفر
-    elif self.status == 'expired':
-      return 'danger' # أحمر
-    return 'secondary' # رمادي
+      return 'active' # أخضر
+    if self.status == 'expired_soon':
+      return 'expired' # أصفر
+    if self.status == 'expired':
+      return 'expired' # أحمر
+    return 'cancelled' # رمادي
+
+  def get_absolute_url(self):
+    return reverse('lease_detail', kwargs={'pk': self.pk})
+
 
   def __str__(self):
     return f"عقد {self.contract_number} - {self.tenant.name}"
+
+class Payment(models.Model):
+  lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments', verbose_name=_('العقد'))
+  payment_date = models.DateField(_('تاريخ الدفع'))
+  amount = models.DecimalField(_('المبلغ المدفوع'), max_digits=10, decimal_places=2)
+  notes = models.TextField(_('ملاحظات'), blank=True, null=True)
+
+  class Meta:
+    verbose_name = _('دفعة')
+    verbose_name_plural = _('الدفعات')
+    ordering = ['-payment_date']
+
+    def __str__(self):
+      return f"دفعة بقيمة {self.amount} للعقد {self.lease.contract_number}"
