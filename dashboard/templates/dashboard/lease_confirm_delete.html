@@ -1,0 +1,15 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}تأكيد الحذف{% endblock %}
+{% block content %}
+<div class="card p-8 max-w-lg mx-auto text-center">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">تأكيد الحذف</h2>
+  <p class="text-gray-600 mb-6">هل أنت متأكد من رغبتك في حذف العقد رقم {{ lease.contract_number }}؟</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex justify-center">
+      <a href="{{ object.get_absolute_url }}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 ml-4">إلغاء</a>
+      <button type="submit" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-semibold">نعم، قم بالحذف</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
