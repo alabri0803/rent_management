@@ -1,6 +1,11 @@
 from django.urls import path
-from . import views
+from .views import LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease
 
 urlpatterns = [
-  path('', views.lease_management, name='lease_management'),
+  path('', LeaseListView.as_view(), name='lease_list'),
+  path('leases/<int:pk>/', LeaseDetailView.as_view(), name='lease_detail'),
+  path('leases/new/', LeaseCreateView.as_view(), name='lease_create'),
+  path('leases/<int:pk>/edit/', LeaseUpdateView.as_view(), name='lease_update'),
+  path('leases/<int:pk>/delete/', LeaseDeleteView.as_view(), name='lease_delete'),
+  path('leases/<int:pk>/renew/', renew_lease, name='renew_lease'),
 ]
