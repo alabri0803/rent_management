@@ -6,9 +6,18 @@ from .forms import LeaseForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
-from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 
-class LeaseListView(ListView):
+def is_staff_user(user):
+  return user.is_staff
+
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+  def test_func(self):
+    return self.request.user.is_staff
+
+
+class LeaseListView(StaffRequiredMixin, ListView):
   model = Lease
   template_name = 'dashboard/lease_list.html'
   context_object_name = 'leases'
@@ -19,12 +28,12 @@ class LeaseListView(ListView):
       lease.save().update_status()
     return Lease.objects.all().order_by('-start_date')
 
-class LeaseDetailView(DetailView):
+class LeaseDetailView(StaffRequiredMixin, DetailView):
   model = Lease
   template_name = 'dashboard/lease_detail.html'
   context_object_name = 'lease'
 
-class LeaseCreateView(CreateView):
+class LeaseCreateView(StaffRequiredMixin, CreateView):
   model = Lease
   form_class = LeaseForm
   template_name = 'dashboard/lease_form.html'
@@ -39,7 +48,7 @@ class LeaseCreateView(CreateView):
     messages.success(self.request, _('تمت إضافة العقد بنجاح!'))
     return super().form_valid(form)
 
-class LeaseUpdateView(UpdateView):
+class LeaseUpdateView(StaffRequiredMixin, UpdateView):
   model = Lease
   form_class = LeaseForm
   template_name = 'dashboard/lease_form.html'
@@ -54,7 +63,7 @@ class LeaseUpdateView(UpdateView):
     messages.success(self.request, _('تم تحديث العقد بنجاح!'))
     return super().form_valid(form)
 
-class LeaseDeleteView(DeleteView):
+class LeaseDeleteView(StaffRequiredMixin, DeleteView):
   model = Lease
   template_name = 'dashboard/lease_confirm_delete.html'
   success_url = reverse_lazy('lease_list')
@@ -63,6 +72,8 @@ class LeaseDeleteView(DeleteView):
     messages.success(self.request, _('تم حذف العقد بنجاح!'))
     return super().form_valid(form)
 
+@login_required
+@user_passes_test(is_staff_user)
 def renew_lease(request, pk):
   original_lease = get_object_or_404(Lease, pk=pk)
   if request.method == 'POST':
