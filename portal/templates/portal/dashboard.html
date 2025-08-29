@@ -1,0 +1,66 @@
+{% extends 'portal/base.html' %}
+{% block title %}لوحة المعلومات{% endblock %}
+{% block content %}
+<div class="mb-8">
+  <h2 class="text-2xl font-bold text-gray-800">لوحة المعلومات</h2>
+  <p class="text-gray-500">مرحباً بك في بوابتك الخاصة هنا يمكنك متابعة تفاصيل عقدك.</p>
+</div>
+{% if lease %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-2">
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">تفاصيل العقد الحالي</h3>
+      <div class="grid grid-cols-2 gap-4 text-gray-700">
+        <p><strong>رقم العقد:</strong> {{ lease.contract_number }}</p>
+        <p><strong>حالة العقد:</strong> {{ lease.get_status_display }}</p>
+        <p><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"d M Y" }}</p>
+        <p><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"d M Y" }}</p>
+        <p><strong>الوحدة:</strong> {{ lease.unit }}</p>
+        <p><strong>الإيجار الشهري:</strong><span class="font-bold text-lg"> {{ lease.monthly_rent }} ر.ع</span></p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">مستحق الدفع</h3>
+        <p class="text-4xl font-bold text-gray-600"><span>{{ lease.monthly_rent }} ر.ع</span></p>
+        <p class="text-gray-500 mt-2">تاريخ الاستحقاق القادم: (سيتم تحديده)</p>
+        <button class="w-full bg-green-500 text-white py-2 rounded-lg mt-4 hover:bg-green-700">الدفع الآن</button>
+    </div>
+  </div>
+  <div class="lg:col-span-3">
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">سجل الدفعات</h3>
+        <table class="w-full text-right">
+          <thead>
+            <tr class="border-b">
+              <th class="p-2 font-semibold text-gray-600">تاريخ الدفع</th>
+              <th class="p-2 font-semibold text-gray-600">المبلغ</th>
+              <th class="p-2 font-semibold text-gray-600">ملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+            <tr>
+              <td class="py-3 px-4 text-right">{{ payment.date|date:"d M Y" }}</td>
+              <td class="py-3 px-4 text-right">{{ payment.amount }} ر.ع</td>
+              <td class="py-3 px-4 text-right">{{ payment.notes|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="p-2 text-center text-gray-500">لا توجد دفعات مسجلة.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="card p-8 text-center">
+  <h3 class="text-xl font-bold text-gray-800">لا يوجد عقد نشط حالياً</h3>
+  <p class="text-gray-600 mt-2">إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع إدارة العقار.</p>
+</div>
+{% endif %}
+{% endblock %}
+        
