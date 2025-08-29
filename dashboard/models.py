@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 # السجل التجاري
 class Building(models.Model):
@@ -42,6 +43,7 @@ class Tenant(models.Model):
     ('Individual', _('فرد')),
     ('Company', _('شركة')),
   ]
+  user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('حساب المستخدم'), help_text=_('اربط المستأجر بحساب مستخدم لتسجيل الدخول إلى البوابة'))
   name = models.CharField(_('اسم المستأجر'), max_length=150)
   tenant_type = models.CharField(_('نوع المستأجر'), max_length=20, choices=TENANT_TYPE_CHOICES)
   phone = models.CharField(_('رقم الهاتف'), max_length=15)
