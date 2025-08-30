@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Lease
+from .models import Lease, Unit
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import LeaseForm
@@ -8,6 +8,7 @@ from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Sum, Count
 
 def is_staff_user(user):
   return user.is_staff
@@ -24,9 +25,38 @@ class LeaseListView(StaffRequiredMixin, ListView):
   paginate_by = 10
 
   def get_queryset(self):
+
     for lease in Lease.objects.all():
-      lease.save().update_status()
+      lease.save() # .save() will call update_status()
     return Lease.objects.all().order_by('-start_date')
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    for lease in Lease.objects.all():
+      lease.save()
+    active_leases = Lease.objects.filter(status='active')
+    expiring_leases = Lease.objects.filter(status='expiring_soon')
+    context['stats'] = {
+        'active_count': active_leases.count(),
+        'expiring_count': expiring_leases.count(),
+        'expired_count': Lease.objects.filter(status='expired').count(),
+        'total_units': Unit.objects.count(),
+        'available_units': Unit.objects.filter(is_available=True).count(),
+        'expected_monthly_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
+    }
+    status_counts = Lease.objects.values('status').annotate(count=Count('status'))
+    chart_data ={
+        'labels': [],
+        'data': [],
+      }
+    status_display_map = dict(Lease.STATUS_CHOICES)
+    for item in status_counts:
+        chart_data['labels'].append(status_display_map.get(item['status'],item['status']))
+        chart_data['data'].append(item['count'])
+    context['chart_data'] = chart_data
+    return context
+
+
 
 class LeaseDetailView(StaffRequiredMixin, DetailView):
   model = Lease
