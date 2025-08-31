@@ -1,28 +1,62 @@
 {% extends 'dashboard/base.html' %}
-{% block title %}إدارة العقود{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "إدارة العقود" %} {% endblock %}
 {% block content %}
 <header class="flex justify-between items-center mb-8">
   <div>
-    <h2 class="text-3xl font-bold text-gray-800">إدارة العقود الإيجار</h2>
-    <p class="text-gray-500">عرض وتعديل جميع عقود الإيجار.</p>
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "لوحة المعلومات الرئيسية" %}</h2>
+    <p class="text-gray-500">{% trans "نظرة شاملة على إداء الممتلكات" %}</p>
   </div>
   <div>
     <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 font-semibold shadow-md">إضافة عقد إيجار جديد</a>
   </div>
 </header>
-<div class="card overflow-hidden">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="card p-6">
+    <h3 class="text-gray-500 text-sm font-medium">
+      {% trans "العقود النشطة" %}
+  </h3>
+    <p class="text-3xl font-bold text-gray-800">{{ stats.active_count }}</p>
+</div>
+  <div class="card p-6">
+    <h3 class="text-gray-500 text-sm font-medium">
+      {% trans "قريبة الانتهاء" %}
+  </h3>
+    <p class="text-3xl font-bold text-gray-800">{{ stats.expiring_count }}</p>
+  </div>
+  <div class="card p-6">
+    <h3 class="text-gray-500 text-sm font-medium">
+      {% trans "الوحدات المتاحة" %}
+  </h3>
+    <p class="text-3xl font-bold text-gray-800">{{ stats.available_count }}/ {{ stats.total_units }}</p>
+</div>
+  <div class="card p-6">
+        <p class="text-gray-500">{% trans "الدخل الشهري المتوقع" %}</p>
+        <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.expected_monthly_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
+    </div>
+    </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-2">
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">{% trans "توزيع العقود" %}</h3>
+      <canvas id="leaseStatusChart"></canvas>
+    </div>
+  </div>
+<div class="lg:col-span-2">
+  <div class="card overflow-hidden">
+    <h3 class="p-4 text-xl font-bold">{% trans "احدث العقود" %}</h3>
   <table class="table w-full text-right">
     <thead class="border-b">
       <tr>
-        <th class="p-4 font-semibold text-sm text-gray-600">رقم العقد</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">المستأجر</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">تاريخ الانتهاء</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">الحالة</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">إجراءات</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "رقم العقد" %}</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "المستأجر" %}</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "تاريخ الانتهاء" %}</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "الحالة" %}</th>
+        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "إجراءات" %}</th>
       </tr>
     </thead>
     <tbody>
-      {% for lease in leases %}
+      {% for lease in leases|slice:"5" %}
       <tr class="border-b hover:bg-gray-50">
         <td class="p-4">{{ lease.contract_number }}</td>
         <td class="p-4">{{ lease.tenant.name }}</td>
@@ -31,15 +65,53 @@
           <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
         </td>
         <td class="p-4">
-          <a href="{{ lease.get_absolute_url }}" class="text-[var(--primary-color)] hover:underline">تفاصيل</a>
+          <a href="{{ lease.get_absolute_url }}" class="text-[var(--primary-color)] hover:underline">{% trans "تفاصيل" %}</a>
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="5" class="p-4 text-center text-gray-500">لا توجد عقود لعرضها.</td>
+        <td colspan="5" class="p-4 text-center text-gray-500">{% trans "لا توجد عقود لعرضها." %}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+    <div class="p-4 text-center">
+      <a href="#" class="text-sm font-semibold text-[var(--primary-color)] hover:underline">{% trans "عرض جميع العقود" %}</a>
+    </div>
+  </div>
 </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('leaseStatusChart').getContext('2d');
+    const leaseStatusChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: {{ chart_data.labels|safe }},
+        datasets: [{
+          label: '{% trans "عدد العقود" %}',
+          data: {{ chart_data.data|safe }},
+          backgroundColor: [
+            '#16a34a',
+            '#facc15',
+            '#dc2626',
+            '#6b7280',
+          ],
+          bordercolor: '#ffffff',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+            title: {
+              display: true,
+              text: '{% trans "توزيع حالات العقود" %}'
+            }
+        }
+      }
+    });
+  </script>
 {% endblock %}
