@@ -1,6 +1,5 @@
 from django import forms
-from .models import Lease, Tenant, Unit
-from django.utils.translation import gettext_lazy as _
+from .models import Lease, Unit, MaintenanceRequest
 
 class LeaseForm(forms.ModelForm):
   class Meta:
@@ -16,5 +15,28 @@ class LeaseForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     self.fields['unit'].queryset = Unit.objects.filter(is_available=True)
+    for field_name, field in self.fields.items():
+      field.widget.attrs.update({'class':'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+
+class MaintenanceRequestForm(forms.ModelForm):
+  class Meta:
+    model = MaintenanceRequest
+    fields = ['title', 'description', 'priority', 'image']
+    widgets = {
+      'description': forms.Textarea(attrs={'rows': 4}),
+    }
+
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    for field_name, field in self.fields.items():
+      field.widget.attrs.update({'class':'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+
+class MaintenanceRequestUpdateForm(forms.ModelForm):
+  class Meta:
+    model = MaintenanceRequest
+    fields = ['status', 'staff_notes']
+
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
     for field_name, field in self.fields.items():
       field.widget.attrs.update({'class':'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
