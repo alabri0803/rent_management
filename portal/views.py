@@ -1,7 +1,10 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from dashboard.models import Lease, Tenant
+from dashboard.models import Lease, Tenant, MaintenanceRequest
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
+from django.contrib import messages
+from dashboard.forms import MaintenanceRequestForm
 
 class PortalDashboardView(LoginRequiredMixin, TemplateView):
   template_name = 'portal/dashboard.html'
@@ -17,3 +20,28 @@ class PortalDashboardView(LoginRequiredMixin, TemplateView):
     except Tenant.DoesNotExist:
        context['error'] = 'لا يوجد ملف مستأجر مرتبط بحسابك'
     return context
+
+class MaintenanceRequestListView(LoginRequiredMixin, ListView):
+  model = MaintenanceRequest
+  template_name = 'portal/maintenance_list.html'
+  context_object_name = 'requests'
+
+  def get_queryset(self):
+    tenant = Tenant.objects.get(user=self.request.user)
+    return MaintenanceRequest.objects.filter(lease__tenant=tenant)
+
+class MaintenanceRequestCreateView(LoginRequiredMixin, CreateView):
+  model = MaintenanceRequest
+  form_class = MaintenanceRequestForm
+  template_name = 'portal/maintenance_form.html'
+  success_url = reverse_lazy('maintenance_request_list')
+
+  def form_valid(self, form):
+    tenant = Tenant.objects.get(user=self.request.user)
+    active_lease = Lease.objects.filter(tenant=tenant, status__in=['active', 'expired_soon']).first()
+    if not active_lease:
+      messages.error(self.request, 'لا يمكنك إنشاء طلب صيانة بدون عقد نشط.')
+      return self.form_invalid(form)
+    form.instance.lease = active_lease
+    messages.success(self.request, 'تم إرسال طلب الصيانة بنجاح.')
+    return super().form_valid(form)
