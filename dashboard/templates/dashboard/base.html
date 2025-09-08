@@ -67,16 +67,16 @@
     </style>
   </head>
   <body class="flex h-screen">
-
       <aside class="sidebar w-64 text-white p-6 flex-shrink-0 flex flex-col">
         <div class="text-center mb-10">
           <h1 class="text-2xl font-bold text-white">نظام إدارة الإيجارات</h1>
           <p class="text-sm opacity-80">لوحة تحكم المشرف</p>
         </div>
         <nav>
-          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' %}active{% endif %}">
-            إدارة العقود
-          </a>
+          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name %}active{% endif %}">إدارة العقود</a>
+          <a href="{% url 'maintenance_request_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
+                طلبات الصيانة
+              </a>
         </nav>
         <div class="mt-auto text-center">
           <a href="#" class="text-sm opacity-70 hover:opacity-100">
