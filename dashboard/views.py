@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Lease, Unit
+from .models import Lease, Unit, MaintenanceRequest
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import LeaseForm
+from .forms import LeaseForm, MaintenanceRequestUpdateForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
@@ -133,3 +133,19 @@ def renew_lease(request, pk):
     messages.success(request, _('تم تجديد العقد بنجاح!'))
     return redirect('lease_list', pk=new_lease.pk)
   return render(request, 'dashboard/lease_renew.html', {'lease': original_lease})
+
+class MaintenanceRequestAdminListView(StaffRequiredMixin, ListView):
+  model = MaintenanceRequest
+  template_name = 'dashboard/maintenance_admin_list.html'
+  context_object_name = 'requests'
+  paginate_by = 15
+
+class MaintenanceRequestAdminUpdateView(StaffRequiredMixin, UpdateView):
+  model = MaintenanceRequest
+  form_class = MaintenanceRequestUpdateForm
+  template_name = 'dashboard/maintenance_detail.html'
+  success_url = reverse_lazy('maintenance_admin_list')
+
+  def form_valid(self, form):
+    messages.success(self.request, _('تم تحديث حالة طلب الصيانة بنجاح!'))
+    return super().form_valid(form)
