@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease
+from .views import LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView
 
 urlpatterns = [
   path('', LeaseListView.as_view(), name='lease_list'),
@@ -8,4 +8,6 @@ urlpatterns = [
   path('leases/<int:pk>/edit/', LeaseUpdateView.as_view(), name='lease_update'),
   path('leases/<int:pk>/delete/', LeaseDeleteView.as_view(), name='lease_delete'),
   path('leases/<int:pk>/renew/', renew_lease, name='renew_lease'),
+  path('maintenance/', MaintenanceRequestAdminListView.as_view(), name='maintenance_admin_list'),
+  path('maintenance/<int:pk>/', MaintenanceRequestAdminUpdateView.as_view(), name='maintenance_admin_update'),
 ]
