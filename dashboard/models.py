@@ -130,3 +130,32 @@ class Payment(models.Model):
 
     def __str__(self):
       return f"دفعة بقيمة {self.amount} للعقد {self.lease.contract_number}"
+
+class MaintenanceRequest(models.Model):
+  STATUS_CHOICES = [
+    ('submitted', _('تم الإرسال')),
+    ('in_progress', _('قيد التنفيذ')),
+    ('completed', _('مكتمل')),
+    ('canceled', _('ملغي')),
+  ]
+  PRIORITY_CHOICES = [
+    ('low', _('منخفضة')),
+    ('medium', _('متوسطة')),
+    ('high', _('عالية')),
+  ]
+  lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='maintenance_requests', verbose_name=_('العقد'))
+  title = models.CharField(_('عنوان الطلب'), max_length=200)
+  description = models.TextField(_('وصف المشكلة'))
+  priority = models.CharField(_('الأولوية'), max_length=10, choices=PRIORITY_CHOICES, default='medium')
+  status = models.CharField(_('الحالة'), max_length=20, choices=STATUS_CHOICES, default='submitted')
+  image = models.ImageField(_('صورة مرفقة (اختياري)'), upload_to='maintenance_requests/', blank=True, null=True)
+  reported_date = models.DateTimeField(_('تاريخ الإبلاغ'), auto_now_add=True)
+  staff_notes = models.TextField(_('ملاحظات الموظف'), blank=True, null=True)
+
+  class Meta:
+    verbose_name = _('طلب صيانة')
+    verbose_name_plural = _('طلبات الصيانة')
+    ordering = ['-reported_date']
+
+  def __str__(self):
+    return self.title
