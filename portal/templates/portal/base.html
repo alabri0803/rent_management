@@ -31,7 +31,10 @@
   <body>
       <header class="header py-4">
         <div class="container mx-auto flex justify-between items-center">
-          <h1 class="text-x1 font-bold text-[var(--primary-color)]">بوابة إدارة الممتلكات</h1>
+          <nav class="flex items-center space-x-6 space-x-reverse">
+            <a href="{% url 'portal_dashboard' %}" class="font-bold text-[var(--primary-color)]">لوحة المعلومات</a>
+            <a href="{% url 'maintenance_list' %}" class="text-gray-600 hover:text-black">
+          </nav>
           <div class="flex items-center">
             <span class="ml-4">أهلاً {{ user.first_name|default:user.username }}</span>
             <form action="{% url 'logout' %}" method="post">
