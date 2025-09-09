@@ -4,6 +4,7 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 # السجل التجاري
 class Building(models.Model):
@@ -87,7 +88,7 @@ class Lease(models.Model):
 
   def save(self, *args, **kwargs):
     # حساب رسوم التسجيل تقائيا عند الحفظ
-    self.registration_fee = (self.monthly_rent * 12) * 0.03
+    self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
     super().save(*args, **kwargs)
 
   def update_status(self):
