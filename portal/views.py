@@ -13,10 +13,12 @@ class PortalDashboardView(LoginRequiredMixin, TemplateView):
     context = super().get_context_data(**kwargs)
     try:
       tenant = Tenant.objects.get(user=self.request.user)
-      leases = Lease.objects.filter(tenant=tenant, status__in=['active', 'expired_soon']).first()
-      context['leases'] = leases
-      if leases:
-          context['payments'] = leases.payments.all()
+      lease = Lease.objects.filter(tenant=tenant, status__in=['active', 'expired_soon']).first()
+      context['tenant'] = tenant
+      context['leases'] = lease
+      if lease:
+          context['payments'] = lease.payments.all()
+          context['documents'] = lease.documents.all()
     except Tenant.DoesNotExist:
        context['error'] = 'لا يوجد ملف مستأجر مرتبط بحسابك'
     return context
