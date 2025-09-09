@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Lease, Unit, MaintenanceRequest
+from .models import Lease, Unit, MaintenanceRequest, Document
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import LeaseForm, MaintenanceRequestUpdateForm
+from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
@@ -148,4 +148,28 @@ class MaintenanceRequestAdminUpdateView(StaffRequiredMixin, UpdateView):
 
   def form_valid(self, form):
     messages.success(self.request, _('تم تحديث حالة طلب الصيانة بنجاح!'))
+    return super().form_valid(form)
+
+class DocumentUploadView(StaffRequiredMixin, CreateView):
+  model = Document
+  form_class = DocumentForm
+
+  def form_valid(self, form):
+    lease = get_object_or_404(Lease, pk=self.kwargs['lease_pk'])
+    form.instance.lease = lease
+    messages.success(self.request, _('تم رفع المستند بنجاح!'))
+    return super().form_valid(form)
+
+  def get_success_url(self):
+    return reverse_lazy('lease_detail', kwargs={'pk': self.kwargs['lease_pk']})
+
+class DocumentDeleteView(StaffRequiredMixin, DeleteView):
+  model = Document
+  template_name = 'dashboard/document_confirm_delete.html'
+
+  def get_success_url(self):
+    return reverse_lazy('lease_detail', kwargs={'pk': self.object.lease.pk})
+    
+  def form_valid(self, form):
+    messages.success(self.request, _('تم حذف المستند بنجاح!'))
     return super().form_valid(form)
