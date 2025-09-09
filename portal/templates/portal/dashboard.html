@@ -62,5 +62,21 @@
   <p class="text-gray-600 mt-2">إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع إدارة العقار.</p>
 </div>
 {% endif %}
+  <div class="lg:col-span-3">
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">مستنداتك</h3>
+      {% if documents %}
+      <ul class="space-y-2">
+        {% for doc in documents %}
+        <li class="flex items-center justify-between bg-gray-50 p-3 rounded-lg"><span>{{ doc.title }}</span>
+          <a href="{{ doc.file.url }}" target="_blank" class="bg-blue-500 text-white text-sm py-1 px-4 rounded-full hover:bg-blue-600">تنزيل</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-gray-500">لا توجد مستندات متاحة للعرض حاليا.</p>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
         
