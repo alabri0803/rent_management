@@ -1,0 +1,36 @@
+{% extends 'portal/base.html' %}
+{% block title %}طلبات الصيانة{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-3xl font-bold text-gray-800">سجل طلبات الصيانة</h2>
+  <a href="{% url 'maintenance_create' %}" class="bg-green-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-green-700">إضافة طلب صيانة</a>
+</div>
+<div class="card overflow-hidden">
+  <table class="w-full text-right">
+    <thead>
+      <tr class="border-b bg-gray-50">
+        <th class="py-4">عنوان الطلب</th>
+       <th class="py-4">تاريخ الإبلاغ</th>
+        <th class="py-4">الأولوية</th>
+        <th class="py-4">الحالة</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+      <tr class="border-b hover:bg-gray-50">
+        <td class="py-4">{{ req.title }}</td>
+        <td class="py-4">{{ req.reported_date|date:"d M Y" }}</td>
+        <td class="py-4">{{ req.get_priority_display }}</td>
+        <td class="py-4">
+            {{ req.get_status_display }}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="p-6 text-center text-gray-500">لا توجد طلبات صيانة بعد.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
