@@ -1,42 +1,58 @@
 {% extends 'dashboard/base.html' %}
 {% block title %}تفاصيل العقد{% endblock %}
 {% block content %}
-<div class="card p-8">
-  <div class="flex justify-between items-start">
-    <h2 class="text-3xl font-bold text-gray-800">تفاصيل العقد: {{ lease.contract_number }}</h2>
-    <span class="status-badge {{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
-  </div>
-  <div class="flex space-x-2 space-x-reverse">
-    <a href="{% url 'lease_update' lease.pk %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">تعديل</a>
-    <a href="{% url 'lease_renew' lease.pk %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">تجديد</a>
-    <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">حذف</a>
-  </div>
+<div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800 mt-2">تفاصيل العقد: {{ lease.contract_number }}</h2>
 </div>
-<div class="border-t my-6"></div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-  <div>
-    <h3 class="font-bold text-xl mb-4">بيانات المستأجر</h3>
-    <p><strong>الاسم:</strong> {{ lease.tenant.name }}</p>
-    <p><strong>الهاتف:</strong> {{ lease.tenant.phone }}</p>
-    <p><strong>البريد:</strong> {{ lease.tenant.email }}</p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-2 space-y-8">
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">بيانات العقد</h3>
+      <p><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"m/d/Y" }}</p>
+      <p><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"m/d/Y" }}</p>
+      <p><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</p>
+    </div>
+    <div class="card p-6">
+      <h3 class="text-xl font-bold mb-4">المستندات المرفقة</h3>
+      <div class="space-y-3">
+        {% for doc in lease.documents.all %}
+          <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+            <div>
+              <a href="{{ doc.file.url }}" target="_blank" class="font-semibold text-blue-600 hover:underline">{{ doc.title }}</a>
+             <p class="text-xs text-gray-500">تم الرفع في: {{ doc.uploaded_at|date:"d M Y" }}</p>
+            </div>
+            <form action="{% url 'document_delete' doc.pk %}" method="post" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا المستند؟');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-500 hover:text-red-700 text-sm">حذف</button>
+            </form>
+          </div>
+          {% empty %}
+          <p class="text-gray-500">لا توجد مستندات مرفقة لهذا العقد بعد.</p>
+        {% endfor %}
+      </div>
+    </div>
   </div>
-  <div>
-    <h3 class="font-bold text-xl mb-4">بيانات الوحدة</h3>
-    <p><strong>المبني:</strong> {{ lease.unit.building.name }}</p>
-    <p><strong>رقم الوحدة:</strong> {{ lease.unit.unit_number }}</p>
-    <p><strong>نوع الوحدة:</strong> {{ lease.unit.get_unit_type_display }}</p>
+  <div class="lg:col-span-1 space-y-6">
+    <div class="card p-6">
+      <h3 class="font-bold mb-4">الإجراءات</h3>
+      <a href="{% url 'lease_update' lease.pk %}" class="block text-center w-full mb-2 bg-blue-500 py-2 rounded-lg hover:bg-green-600">تعديل العقد</a>
+      <a href="{% url 'lease_renew' lease.pk %}" class="block text-center w-full mb-2 bg-green-500 py-2 rounded-lg hover:bg-green-600">تجديد العقد</a
   </div>
-  <div>
-    <h3 class="font-bold text-xl mb-4">بيانات العقد</h3>
-    <p><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"m/d/Y" }}</p>
-    <p><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"m/d/Y" }}</p>
-    <p><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</p>
-  </div>
-  <div>
-    <h3 class="font-bold text-xl mb-4">الرسوم</h3>
-    <p><strong>رسوم المكتب:</strong> {{ lease.office_fee }} ر.ع</p>
-    <p><strong>رسوم إدارية:</strong> {{ lease.admin_fee }} ر.ع</p>
-    <p><strong>رسوم التسجيل (٣٪):</strong> {{ lease.registration_fee }} ر.ع</p>
+    <div class="card p-6">
+      <h3 class="font-bold mb-4">رفع مستند جديد</h3>
+      <form action="{% url 'document_upload' lease.pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-4">
+          {{ document_form.title.label_tag }}
+          {{ document_form.title }}
+        </div>
+        <div class="mb-4">
+          {{ document_form.file.label_tag }}
+          {{ document_form.file }}
+        </div>
+        <button type="submit" class="btn-primary w-full py-2 rounded-lg mt-2">رفع الملف</button>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}
