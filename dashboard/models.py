@@ -159,3 +159,17 @@ class MaintenanceRequest(models.Model):
 
   def __str__(self):
     return self.title
+
+class Document(models.Model):
+  lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='documents', verbose_name=_('العقد'))
+  title = models.CharField(_('عنوان المستند'), max_length=200)
+  file = models.FileField(_('الملف'), upload_to='lease_documents/')
+  uploaded_at = models.DateTimeField(_('تاريخ الرفع'), auto_now_add=True)
+
+  class Meta:
+    verbose_name = _('مستند')
+    verbose_name_plural = _('المستندات')
+    ordering = ['-uploaded_at']
+
+  def __str__(self):
+    return self.title
