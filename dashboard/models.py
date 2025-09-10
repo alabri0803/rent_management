@@ -174,3 +174,27 @@ class Document(models.Model):
 
   def __str__(self):
     return self.title
+
+class Expense(models.Model):
+  EXPENSE_TYPE_CHOICES = [
+    ('maintenance', _('صيانة')),
+    ('utilities', _('خدمات')),
+    ('salaries', _('رواتب')),
+    ('marketing', _('تسويق')),
+    ('admin', _('رسوم إدارية/حكومية')),
+    ('other', _('أخرى')),
+  ]
+  building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='expenses', verbose_name=_('المبني'))
+  category = models.CharField(_('فئة المصروف'), max_length=50, choices=EXPENSE_TYPE_CHOICES)
+  description = models.CharField(_('الوصف'), max_length=255)
+  amount = models.DecimalField(_('المبلغ'), max_digits=10, decimal_places=2)
+  expense_date = models.DateField(_('تاريخ المصروف'))
+  receipt = models.FileField(_('إيصال/فاتورة(اختياري)'), upload_to='expense_receipts/', blank=True, null=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  class Meta:
+    verbose_name = _('مصروف')
+    verbose_name_plural = _('المصاريف')
+
+  def __str__(self):
+    return f"{self.get_category_display()} - {self.amount} ر.ع"
