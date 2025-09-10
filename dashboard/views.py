@@ -36,11 +36,11 @@ class LeaseListView(StaffRequiredMixin, ListView):
       lease.save()
     active_leases = Lease.objects.filter(status='active')
     expiring_leases = Lease.objects.filter(status='expiring_soon')
-    today = timezone.now().date()
-    monthly_expenses = Expense.objects.filter(expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
-    gross_income = context['stats']['expected_monthly_income']
-    context['stats']['monthly_expenses'] = monthly_expenses
-    context['stats']['net_income'] = gross_income - monthly_expenses
+    today = timezone.now()
+    monthly_expenses = Expense.objects.filter(expense_date__year=today.year, expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
+    #gross_income = context['stats']['expected_monthly_income']
+    #context['stats']['monthly_expenses'] = monthly_expenses
+    #context['stats']['net_income'] = gross_income - monthly_expenses
     context['stats'] = {
         'active_count': active_leases.count(),
         'expiring_count': expiring_leases.count(),
@@ -48,6 +48,8 @@ class LeaseListView(StaffRequiredMixin, ListView):
         'total_units': Unit.objects.count(),
         'available_units': Unit.objects.filter(is_available=True).count(),
         'expected_monthly_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
+        'monthly_expenses': monthly_expenses,
+        'net_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0 - monthly_expenses
     }
     status_counts = Lease.objects.values('status').annotate(count=Count('status'))
     chart_data ={

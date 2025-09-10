@@ -16,24 +16,32 @@
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "العقود النشطة" %}
   </h3>
-    <p class="text-3xl font-bold text-gray-800">{{ stats.active_count }}</p>
+    <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.active_count }}</p>
 </div>
   <div class="card p-6">
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "قريبة الانتهاء" %}
   </h3>
-    <p class="text-3xl font-bold text-gray-800">{{ stats.expiring_count }}</p>
+    <p class="text-3xl font-bold text-yellow-500 mt-2">{{ stats.expiring_count }}</p>
+  </div>
+    <div class="card p-6">
+    <h3 class="text-gray-500 text-sm font-medium">
+      {% trans "إجمالي الدخل الشهري" %}
+  </h3>
+    <p class="text-3xl font-bold text-blue-600 mt-2">{{ stats.expected_monthly_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
   </div>
   <div class="card p-6">
     <h3 class="text-gray-500 text-sm font-medium">
-      {% trans "الوحدات المتاحة" %}
+      {% trans "مصاريف هذا الشهر" %}
   </h3>
-    <p class="text-3xl font-bold text-gray-800">{{ stats.available_count }}/ {{ stats.total_units }}</p>
-</div>
+    <p class="text-3xl font-bold text-red-500 mt-2">{{ stats.monthly_expenses|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
+  </div>
   <div class="card p-6">
-        <p class="text-gray-500">{% trans "الدخل الشهري المتوقع" %}</p>
-        <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.expected_monthly_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
-    </div>
+    <h3 class="text-gray-500 text-sm font-medium">
+      {% trans "صافي الدخل الشهري" %}
+  </h3>
+    <p class="text-3xl font-bold text-green-600 mt-2">{{ stats.net_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
+  </div>
     </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
   <div class="lg:col-span-2">
