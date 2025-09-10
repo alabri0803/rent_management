@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Lease, Unit, MaintenanceRequest, Document
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm
+from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm, ExpenseForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Sum, Count
+from django.utils import timezone
 
 def is_staff_user(user):
   return user.is_staff
@@ -25,7 +26,6 @@ class LeaseListView(StaffRequiredMixin, ListView):
   paginate_by = 10
 
   def get_queryset(self):
-
     for lease in Lease.objects.all():
       lease.save() # .save() will call update_status()
     return Lease.objects.all().order_by('-start_date')
@@ -36,6 +36,11 @@ class LeaseListView(StaffRequiredMixin, ListView):
       lease.save()
     active_leases = Lease.objects.filter(status='active')
     expiring_leases = Lease.objects.filter(status='expiring_soon')
+    today = timezone.now().date()
+    monthly_expenses = Expense.objects.filter(expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
+    gross_income = context['stats']['expected_monthly_income']
+    context['stats']['monthly_expenses'] = monthly_expenses
+    context['stats']['net_income'] = gross_income - monthly_expenses
     context['stats'] = {
         'active_count': active_leases.count(),
         'expiring_count': expiring_leases.count(),
@@ -172,4 +177,49 @@ class DocumentDeleteView(StaffRequiredMixin, DeleteView):
     
   def form_valid(self, form):
     messages.success(self.request, _('تم حذف المستند بنجاح!'))
+    return super().form_valid(form)
+
+class ExpenseListView(StaffRequiredMixin, ListView):
+  model = Expense
+  template_name = 'dashboard/expense_list.html'
+  context_object_name = 'expenses'
+  paginate_by = 20
+
+class ExpenseCreateView(StaffRequiredMixin, CreateView):
+  model = Expense
+  form_class = ExpenseForm
+  template_name = 'dashboard/expense_form.html'
+  success_url = reverse_lazy('expense_list')
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['title'] = _('إضافة مصروف جديد')
+    return context
+
+  def form_valid(self, form):
+    messages.success(self.request, _('تم تسجيل المصروف بنجاح!'))
+    return super().form_valid(form)
+
+class ExpenseUpdateView(StaffRequiredMixin, UpdateView):
+  model = Expense
+  form_class = ExpenseForm
+  template_name = 'dashboard/expense_form.html'
+  success_url = reverse_lazy('expense_list')
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['title'] = _('تعديل المصروف')
+    return context
+
+  def form_valid(self, form):
+    messages.success(self.request, _('تم تحديث المصروف بنجاح!'))
+    return super().form_valid(form)
+
+class ExpenseDeleteView(StaffRequiredMixin, DeleteView):
+  model = Expense
+  template_name = 'dashboard/expense_confirm_delete.html'
+  success_url = reverse_lazy('expense_list')
+
+  def form_valid(self, form):
+    messages.success(self.request, _('تم حذف المصروف بنجاح!'))
     return super().form_valid(form)
