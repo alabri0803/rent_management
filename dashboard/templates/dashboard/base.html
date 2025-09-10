@@ -74,7 +74,7 @@
         </div>
         <nav>
           <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name %}active{% endif %}">إدارة العقود</a>
-          <a href="{% url 'maintenance_request_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
                 طلبات الصيانة
               </a>
             <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">إدارة المصروفات</a>
