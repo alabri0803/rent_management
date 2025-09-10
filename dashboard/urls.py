@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView, DocumentUploadView, DocumentDeleteView
+from .views import LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView, DocumentUploadView, DocumentDeleteView, ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView
 
 urlpatterns = [
   path('', LeaseListView.as_view(), name='lease_list'),
@@ -12,4 +12,8 @@ urlpatterns = [
   path('maintenance/<int:pk>/', MaintenanceRequestAdminUpdateView.as_view(), name='maintenance_admin_update'),
   path('leases/<int:lease_pk>/documents/upload/', DocumentUploadView.as_view(), name='document_upload'),
   path('documents/<int:pk>/delete/', DocumentDeleteView.as_view(), name='document_delete'),
+  path('expenses/', ExpenseListView.as_view(), name='expense_list'),
+  path('expenses/new/', ExpenseCreateView.as_view(), name='expense_create'),
+  path('expenses/<int:pk>/edit/', ExpenseUpdateView.as_view(), name='expense_update'),
+  path('expenses/<int:pk>/delete/', ExpenseDeleteView.as_view(), name='expense_delete'),
 ]
