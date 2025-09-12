@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة المصاريف" %} {% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-3xl font-bold text-gray-800">{% trans "إدارة المصاريف" %}</h2>
+  <a href="{% url 'expense_create' %}" class="btn-primary py-2 px-5 font-semibold">{% trans "إضافة مصروف جديد" %}</a>
+</div>
+<div class="card overflow-hidden">
+  <table class="w-full text-right">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="p-4">{% trans "التاريخ" %}</th>
+        <th class="p-4">{% trans "المبني" %}</th>
+        <th class="p-4">{% trans "الفئة" %}</th>
+        <th class="p-4">{% trans "الوصف" %}</th>
+        <th class="p-4">{% trans "المبلغ" %}</th>
+        <th class="p-4">{% trans "إجراءات" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in expenses %}
+      <tr class="border-b hover:bg-gray-50">
+        <td class="p-4">{{ expense.expense_date|date:"d m Y" }}</td>
+        <td class="p-4">{{ expense.building.name }}</td>
+        <td class="p-4">{{ expense.get_category_display }}</td>
+        <td class="p-4">{{ expense.description }}</td>
+        <td class="p-4 font-mono text-red-600">{{ expense.amount|floatformat:2 }} ر.ع</td>
+        <td class="p-4 space-x-2 space-x-reverse">
+          <a href="{% url 'expense_update' expense.pk %}" class="text-bule-600 hover:underline">{% trans "تعديل" %}</a>
+          <a href="{% url 'expense_delete' expense.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="p-4 text-center text-gray-500">{% trans "لم يتم تسجيل أي مصاريف بعد." %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+        
