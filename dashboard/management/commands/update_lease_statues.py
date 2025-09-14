@@ -14,4 +14,6 @@ class Command(BaseCommand):
       if lease.status != original_status:
         lease.save()
         updated_count += 1
-        self.stdout.write(self.style.SUCCESS(_('Processed finished. Updated %(count)d leases.')% {'count': updated_count}))
+        self.stdout.write(f"- {_('Lease')} {lease.contract_number} {_('status updated to')} {lease.get_status_display()}")
+
+    self.stdout.write(self.style.SUCCESS(_('process Finished. Updated % (count)d leases.') % {'count': updated_count}))
