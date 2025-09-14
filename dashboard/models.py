@@ -178,7 +178,7 @@ class Document(models.Model):
 class Expense(models.Model):
   EXPENSE_TYPE_CHOICES = [
     ('maintenance', _('صيانة')),
-    ('utilities', _('خدمات')),
+    ('utilities', _('خدمات (كهرباء، ماء، غاز)')),
     ('salaries', _('رواتب')),
     ('marketing', _('تسويق')),
     ('admin', _('رسوم إدارية/حكومية')),
