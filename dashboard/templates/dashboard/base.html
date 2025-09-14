@@ -3,30 +3,29 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الإيجارات - لوحة التحكم</title>
+    <title>{% block title %}نظام إدارة الإيجارات - لوحة التحكم{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap')
        body {
          font-family: 'Tajawal', sans-serif;
-         background-color: #f8f5f2;
+         background-color: #f7fafc;
       }
       :root {
         --primary-color: #993333;
-        --secondary-color: #d4af37;
+        --secondary-color: #D4AF37;
       }
       .sidebar {
+        background-color: #1a202c;
+      }
+      .sidebar nav a {
+        color: #a0aec0;
+        transition: all 0.2s;
+      }
+      .sidebar nav a:hover, .sidebar nav a.active {
         background-color: var(--primary-color);
-      }
-      .sidebar a {
-        color: all 0.3s ease;
-      }
-      .sidebar a:hover, .sidebar a.active {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-right: 4px solid var(--secondary-color);
-        padding-right: 1.25rem;
+        color: white;
       }
       .btn-primary {
         background-color: var(--primary-color);
@@ -34,66 +33,67 @@
         transition: background-color 0.3s;
       }
       .btn-primary:hover {
-        background-color: #7a2929;
+        background-color: #7c2a2a;
       }
       .card {
         background-color: white;
-        border-radius:12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius:0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)
         border: 1px solid #e5e7eb;
       }
       .status-badge {
-        padding: 4px 12px;
+        padding: 0.25rem 0.75rem;
         border-radius: 9999px;
-        font-size: 0.8rem;
-        font-weight: 500;
+        font-size: 0.75rem;
+        font-weight: 600;
         text-transform: uppercase;
       }
       .status-active {
         background-color: #dcfce7;
         color: #166534;
       }
-      .status-expired {
+      .status-expiring {
         background-color: #fef9c3;
+        color: #854d0e;
+      }
+      .status-expired {
+        background-color: #fee2e2;
         color: #991b1b;
       }
       .status-canceled {
         background-color: #e5e7eb;
-        color: #4b5563;
-      }
-      .table th {
-        background-color: #f9fafb;
+        color: #374151;
       }
     </style>
   </head>
-  <body class="flex h-screen">
-      <aside class="sidebar w-64 text-white p-6 flex-shrink-0 flex flex-col">
+  <body class="text-gray-700">
+      <aside class="sidebar w-64 text-white p-6 flex-shrink-0">
         <div class="text-center mb-10">
-          <h1 class="text-2xl font-bold text-white">نظام إدارة الإيجارات</h1>
-          <p class="text-sm opacity-80">لوحة تحكم المشرف</p>
+          <h1 class="text-2xl font-bold">نظام إدارة الإيجارات</h1>
+          <p class="text-sm text-gray-400">لوحة تحكم المشرف</p>
         </div>
         <nav>
-          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name %}active{% endif %}">إدارة العقود</a>
+          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' or request.resolver_match.url_name == 'lease_detail' %}active{% endif %}">إدارة العقود</a>
           <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
                 طلبات الصيانة
               </a>
             <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">إدارة المصاريف</a>
+           <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">التقارير</a>
         </nav>
-        <div class="mt-auto text-center">
-          <a href="#" class="text-sm opacity-70 hover:opacity-100">
-            تسجيل الخروج
-          </a>
+        <div class="mt-auto">
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-gray-400 hover:text-white">تسجيل الخروج</button>
+          </form>
         </div>
       </aside>
-        <main class="flex-1 p-8 overflow-y-auto">
+        <main class="flex-1 p-8 overflow-y-auto p-8">
           {% if messages %}
-          <div class="mb-4">
             {% for message in messages %}
-          <div class="p-4 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
+          <div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
             {{ message }}
           </div>
             {% endfor %}
-          </div>
           {% endif %}
           {% block content %}{% endblock %}
           </main>
