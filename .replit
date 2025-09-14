@@ -5,7 +5,7 @@ hidden = [".pythonlibs"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["freetype", "gettext", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pgadmin4", "tcl", "tk", "zlib"]
+packages = ["cacert", "cargo", "freetype", "gettext", "glibcLocales", "lcms2", "libffi", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssl", "pgadmin4", "pkg-config", "rustc", "tcl", "tk", "xcodebuild", "zlib"]
 
 [unitTest]
 language = "python3"

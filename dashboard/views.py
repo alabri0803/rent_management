@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm, ExpenseForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Sum, Count
 from django.utils import timezone
+from .utils import render_to_pdf
 
 def is_staff_user(user):
   return user.is_staff
@@ -26,8 +27,6 @@ class LeaseListView(StaffRequiredMixin, ListView):
   paginate_by = 10
 
   def get_queryset(self):
-    for lease in Lease.objects.all():
-      lease.save() # .save() will call update_status()
     return Lease.objects.all().order_by('-start_date')
 
   def get_context_data(self, **kwargs):
@@ -38,18 +37,16 @@ class LeaseListView(StaffRequiredMixin, ListView):
     expiring_leases = Lease.objects.filter(status='expiring_soon')
     today = timezone.now()
     monthly_expenses = Expense.objects.filter(expense_date__year=today.year, expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
-    #gross_income = context['stats']['expected_monthly_income']
-    #context['stats']['monthly_expenses'] = monthly_expenses
-    #context['stats']['net_income'] = gross_income - monthly_expenses
+    gross_income = active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0
     context['stats'] = {
         'active_count': active_leases.count(),
         'expiring_count': expiring_leases.count(),
         'expired_count': Lease.objects.filter(status='expired').count(),
         'total_units': Unit.objects.count(),
         'available_units': Unit.objects.filter(is_available=True).count(),
-        'expected_monthly_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
+        'expected_income': gross_income,
         'monthly_expenses': monthly_expenses,
-        'net_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0 - monthly_expenses
+        'net_income': gross_income - monthly_expenses,
     }
     status_counts = Lease.objects.values('status').annotate(count=Count('status'))
     chart_data ={
@@ -63,12 +60,15 @@ class LeaseListView(StaffRequiredMixin, ListView):
     context['chart_data'] = chart_data
     return context
 
-
-
 class LeaseDetailView(StaffRequiredMixin, DetailView):
   model = Lease
   template_name = 'dashboard/lease_detail.html'
   context_object_name = 'lease'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['document_form'] = DocumentForm()
+    return context
 
 class LeaseCreateView(StaffRequiredMixin, CreateView):
   model = Lease
@@ -110,7 +110,7 @@ class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     return super().form_valid(form)
 
 @login_required
-@user_passes_test(is_staff_user)
+@user_passes_test(lambda u: u.is_staff)
 def renew_lease(request, pk):
   original_lease = get_object_or_404(Lease, pk=pk)
   if request.method == 'POST':
@@ -126,7 +126,7 @@ def renew_lease(request, pk):
       new_end_date = request.POST.get('manual_date')
       if not new_end_date:
         messages.error(request, _('الرجا إدخال تاريخ انتهاء صحيح'))
-        return redirect('renew_lease', pk=pk)
+        return redirect('lease_detail', pk=pk)
     new_lease = Lease.objects.create(
       unit=original_lease.unit,
       tenant=original_lease.tenant,
@@ -138,24 +138,8 @@ def renew_lease(request, pk):
     original_lease.status = 'expired'
     original_lease.save()
     messages.success(request, _('تم تجديد العقد بنجاح!'))
-    return redirect('lease_list', pk=new_lease.pk)
+    return redirect('lease_detail', pk=new_lease.pk)
   return render(request, 'dashboard/lease_renew.html', {'lease': original_lease})
-
-class MaintenanceRequestAdminListView(StaffRequiredMixin, ListView):
-  model = MaintenanceRequest
-  template_name = 'dashboard/maintenance_admin_list.html'
-  context_object_name = 'requests'
-  paginate_by = 15
-
-class MaintenanceRequestAdminUpdateView(StaffRequiredMixin, UpdateView):
-  model = MaintenanceRequest
-  form_class = MaintenanceRequestUpdateForm
-  template_name = 'dashboard/maintenance_detail.html'
-  success_url = reverse_lazy('maintenance_admin_list')
-
-  def form_valid(self, form):
-    messages.success(self.request, _('تم تحديث حالة طلب الصيانة بنجاح!'))
-    return super().form_valid(form)
 
 class DocumentUploadView(StaffRequiredMixin, CreateView):
   model = Document
@@ -176,9 +160,25 @@ class DocumentDeleteView(StaffRequiredMixin, DeleteView):
 
   def get_success_url(self):
     return reverse_lazy('lease_detail', kwargs={'pk': self.object.lease.pk})
-    
+
   def form_valid(self, form):
     messages.success(self.request, _('تم حذف المستند بنجاح!'))
+    return super().form_valid(form)
+
+class MaintenanceRequestAdminListView(StaffRequiredMixin, ListView):
+  model = MaintenanceRequest
+  template_name = 'dashboard/maintenance_admin_list.html'
+  context_object_name = 'requests'
+  paginate_by = 15
+
+class MaintenanceRequestAdminUpdateView(StaffRequiredMixin, UpdateView):
+  model = MaintenanceRequest
+  form_class = MaintenanceRequestUpdateForm
+  template_name = 'dashboard/maintenance_detail.html'
+  success_url = reverse_lazy('maintenance_admin_list')
+
+  def form_valid(self, form):
+    messages.success(self.request, _('تم تحديث الطلب بنجاح!'))
     return super().form_valid(form)
 
 class ExpenseListView(StaffRequiredMixin, ListView):
@@ -225,3 +225,42 @@ class ExpenseDeleteView(StaffRequiredMixin, DeleteView):
   def form_valid(self, form):
     messages.success(self.request, _('تم حذف المصروف بنجاح!'))
     return super().form_valid(form)
+
+class ReportSelectionView(StaffRequiredMixin, View):
+  def get(self, request, *args, **kwargs):
+    return render(request, 'dashboard/report_selection.html')
+
+class GenerateTenantStatementPDF(StaffRequiredMixin, View):
+  def get(self, request, lease_pk, *args, **kwargs):
+    lease = get_object_or_404(Lease, pk=lease_pk)
+    context = {
+      'lease': lease,
+      'payments': lease.payments.all(),
+      'today': timezone.now(),
+    }
+    pdf = render_to_pdf('dashboard/tenant_statement.html', context)
+    return pdf
+
+class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
+  def get(self, request, *args, **kwargs):
+    year = self.kwargs.get('year')
+    month = self.kwargs.get('month')
+    if not year or not month:
+      messages.error(request, _('الرجاء إدخال السنة والشهر'))
+      return redirect('report_selection')
+    year, month = int(year), int(month)
+    income = Payment.objects.filter(payment_date__year=year, payment_date__month=month)
+    expenses = Expense.objects.filter(expense_date__year=year, expense_date__month=month)
+    total_income = income.aggregate(total=Sum('amount'))['total'] or 0
+    total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    context = {
+      'income_list': income,
+      'expenses_list': expenses,
+      'total_income': total_income,
+      'total_expenses': total_expenses,
+      'net_profit': total_income - total_expenses,
+      'report_month': month,
+      'report_year': year,
+    }
+    pdf = render_to_pdf('dashboard/monthly_pl_report.html', context)
+    return pdf
