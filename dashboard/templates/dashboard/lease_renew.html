@@ -3,19 +3,17 @@
 {% block content %}
 <div class="card p-8 max-w-2xl mx-auto">
   <h2 class="text-3xl font-bold text-gray-800 mb-6">تجديد العقد: {{ lease.contract_number }}</h2>
-  <p class="mb-4">تاريخ الانتهاء الحالي: {{ lease.end_date|date:"m/d/Y" }}</p>
-  <p class="mb-6">اختر مدة التجديد:</p>
+  <p class="mb-6 text-gray-600">تاريخ الانتهاء الحالي: <strong>{{ lease.end_date|date:"d M Y" }}</strong>اختر مدة التجديد.</p>
   <form method="post">
     {% csrf_token %}
     <div class="space-y-4">
-      <button type="submit" name="duration" value="1y" class="w-full text-right p-4 border rounded-lg hover:bg-gray-100">تجديد لمدة سنة كاملة</button>
-      <button type="submit" name="duration" value="6m" class="w-full text-right p-4 border rounded-lg hover:bg-gray-100">تجديد لمدة 6 أشهر</button>
-      <button type="submit" name="duration" value="3m" class="w-full text-right p-4 border rounded-lg hover:bg-gray-100">تجديد لمدة 3 أشهر</button>
-    </div>
-    <div class="mt-6 border-t pt-6">
-      <p class="mb-2">أدخل تاريخ الانتهاء الجديد يدويًا:</p>
-      <input type="date" name="manual_date" class="w-full p-2 border rounded-md">
-      <button type="submit" name="duration" value="manual" class="btn-primary w-full mt-4 py-2 px-6 rounded-lg font-semibold">تجديد بالتاريخ اليدوي</button>
+      <button type="submit" name="duration" value="1y" class="w-full text-lg bg-green-500 text-white py-3 rounded-lg hover:bg-green-600">تجديد لمدة سنة كاملة</button>
+      <button type="submit" name="duration" value="6m" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">تجديد لمدة 6 أشهر</button>
+      <button type="submit" name="duration" value="3m" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600">تجديد لمدة 3 أشهر</button>
+      <hr class="my-4">
+      <label for="manual_date" class="block">أو أدخل تاريخ الانتهاء يدويًا:</label>
+      <input type="date" id="manual_date" name="manual_date" class="w-full p-2 border rounded-md">
+      <button type="submit" name="duration" value="manual" class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700">تجديد بالتاريخ اليدوي</button
     </div>
   </form>
 </div>
