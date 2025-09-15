@@ -167,7 +167,7 @@ class DocumentDeleteView(StaffRequiredMixin, DeleteView):
 
 class MaintenanceRequestAdminListView(StaffRequiredMixin, ListView):
   model = MaintenanceRequest
-  template_name = 'dashboard/maintenance_admin_list.html'
+  template_name = 'dashboard/maintenance_list.html'
   context_object_name = 'requests'
   paginate_by = 15
 

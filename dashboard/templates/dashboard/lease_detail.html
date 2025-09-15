@@ -12,8 +12,8 @@
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div><strong>المستأجر:</strong> {{ lease.tenant.name }}</div>
         <div><strong>الوحدة:</strong> {{ lease.unit }}</div>
-      <div><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"m D Y" }}</div>
-      <div><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"m D Y" }}</div>
+      <div><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"d M Y" }}</div>
+      <div><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"d M Y" }}</div>
       <div><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</div>
         <div><strong>الحالة:</strong> <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></div>
       </div>
