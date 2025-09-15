@@ -23,5 +23,5 @@ urlpatterns = [
 
   path('reports/', ReportSelectionView.as_view(), name='report_selection'),
   path('reports/tenant/<int:lease_pk>/', GenerateTenantStatementPDF.as_view(), name='report_tenant_statement'),
-  path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='generate_monthly_pl'),
+  path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='report_monthly_pl'),
 ]
