@@ -1,74 +1,61 @@
 {% extends 'dashboard/base.html' %}
 {% load i18n %}
-{% block title %}{% trans "إدارة العقود" %} {% endblock %}
+{% block title %}لوحة المعلومات الرئيسية {% endblock %}
 {% block content %}
-<header class="flex justify-between items-center mb-8">
-  <div>
-    <h2 class="text-3xl font-bold text-gray-800">{% trans "لوحة المعلومات الرئيسية" %}</h2>
-    <p class="text-gray-500">{% trans "نظرة شاملة على إداء الممتلكات" %}</p>
-  </div>
-  <div>
-    <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 font-semibold shadow-md">إضافة عقد إيجار جديد</a>
-  </div>
-</header>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-  <div class="card p-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+  <div class="card p-5">
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "العقود النشطة" %}
   </h3>
     <p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.active_count }}</p>
 </div>
-  <div class="card p-6">
+  <div class="card p-5">
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "قريبة الانتهاء" %}
   </h3>
     <p class="text-3xl font-bold text-yellow-500 mt-2">{{ stats.expiring_count }}</p>
   </div>
-    <div class="card p-6">
+    <div class="card p-5">
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "إجمالي الدخل الشهري" %}
   </h3>
     <p class="text-3xl font-bold text-blue-600 mt-2">{{ stats.expected_monthly_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
   </div>
-  <div class="card p-6">
+  <div class="card p-5">
     <h3 class="text-gray-500 text-sm font-medium">
       {% trans "مصاريف هذا الشهر" %}
   </h3>
     <p class="text-3xl font-bold text-red-500 mt-2">{{ stats.monthly_expenses|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
   </div>
-  <div class="card p-6">
-    <h3 class="text-gray-500 text-sm font-medium">
+  <div class="card p-6 bg-green-50">
+    <h3 class="text-green-800 text-sm font-medium">
       {% trans "صافي الدخل الشهري" %}
   </h3>
     <p class="text-3xl font-bold text-green-600 mt-2">{{ stats.net_income|floatformat:2 }}<span class="text-lg">ر.ع</span></p>
   </div>
     </div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <div class="lg:col-span-2">
-    <div class="card p-6">
-      <h3 class="text-xl font-bold mb-4">{% trans "توزيع العقود" %}</h3>
-      <canvas id="leaseStatusChart"></canvas>
-    </div>
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "العقود الحالية" %}</h2>
+    <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة عقد جديد" %}</a>
   </div>
-<div class="lg:col-span-2">
-  <div class="card overflow-hidden">
-    <h3 class="p-4 text-xl font-bold">{% trans "احدث العقود" %}</h3>
-  <table class="table w-full text-right">
-    <thead class="border-b">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 card overflow-hidden">
+  <table class="w-full text-right">
+    <thead class="bg-gray-50 border-b">
       <tr>
-        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "رقم العقد" %}</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "المستأجر" %}</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "تاريخ الانتهاء" %}</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "الحالة" %}</th>
-        <th class="p-4 font-semibold text-sm text-gray-600">{% trans "إجراءات" %}</th>
+        <th class="p-4">{% trans "رقم العقد" %}</th>
+        <th class="p-4">{% trans "المستأجر" %}</th>
+        <th class="p-4">{% trans "تاريخ الانتهاء" %}</th>
+        <th class="p-4">{% trans "الحالة" %}</th>
+        <th class="p-4">{% trans "إجراءات" %}</th>
       </tr>
     </thead>
     <tbody>
-      {% for lease in leases|slice:"5" %}
+      {% for lease in leases %}
       <tr class="border-b hover:bg-gray-50">
         <td class="p-4">{{ lease.contract_number }}</td>
         <td class="p-4">{{ lease.tenant.name }}</td>
-        <td class="p-4">{{ lease.end_date|date:"d/m/Y" }}</td>
+        <td class="p-4">{{ lease.end_date|date:"d M Y" }}</td>
         <td class="p-4">
           <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
         </td>
@@ -78,20 +65,21 @@
       </tr>
       {% empty %}
       <tr>
-        <td colspan="5" class="p-4 text-center text-gray-500">{% trans "لا توجد عقود لعرضها." %}</td>
+        <td colspan="5" class="p-6 text-center text-gray-500">{% trans "لا توجد عقود لعرضها." %}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-    <div class="p-4 text-center">
-      <a href="#" class="text-sm font-semibold text-[var(--primary-color)] hover:underline">{% trans "عرض جميع العقود" %}</a>
-    </div>
-  </div>
 </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="lg:col-span-1 card p-6">
+      <h3 class="text-xl font-bold mb-4">توزيع حالات العقود</h3>
+      <canvas id="statusChart"></canvas>
+    </div>
+</div>
+
   <script>
-    const ctx = document.getElementById('leaseStatusChart').getContext('2d');
-    const leaseStatusChart = new Chart(ctx, {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: {{ chart_data.labels|safe }},
@@ -99,27 +87,19 @@
           label: '{% trans "عدد العقود" %}',
           data: {{ chart_data.data|safe }},
           backgroundColor: [
-            '#16a34a',
+            '#22c55e',
             '#facc15',
-            '#dc2626',
-            '#6b7280',
+            '#ef4444',
+            '#9ca3af',
           ],
-          bordercolor: '#ffffff',
-          borderWidth: 2,
+          hoverOffset: 4,
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-            title: {
-              display: true,
-              text: '{% trans "توزيع حالات العقود" %}'
-            }
-        }
-      }
+      options:
+          {
+            responsive: true,
+            maintainAspectRatio: false,
+          }
     });
   </script>
 {% endblock %}
