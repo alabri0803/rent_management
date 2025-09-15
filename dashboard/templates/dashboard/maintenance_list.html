@@ -1,34 +1,36 @@
-{% extends 'portal/base.html' %}
+{% extends 'dashboard/base.html' %}
 {% block title %}إدارة طلبات الصيانة{% endblock %}
 {% block content %}
-  <h2 class="text-3xl font-bold text-gray-800 mb-6">إدارة طلبات الصيانة</h2>
+  <h2 class="text-3xl font-bold text-gray-800 mb-6">طلبات الصيانة</h2>
 <div class="card overflow-hidden">
   <table class="w-full text-right">
-    <thead>
-      <tr class="border-b bg-gray-50">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="py-4">تاريخ الطلب</th>
+        <th class="py-4">العنوان</th>
         <th class="py-4">المستأجر</th>
-        <th class="py-4">عنوان الطلب</th>
-        <th class="py-4">تاريخ الإبلاغ</th>
+        <th class="py-4">الألوية</th>
         <th class="py-4">الحالة</th>
-        <th class="py-4">الإجراءات</th>
+        <th class="py-4">إجراءات</th>
       </tr>
     </thead>
     <tbody>
       {% for req in requests %}
       <tr class="border-b hover:bg-gray-50">
-        <td class="py-4">{{ req.lease.tenant.name }}</td>
+        <td class="py-4">{{ req.reported_date|date:"d M Y" }}</td>
         <td class="py-4">{{ req.title }}</td>
-        <td class="py-4">{{ req.reported_date|date:"d M Y, h:i A" }}</td>
+        <td class="py-4">{{ req.lease.tenant.name }}</td>
+        <td class="py-4">{{ req.ger_priority_display }}</td>
         <td class="py-4">
             {{ req.get_status_display }}
         </td>
         <td class="py-4">
-          <a href="{% url 'maintenance_admin_update' req.pk %}" class="text-[var(--color-primary)] hover:underline">عرض/تحديث</a>
+          <a href="{% url 'maintenance_admin_update' req.pk %}" class="text-blue-600 hover:underline">عرض/تحديث</a>
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="4" class="p-6 text-center text-gray-500">لا توجد طلبات صيانة حاليا</td>
+        <td colspan="6" class="p-6 text-center text-gray-500">لا توجد طلبات صيانة حاليا</td>
       </tr>
       {% endfor %}
     </tbody>
