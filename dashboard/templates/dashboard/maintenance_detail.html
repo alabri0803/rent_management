@@ -1,41 +1,24 @@
 {% extends 'dashboard/base.html' %}
 {% block title %}تفاصيل طلب الصيانة{% endblock %}
 {% block content %}
-<div class="card p-8">
-  <h2 class="text-2xl font-bold mb-6">تفاصيل طلب الصيانة: {{ object.title }}</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div>
-      <h3 class="font-bold text-lg mb-4">بيانات الطلب</h3>
-      <p><strong>المستأجر:</strong> {{ object.lease.tenant.name }}</p>
-      <p><strong>الوحدة:</strong> {{ object.lease.unit }}</p>
-      <p><strong>التاريخ:</strong> {{ object.reported_date|date:"d M Y, h:i A" }}</p>
-      <p><strong>الأولوية:</strong> {{ object.get_priority_display }}</p>
-      <div class="mt-4">
-        <h4 class="font-semibold">وصف المشكلة:</h4>
-        <p class="text-gray-700 bg-gray-100 p-3 rounded-md mt-2">{{ object.description }}</p>
-      </div>
-      {% if object.image %}
-      <div class="mt-4">
-        <h4 class="font-semibold">صورة مرفقة:</h4>
-        <img src="{{ object.image.url }}" alt="صورة المشكلة" class="mt-2 rounded-lg border max-w-full">
-      </div>
-      {% endif %}
-    </div>
-    <div>
-      <h3 class="font-bold text-lg mb-4">تحديث حالة الطلب</h3>
-      <form method="post">
-        {% csrf_token %}
-        <div class="mb-4">
-          <label class="block mb-2">الحالة الحالية</label>
-          {{ form.status }}
-        </div>
-        <div class="mb-4">
-          <label class="block mb-2">ملاحظات داخلية (للموظفين)</label>
-          {{ form.staff_notes }}
-        </div>
-        <button type="submit" class="btn-primary w-full py-2 rounded-lg mt-4">حفظ التحديثات</button>
-      </form>
-    </div>
-  </div>
+<h2 class="text-3xl font-bold text-gray-800 mb-6">تفاصيل طلب الصيانة</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="card p-6">
+<h3 class="text-xl font-bold mb-4">معلومات الطلب</h3>
+<p><strong>العنوان:</strong> {{ object.title }}</p>
+<p><strong>المستأجر:</strong> {{ object.lease.tenant.name }} (الوحدة {{ object.lease.unit.unit_number }})</p>
+<p><strong>تاريخ الإبلاغ:</strong> {{ object.reported_date|date:"d M Y, H:i" }}</p>
+<p><strong>الأولوية:</strong> {{ object.get_priority_display }}</p>
+<hr class="my-4"><p><strong>وصف المشكلة:</strong></p><p>{{ object.description }}</p>
+{% if object.image %}<a href="{{ object.image.url }}" target="_blank" class="mt-4 inline-block text-blue-600 hover:underline">عرض الصورة المرفقة</a>{% endif %}
+</div>
+<div class="card p-6">
+<h3 class="text-xl font-bold mb-4">تحديث الحالة</h3>
+<form method="post">
+{% csrf_token %}
+<div class="space-y-4">{{ form.as_p }}</div>
+<button type="submit" class="mt-6 w-full btn-primary py-2 rounded-lg font-semibold">حفظ التحديث</button>
+</form>
+</div>
 </div>
 {% endblock %}
