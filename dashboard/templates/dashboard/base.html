@@ -67,13 +67,14 @@
     </style>
   </head>
   <body class="text-gray-700">
-      <aside class="sidebar w-64 text-white p-6 flex-shrink-0">
+    <div class="flex h-screen">
+      <aside class="sidebar w-64 p-6 text-white flex-shrink-0">
         <div class="text-center mb-10">
           <h1 class="text-2xl font-bold">نظام إدارة الإيجارات</h1>
-          <p class="text-sm text-gray-400">لوحة تحكم المشرف</p>
+          <p class="text-sm text-gray-400">نسخة ١.٠</p>
         </div>
         <nav>
-          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' or request.resolver_match.url_name == 'lease_detail' %}active{% endif %}">إدارة العقود</a>
+          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' or request.resolver_match.url_name == 'lease_detail' %}active{% endif %}">لوحة المعلومات</a>
           <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
                 طلبات الصيانة
               </a>
@@ -83,11 +84,11 @@
         <div class="mt-auto">
           <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-gray-400 hover:text-white">تسجيل الخروج</button>
+            <button type="submit" class="w-full text-left py-3 px-4 rounded-lg mb-2 text-gray-400 hover:bg-red-800 hover:text-white">تسجيل الخروج</button>
           </form>
         </div>
       </aside>
-        <main class="flex-1 p-8 overflow-y-auto p-8">
+        <main class="flex-1 overflow-y-auto p-8">
           {% if messages %}
             {% for message in messages %}
           <div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
@@ -97,5 +98,6 @@
           {% endif %}
           {% block content %}{% endblock %}
           </main>
+        </div>
     </body>
     </html>

@@ -44,7 +44,7 @@ class LeaseListView(StaffRequiredMixin, ListView):
         'expired_count': Lease.objects.filter(status='expired').count(),
         'total_units': Unit.objects.count(),
         'available_units': Unit.objects.filter(is_available=True).count(),
-        'expected_income': gross_income,
+        'expected_monthly_income': gross_income,
         'monthly_expenses': monthly_expenses,
         'net_income': gross_income - monthly_expenses,
     }
