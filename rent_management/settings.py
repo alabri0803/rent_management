@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-rm=85vc+pgs=^4+m+=d*32)+j7xx*_5t%amcq(=d7iz5q8zp^e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ["REPLIT_DOMAINS"].split(',')
 
 
 # Application definition
@@ -138,8 +138,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://422dc5fa-68e0-4bab-b443-8884e39c0cd4-00-25ksjlal1qq2z.sisko.replit.dev',
-    'https://*.replit.dev'
+    "https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
 ]
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
