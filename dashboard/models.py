@@ -123,11 +123,16 @@ class Payment(models.Model):
   payment_date = models.DateField(_('تاريخ الدفع'))
   amount = models.DecimalField(_('المبلغ المدفوع'), max_digits=10, decimal_places=2)
   notes = models.TextField(_('ملاحظات'), blank=True, null=True)
+  payment_for_month = models.IntegerField(_('دفعة عن شهر'), choices=[(i, i) for i in range(1, 13)])
+  payment_for_year = models.IntegerField(_('دفعة عن سنة'), default=timezone.now().year)
+
 
   class Meta:
     verbose_name = _('دفعة')
     verbose_name_plural = _('الدفعات')
     ordering = ['-payment_date']
+
+    unique_together = ('lease', 'payment_for_month', 'payment_for_year')
 
     def __str__(self):
       return f"دفعة بقيمة {self.amount} للعقد {self.lease.contract_number}"
