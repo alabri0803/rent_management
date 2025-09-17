@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 from django.contrib.auth.models import User
 from decimal import Decimal
+import datetime
 
 # السجل التجاري
 class Building(models.Model):
@@ -89,6 +90,7 @@ class Lease(models.Model):
   def save(self, *args, **kwargs):
     # حساب رسوم التسجيل تقائيا عند الحفظ
     self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
+    self.update_status()
     super().save(*args, **kwargs)
 
   def update_status(self):
@@ -116,7 +118,7 @@ class Lease(models.Model):
 
 
   def __str__(self):
-    return f"عقد {self.contract_number} - {self.tenant.name}"
+    return f"{_('عقد')} {self.contract_number} {_('لــــ')} {self.tenant.name}"
 
 class Payment(models.Model):
   lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments', verbose_name=_('العقد'))
@@ -135,7 +137,7 @@ class Payment(models.Model):
     unique_together = ('lease', 'payment_for_month', 'payment_for_year')
 
     def __str__(self):
-      return f"دفعة بقيمة {self.amount} للعقد {self.lease.contract_number}"
+      return f"{_('دفعة بقيمة')} {self.amount} {_('لشهر')} {self.payment_for_month} {self.payment_for_year}"
 
 class MaintenanceRequest(models.Model):
   STATUS_CHOICES = [
@@ -202,4 +204,4 @@ class Expense(models.Model):
     verbose_name_plural = _('المصاريف')
 
   def __str__(self):
-    return f"{self.get_category_display()} - {self.amount} ر.ع"
+    return f"{self.get_category_display()} - {self.amount} {_('ر.ع')}"
