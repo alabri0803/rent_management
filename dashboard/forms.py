@@ -10,7 +10,12 @@ class LeaseForm(forms.ModelForm):
         widgets = {'start_date': forms.DateInput(attrs={'type': 'date'}), 'end_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['unit'].queryset = Unit.objects.filter(is_available=True)
+        # Show only available units, or the currently selected one if editing
+        if self.instance and self.instance.pk:
+            self.fields['unit'].queryset = Unit.objects.filter(is_available=True) | Unit.objects.filter(pk=self.instance.unit.pk)
+        else:
+            self.fields['unit'].queryset = Unit.objects.filter(is_available=True)
+
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
