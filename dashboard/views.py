@@ -173,3 +173,20 @@ class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
             'report_month': month, 'report_year': year,
         }
         return render_to_pdf('dashboard/reports/monthly_pl_report.html', context)
+
+class PaymentListView(StaffRequiredMixin, ListView):
+    model = Payment; template_name = 'dashboard/payment_list.html'; context_object_name = 'payments'; paginate_by = 20
+
+class PaymentCreateView(StaffRequiredMixin, CreateView):
+    model = Payment; form_class = PaymentForm; template_name = 'dashboard/payment_form.html'; success_url = reverse_lazy('payment_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs); context['title'] = _("إضافة دفعة جديدة"); return context
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تسجيل الدفعة بنجاح.")); return super().form_valid(form)
+
+class PaymentUpdateView(StaffRequiredMixin, UpdateView):
+    model = Payment; form_class = PaymentForm; template_name = 'dashboard/payment_form.html'; success_url = reverse_lazy('payment_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
