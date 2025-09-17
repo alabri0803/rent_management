@@ -21,14 +21,18 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
-    path('i18n/', include('django.conf.urls.i18n')),
-]
-urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')), # Language switcher URL
+]
+
+# Language-prefixed URLs
+urlpatterns += i18n_patterns(
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('portal/', include('portal.urls')),
-    prefix_default_language=False,
+    path('', include('portal.urls')), # Portal is the homepage
+    prefix_default_language=False # Don't prefix the default language (ar)
 )
+
+# Serve media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
