@@ -1,13 +1,21 @@
 {% extends 'portal/base.html' %}
-{% block title %}طلبات الصيانة{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "طلبات الصيانة" %}{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-6"><h2 class="text-3xl font-bold text-gray-800">طلبات الصيانة الخاصة بك</h2><a href="{% url 'maintenance_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">إنشاء طلب جديد</a></div>
-<div class="card overflow-hidden">
-<table class="w-full text-right">
-<thead class="bg-gray-50 border-b"><tr><th class="p-4">تاريخ الطلب</th><th class="p-4">العنوان</th><th class="p-4">الأولوية</th><th class="p-4">الحالة</th></tr></thead>
-<tbody>{% for req in requests %}
-<tr class="border-b hover:bg-gray-50"><td class="p-4">{{ req.reported_date|date:"d M Y" }}</td><td class="p-4">{{ req.title }}</td><td class="p-4">{{ req.get_priority_display }}</td><td class="p-4">{{ req.get_status_display }}</td></tr>
-{% empty %}<tr><td colspan="4" class="p-6 text-center text-gray-500">لم تقم بتقديم أي طلبات صيانة بعد.</td></tr>{% endfor %}</tbody>
-</table>
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold">{% trans "طلبات الصيانة الخاصة بي" %}</h2>
+    <a href="{% url 'maintenance_create' %}" class="bg-[#993333] text-white py-2 px-4 rounded-lg">{% trans "إنشاء طلب جديد" %}</a>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <ul>
+        {% for req in requests %}
+        <li class="p-4 border-b">
+            <p class="font-bold">{{ req.title }} <span class="text-sm font-normal text-gray-500 ml-2">({{ req.reported_date|date:"d M Y" }})</span></p>
+            <p class="text-sm">{% trans "الحالة" %}: {{ req.get_status_display }}</p>
+        </li>
+        {% empty %}
+        <li class="p-4 text-center">{% trans "ليس لديك أي طلبات صيانة." %}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

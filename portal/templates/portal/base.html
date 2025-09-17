@@ -1,13 +1,28 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% block title %}بوابة المستأجر{% endblock %} - إدارة الإيجارات</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; } :root { --primary-color: #993333; } .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; } .btn-primary:hover { background-color: #7c2a2a; }</style>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "بوابة المستأجر" %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; }</style>
 </head>
-<body class="text-gray-700">
-<header class="bg-white shadow-md"><div class="container mx-auto px-6 py-4 flex justify-between items-center"><h1 class="text-2xl font-bold text-[var(--primary-color)]">بوابة المستأجر</h1><nav class="flex items-center gap-6"><a href="{% url 'portal_dashboard' %}" class="hover:text-gray-800">لوحة المعلومات</a><a href="{% url 'maintenance_list' %}" class="hover:text-gray-800">طلبات الصيانة</a><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="text-sm text-gray-600 hover:text-red-600">تسجيل الخروج</button></form></nav></div></header>
-<main class="container mx-auto px-6 py-8">{% if messages %}{% for message in messages %}<div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>{% endfor %}{% endif %}{% block content %}{% endblock %}</main>
+<body class="text-gray-800">
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#993333]">{% trans "بوابة المستأجر" %}</h1>
+            <div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'portal_dashboard' %}" class="mx-2 hover:text-[#993333]">{% trans "لوحة المعلومات" %}</a>
+                <a href="{% url 'maintenance_list' %}" class="mx-2 hover:text-[#993333]">{% trans "طلبات الصيانة" %}</a>
+                <form method="post" action="{% url 'logout' %}" class="inline-block mx-2">{% csrf_token %}<button type="submit">{% trans "تسجيل الخروج" %}</button></form>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <main class="container mx-auto px-6 py-8">
+        {% if messages %}{% for message in messages %}<div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>{% endfor %}{% endif %}
+        {% block content %}{% endblock %}
+    </main>
 </body>
 </html>

@@ -1,5 +1,13 @@
 {% extends 'portal/base.html' %}
-{% block title %}إنشاء طلب صيانة{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "إنشاء طلب صيانة" %}{% endblock %}
 {% block content %}
-<div class="card max-w-2xl mx-auto p-8"><h2 class="text-2xl font-bold mb-6">إنشاء طلب صيانة جديد</h2><form method="post" enctype="multipart/form-data">{% csrf_token %}<div class="space-y-4">{{ form.as_p }}</div><div class="mt-6"><button type="submit" class="w-full btn-primary py-2 rounded-lg font-semibold">إرسال الطلب</button></div></form></div>
+<div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">{% trans "إنشاء طلب صيانة جديد" %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="space-y-4">{{ form.as_p }}</div>
+        <button type="submit" class="w-full bg-[#993333] text-white py-2 mt-6 rounded-lg">{% trans "إرسال الطلب" %}</button>
+    </form>
+</div>
 {% endblock %}

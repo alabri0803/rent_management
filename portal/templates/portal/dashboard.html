@@ -1,12 +1,29 @@
 {% extends 'portal/base.html' %}
+{% load i18n %}
 {% block content %}
-<h2 class="text-3xl font-bold text-gray-800 mb-6">أهلاً بك، {{ tenant.name }}</h2>
+<h2 class="text-2xl font-bold mb-4">{% trans "مرحباً بك،" %} {{ user.tenant.name }}!</h2>
 {% if lease %}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div class="lg:col-span-1 card p-6"><h3 class="text-xl font-bold mb-4">تفاصيل عقدك</h3><p><strong>رقم العقد:</strong> {{ lease.contract_number }}</p><p><strong>الوحدة:</strong> {{ lease.unit }}</p><p><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"d M Y" }}</p></div>
-<div class="lg:col-span-2 card p-6"><h3 class="text-xl font-bold mb-4">ملخص مالي</h3><p><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</p></div>
-<div class="lg:col-span-3 card p-6"><h3 class="text-xl font-bold mb-4">سجل الدفعات</h3><!-- Payment history would go here --></div>
-<div class="lg:col-span-3 card p-6"><h3 class="text-xl font-bold mb-4">مستنداتك</h3>{% if documents %}<ul class="space-y-2">{% for doc in documents %}<li class="flex items-center justify-between bg-gray-50 p-3 rounded-lg"><span>{{ doc.title }}</span><a href="{{ doc.file.url }}" target="_blank" class="bg-blue-500 text-white text-sm py-1 px-4 rounded-full hover:bg-blue-600">تنزيل</a></li>{% endfor %}</ul>{% else %}<p class="text-gray-500">لا توجد مستندات متاحة للعرض حالياً.</p>{% endif %}</div>
+<div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h3 class="text-xl font-bold mb-4">{% trans "تفاصيل عقدك النشط" %}</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div><strong>{% trans "رقم العقد" %}:</strong><p>{{ lease.contract_number }}</p></div>
+        <div><strong>{% trans "الوحدة" %}:</strong><p>{{ lease.unit }}</p></div>
+        <div><strong>{% trans "الإيجار الشهري" %}:</strong><p>{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><strong>{% trans "تاريخ الانتهاء" %}:</strong><p>{{ lease.end_date|date:"d M Y" }}</p></div>
+    </div>
 </div>
-{% else %}<div class="card p-8 text-center"><p class="text-lg">لا يوجد لديك عقد إيجار نشط حالياً.</p></div>{% endif %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold mb-2">{% trans "سجل الدفعات" %}</h3>
+        <ul>{% for payment in payments %}<li class="flex justify-between py-1"><span>{{ payment.payment_date|date:"d M Y" }}</span><span>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</span></li>{% empty %}<li>{% trans "لا توجد دفعات." %}</li>{% endfor %}</ul>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="font-bold mb-2">{% trans "المستندات" %}</h3>
+        <ul>{% for doc in documents %}<li class="py-1"><a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline">{{ doc.title }}</a></li>{% empty %}<li>{% trans "لا توجد مستندات." %}</li>{% endfor %}</ul>
+    </div>
+</div>
+{% else %}
+<p>{% trans "ليس لديك عقود نشطة حالياً." %}</p>
+{% endif %}
+{% if error %}<p class="text-red-500">{{ error }}</p>{% endif %}
 {% endblock %}
