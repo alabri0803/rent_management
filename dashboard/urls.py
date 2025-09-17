@@ -4,7 +4,7 @@ from .views import (
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF,
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView,
 )
 
 urlpatterns = [
@@ -22,6 +22,9 @@ urlpatterns = [
     path('expenses/new/', ExpenseCreateView.as_view(), name='expense_create'),
     path('expenses/<int:pk>/edit/', ExpenseUpdateView.as_view(), name='expense_update'),
     path('expenses/<int:pk>/delete/', ExpenseDeleteView.as_view(), name='expense_delete'),
+    path('payments/', PaymentListView.as_view(), name='payment_list'),
+    path('payments/new/', PaymentCreateView.as_view(), name='payment_create'),
+    path('payments/<int:pk>/edit/', PaymentUpdateView.as_view(), name='payment_update'),
     path('reports/', ReportSelectionView.as_view(), name='report_selection'),
     path('reports/tenant/<int:lease_pk>/', GenerateTenantStatementPDF.as_view(), name='report_tenant_statement'),
     path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='report_monthly_pl'),
