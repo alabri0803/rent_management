@@ -21,13 +21,14 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
+]
+urlpatterns += i18n_patterns(
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('', include('portal.urls')),
-]
-urlpatterns += [
-    path('i18n/', include('django.conf.urls.i18n'))
-]
+    path('portal/', include('portal.urls')),
+    prefix_default_language=True,
+)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
