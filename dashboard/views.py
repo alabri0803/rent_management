@@ -10,7 +10,7 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 
 from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant
-from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm, ExpenseForm
+from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm, ExpenseForm, PaymentForm
 from .utils import render_to_pdf
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
