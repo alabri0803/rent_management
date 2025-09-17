@@ -20,7 +20,7 @@
 <aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col">
     <div class="text-center mb-10"><h1 class="text-2xl font-bold">{% trans "إدارة الإيجارات" %}</h1><p class="text-sm text-gray-400">{% trans "نسخة" %} 1.1</p></div>
     <nav>
-        <a href="" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
+        <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
         <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
         <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
         <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>

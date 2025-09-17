@@ -5,17 +5,61 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Sum, Count, Q
 from django.utils import timezone
+from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant
-from .forms import LeaseForm, MaintenanceRequestUpdateForm, DocumentForm, ExpenseForm, PaymentForm
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
 
+# Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
+
+# --- Dashboard Home ---
+class DashboardHomeView(StaffRequiredMixin, ListView):
+    model = Lease
+    template_name = 'dashboard/home.html'
+    context_object_name = 'leases'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.now()
+
+        # Stats Cards
+        active_leases = Lease.objects.filter(status__in=['active', 'expiring_soon'])
+        monthly_expenses = Expense.objects.filter(expense_date__year=today.year, expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
+        expected_income = active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0
+
+        context['stats'] = {
+            'active_count': active_leases.count(),
+            'expected_monthly_income': expected_income,
+            'monthly_expenses': monthly_expenses,
+            'net_income': expected_income - monthly_expenses
+        }
+
+        # Financial Trend Chart (Last 12 months)
+        trend_chart = {'labels': [], 'income_data': [], 'expense_data': []}
+        for i in range(12, 0, -1):
+            date = today - relativedelta(months=i-1)
+            month_name_en = date.strftime("%b") # English month name for consistency in JS
+            trend_chart['labels'].append(month_name_en)
+
+            monthly_income = Payment.objects.filter(payment_date__year=date.year, payment_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
+            trend_chart['income_data'].append(float(monthly_income))
+
+            monthly_expenses_trend = Expense.objects.filter(expense_date__year=date.year, expense_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
+            trend_chart['expense_data'].append(float(monthly_expenses_trend))
+        context['trend_chart'] = trend_chart
+
+        # Recent Activities
+        context['recent_payments'] = Payment.objects.order_by('-payment_date')[:5]
+        context['recent_requests'] = MaintenanceRequest.objects.order_by('-reported_date')[:5]
+
+        return context
 
 class LeaseListView(StaffRequiredMixin, ListView):
     model = Lease

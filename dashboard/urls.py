@@ -4,11 +4,12 @@ from .views import (
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView,
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView
 )
 
 urlpatterns = [
-    path('', LeaseListView.as_view(), name='lease_list'),
+    path('', DashboardHomeView.as_view(), name='dashboard_home'),
+    path('lease_list', LeaseListView.as_view(), name='lease_list'),
     path('lease/<int:pk>/', LeaseDetailView.as_view(), name='lease_detail'),
     path('lease/new/', LeaseCreateView.as_view(), name='lease_create'),
     path('lease/<int:pk>/edit/', LeaseUpdateView.as_view(), name='lease_update'),
