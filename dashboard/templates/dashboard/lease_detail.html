@@ -1,65 +1,64 @@
 {% extends 'dashboard/base.html' %}
-{% block title %}تفاصيل العقد: {{ lease.contract_number }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "تفاصيل العقد" %} {{ lease.contract_number }}{% endblock %}
 {% block content %}
-<div class="mb-6">
-    <a href="{% url 'lease_list' %}" class="text-sm text-gray-500 hover:text-gray-800">&larr;عودة إلى قائمة العقود</a>
-    <h2 class="text-3xl font-bold text-gray-800 mt-2">تفاصيل العقد: {{ lease.contract_number }}</h2>
+<div class="mb-6"><a href="{% url 'lease_list' %}" class="text-blue-600 hover:underline">&larr; {% trans "العودة إلى قائمة العقود" %}</a></div>
+<div class="card p-8 mb-8">
+    <div class="flex justify-between items-start">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800">{{ lease.tenant.name }}</h2>
+            <p class="text-gray-500">{% trans "رقم العقد" %}: {{ lease.contract_number }}</p>
+            <span class="status-badge status-{{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
+        </div>
+        <div class="flex space-x-2 rtl:space-x-reverse">
+            <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
+            <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
+            <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
+        </div>
+    </div>
+    <div class="border-t my-6"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div><h4 class="font-bold">{% trans "الوحدة" %}</h4><p>{{ lease.unit }}</p></div>
+        <div><h4 class="font-bold">{% trans "الإيجار الشهري" %}</h4><p>{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><h4 class="font-bold">{% trans "فترة العقد" %}</h4><p>{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</p></div>
+        <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
+        <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
+        <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
+    </div>
 </div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <div class="lg:col-span-2 space-y-8">
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <div class="card p-6">
-      <h3 class="text-xl font-bold mb-4">بيانات العقد</h3>
-      <div class="grid grid-cols-2 gap-4 text-sm">
-        <div><strong>المستأجر:</strong> {{ lease.tenant.name }}</div>
-        <div><strong>الوحدة:</strong> {{ lease.unit }}</div>
-      <div><strong>تاريخ البدء:</strong> {{ lease.start_date|date:"d M Y" }}</div>
-      <div><strong>تاريخ الانتهاء:</strong> {{ lease.end_date|date:"d M Y" }}</div>
-      <div><strong>الإيجار الشهري:</strong> {{ lease.monthly_rent }} ر.ع</div>
-        <div><strong>الحالة:</strong> <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></div>
-      </div>
+        <h3 class="text-xl font-bold mb-4">{% trans "سجل الدفعات" %}</h3>
+        <table class="w-full">
+            <thead><tr class="border-b"><th class="text-start py-2">{% trans "التاريخ" %}</th><th class="text-start py-2">{% trans "عن شهر/سنة" %}</th><th class="text-end py-2">{% trans "المبلغ" %}</th></tr></thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr class="border-b"><td class="py-2">{{ payment.payment_date|date:"d M Y" }}</td><td class="py-2">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td class="py-2 text-end font-mono">{{ payment.amount|floatformat:2 }}</td></tr>
+                {% empty %}
+                <tr><td colspan="3" class="py-4 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
+                {% endfor %}
+            </tbody>
+            <tfoot><tr class="font-bold"><td class="py-3">{% trans "الإجمالي المدفوع" %}</td><td></td><td class="py-3 text-end font-mono">{{ total_paid|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
+        </table>
     </div>
     <div class="card p-6">
-      <h3 class="text-xl font-bold mb-4">المستندات المرفقة</h3>
-      <div class="space-y-3">
-        {% for doc in lease.documents.all %}
-          <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-            <div>
-              <a href="{{ doc.file.url }}" target="_blank" class="font-semibold text-blue-600 hover:underline">{{ doc.title }}</a>
-             <p class="text-xs text-gray-500">تم الرفع في: {{ doc.uploaded_at|date:"d M Y" }}</p>
-            </div>
-            <form action="{% url 'document_delete' doc.pk %}" method="post" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا المستند؟');">
-              {% csrf_token %}
-              <button type="submit" class="text-red-500 hover:text-red-700 text-sm">حذف</button>
-            </form>
-          </div>
-          {% empty %}
-          <p class="text-gray-500">لا توجد مستندات مرفقة لهذا العقد بعد.</p>
-        {% endfor %}
-      </div>
+        <h3 class="text-xl font-bold mb-4">{% trans "المستندات" %}</h3>
+        <form action="{% url 'document_upload' lease.pk %}" method="post" enctype="multipart/form-data" class="mb-4 space-y-3">
+            {% csrf_token %}
+            {{ document_form.as_p }}
+            <button type="submit" class="btn-primary w-full py-2 rounded-lg">{% trans "رفع مستند جديد" %}</button>
+        </form>
+        <ul class="space-y-2">
+            {% for doc in lease.documents.all %}
+            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-md">
+                <a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline">{{ doc.title }}</a>
+                <a href="{% url 'document_delete' doc.pk %}" class="text-red-500 hover:text-red-700">{% trans "حذف" %}</a>
+            </li>
+            {% empty %}
+            <li class="text-center text-gray-500">{% trans "لا توجد مستندات مرفقة." %}</li>
+            {% endfor %}
+        </ul>
     </div>
-  </div>
-  <div class="lg:col-span-1 space-y-6">
-    <div class="card p-6">
-      <h3 class="font-bold mb-4">الإجراءات</h3>
-      <a href="{% url 'lease_update' lease.pk %}" class="block text-center w-full mb-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">تعديل العقد</a>
-      <a href="{% url 'lease_renew' lease.pk %}" class="block text-center w-full mb-2 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">تجديد العقد</a>
-      <a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="block text-center w-full bg-gray-6 text-white py-2 rounded-lg hover:bg-gray-700">طباعة كشف حساب</a>
-  </div>
-    <div class="card p-6">
-      <h3 class="font-bold mb-4">رفع مستند جديد</h3>
-      <form action="{% url 'document_upload' lease.pk %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-4">
-          {{ document_form.title.label_tag }}
-          {{ document_form.title }}
-        </div>
-        <div class="mb-4">
-          {{ document_form.file.label_tag }}
-          {{ document_form.file }}
-        </div>
-        <button type="submit" class="btn-primary w-full py-2 rounded-lg mt-2">رفع الملف</button>
-      </form>
-    </div>
-  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة المدفوعات" %}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "المدفوعات" %}</h2>
+    <a href="{% url 'payment_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة دفعة جديدة" %}</a>
+</div>
+<div class="card overflow-hidden">
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr><th class="p-4">{% trans "تاريخ الدفع" %}</th><th class="p-4">{% trans "المستأجر" %}</th><th class="p-4">{% trans "رقم العقد" %}</th><th class="p-4">{% trans "عن شهر/سنة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th></tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4">{{ payment.payment_date|date:"d M Y" }}</td>
+                <td class="p-4">{{ payment.lease.tenant.name }}</td>
+                <td class="p-4">{{ payment.lease.contract_number }}</td>
+                <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
+                <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
+                <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

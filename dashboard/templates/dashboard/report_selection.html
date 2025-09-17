@@ -1,27 +1,24 @@
 {% extends 'dashboard/base.html' %}
-{% load custom_filters %}
-
-{% block title %}اختيار التقرير{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "التقارير" %}{% endblock %}
 {% block content %}
-<h2 class="text-3xl font-bold text-gray-800 mb-6">طباعة التقارير المالية</h2>
-<div class="card p-8 max-w-lg mx-auto">
-    <h3 class="text-xl font-bold mb-4">تقرير الأرباح والخسائر الشهري</h3>
-    <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank">
-        <div class="flex items-end gap-4">
-            <div class="flex-1">
-                <label for="month" class="block mb-2">الشهر</label>
-                <select name="month" id="month" class="w-full p-2 border rounded-md">
-                    {% for i in 12|get_range %}
-                        <option value="{{ i }}">{{ i }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="flex-1">
-                <label for="year" class="block mb-2">السنة</label>
-                <input type="number" name="year" id="year" value="2025" class="w-full p-2 border rounded-md">
-            </div>
-            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">إنشاء التقرير</button>
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "إنشاء التقارير" %}</h2>
+<div class="card p-8">
+    <h3 class="text-xl font-bold mb-4">{% trans "تقرير الأرباح والخسائر الشهري" %}</h3>
+    <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse">
+        <div>
+            <label for="year" class="block mb-1">{% trans "السنة" %}</label>
+            <input type="number" name="year" id="year" value="{% now 'Y' %}" class="p-2 border rounded-md" required>
         </div>
+        <div>
+            <label for="month" class="block mb-1">{% trans "الشهر" %}</label>
+            <select name="month" id="month" class="p-2 border rounded-md" required>
+                {% for i in "123456789012"|make_list %}
+                <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "إنشاء" %}</button>
     </form>
 </div>
 {% endblock %}

@@ -1,9 +1,16 @@
 {% extends 'dashboard/base.html' %}
-{% block title %}تأكيد الحذف{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "تأكيد حذف المستند" %}{% endblock %}
 {% block content %}
 <div class="card max-w-lg mx-auto p-8 text-center">
-<h2 class="text-2xl font-bold mb-4">تأكيد حذف المستند</h2>
-<p class="text-gray-600 mb-6">هل أنت متأكد من رغبتك في حذف المستند: <strong>"{{ object.title }}"</strong>؟ لا يمكن التراجع عن هذا الإجراء.</p>
-<form method="post">{% csrf_token %}<div class="flex justify-center gap-4"><a href="{% url 'lease_detail' object.lease.pk %}" class="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg">إلغاء</a><button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700">نعم، قم بالحذف</button></div></form>
+    <h2 class="text-2xl font-bold mb-4">{% trans "تأكيد حذف المستند" %}</h2>
+    <p class="mb-6">{% blocktrans with doc_title=object.title %}سيتم حذف المستند "<strong>{{ doc_title }}</strong>" بشكل نهائي.{% endblocktrans %}</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-center space-x-4 rtl:space-x-reverse">
+            <a href="{% url 'lease_detail' object.lease.pk %}" class="bg-gray-200 py-2 px-6 rounded-lg">{% trans "إلغاء" %}</a>
+            <button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-lg">{% trans "نعم، قم بالحذف" %}</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
