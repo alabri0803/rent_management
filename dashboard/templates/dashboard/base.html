@@ -1,103 +1,43 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}نظام إدارة الإيجارات - لوحة التحكم{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap')
-       body {
-         font-family: 'Tajawal', sans-serif;
-         background-color: #f7fafc;
-      }
-      :root {
-        --primary-color: #993333;
-        --secondary-color: #D4AF37;
-      }
-      .sidebar {
-        background-color: #1a202c;
-      }
-      .sidebar nav a {
-        color: #a0aec0;
-        transition: all 0.2s;
-      }
-      .sidebar nav a:hover, .sidebar nav a.active {
-        background-color: var(--primary-color);
-        color: white;
-      }
-      .btn-primary {
-        background-color: var(--primary-color);
-        color: white;
-        transition: background-color 0.3s;
-      }
-      .btn-primary:hover {
-        background-color: #7c2a2a;
-      }
-      .card {
-        background-color: white;
-        border-radius:0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)
-        border: 1px solid #e5e7eb;
-      }
-      .status-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-      }
-      .status-active {
-        background-color: #dcfce7;
-        color: #166534;
-      }
-      .status-expiring {
-        background-color: #fef9c3;
-        color: #854d0e;
-      }
-      .status-expired {
-        background-color: #fee2e2;
-        color: #991b1b;
-      }
-      .status-canceled {
-        background-color: #e5e7eb;
-        color: #374151;
-      }
-    </style>
-  </head>
-  <body class="text-gray-700">
-    <div class="flex h-screen">
-      <aside class="sidebar w-64 p-6 text-white flex-shrink-0">
-        <div class="text-center mb-10">
-          <h1 class="text-2xl font-bold">نظام إدارة الإيجارات</h1>
-          <p class="text-sm text-gray-400">نسخة ١.٠</p>
-        </div>
-        <nav>
-          <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'lease_list' or request.resolver_match.url_name == 'lease_detail' %}active{% endif %}">لوحة المعلومات</a>
-          <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
-                طلبات الصيانة
-              </a>
-            <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">إدارة المصاريف</a>
-           <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">التقارير</a>
-        </nav>
-        <div class="mt-auto">
-          <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="w-full text-left py-3 px-4 rounded-lg mb-2 text-gray-400 hover:bg-red-800 hover:text-white">تسجيل الخروج</button>
-          </form>
-        </div>
-      </aside>
-        <main class="flex-1 overflow-y-auto p-8">
-          {% if messages %}
-            {% for message in messages %}
-          <div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
-            {{ message }}
-          </div>
-            {% endfor %}
-          {% endif %}
-          {% block content %}{% endblock %}
-          </main>
-        </div>
-    </body>
-    </html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {% trans "نظام إدارة الإيجارات" %}</title>
+    <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
+    body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
+    :root { --primary-color: #993333; --secondary-color: #D4AF37; } .sidebar { background-color: #1a202c; } 
+    .sidebar nav a { color: #a0aec0; transition: all 0.2s; } .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
+    .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
+    .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; } .btn-primary:hover { background-color: #7c2a2a; } 
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; } 
+    .status-active { background-color: #dcfce7; color: #166534; } .status-expiring { background-color: #fef9c3; color: #854d0e; } 
+    .status-expired { background-color: #fee2e2; color: #991b1b; } .status-cancelled { background-color: #e5e7eb; color: #374151; }</style>
+</head>
+<body class="text-gray-700">
+<div class="flex h-screen">
+<aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col">
+    <div class="text-center mb-10"><h1 class="text-2xl font-bold">{% trans "إدارة الإيجارات" %}</h1><p class="text-sm text-gray-400">{% trans "نسخة" %} 1.1</p></div>
+    <nav>
+        <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
+        <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "طلبات الصيانة" %}</a>
+        <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة المصاريف" %}</a>
+        <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
+    </nav>
+    <div class="mt-auto">
+        <form action="{% url 'set_language' %}" method="post" class="mb-4">{% csrf_token %}<input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
+        <select name="language" onchange="this.form.submit()" class="w-full bg-gray-700 text-white p-2 rounded-md">
+            {% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}
+            {% for lang_code, lang_name in LANGUAGES %}<option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>{% endfor %}
+        </select></form>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-gray-400 hover:bg-red-800 hover:text-white">{% trans "تسجيل الخروج" %}</button></form>
+    </div>
+</aside>
+<main class="flex-1 overflow-y-auto p-8">
+    {% if messages %}{% for message in messages %}<div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>{% endfor %}{% endif %}
+    {% block content %}{% endblock %}
+</main>
+</div>
+</body>
+</html>
