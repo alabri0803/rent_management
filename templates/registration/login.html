@@ -1,22 +1,20 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; } :root { --primary-color: #993333; } .btn-primary { background-color: var(--primary-color); color: white; } .btn-primary:hover { background-color: #7c2a2a; }</style>
-</head>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{% trans "تسجيل الدخول" %}</title><script src="https://cdn.tailwindcss.com"></script>
+<style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
+body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f1f5f9; } 
+:root { --primary-color: #993333; } .btn-primary { background-color: var(--primary-color); color: white; } .btn-primary:hover { background-color: #7c2a2a; }</style></head>
 <body class="flex items-center justify-center min-h-screen">
 <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-<h1 class="text-3xl font-bold text-center text-[var(--primary-color)] mb-2">نظام إدارة الإيجارات</h1>
-<p class="text-center text-gray-500 mb-8">تسجيل الدخول</p>
-{% if form.errors %}<p class="text-red-500 text-sm mb-4 text-center">اسم المستخدم أو كلمة المرور غير صحيحة.</p>{% endif %}
-<form method="post">
-{% csrf_token %}
-<div class="mb-4"><label for="id_username" class="block mb-2">اسم المستخدم</label><input type="text" name="username" id="id_username" class="w-full p-2 border rounded-md"></div>
-<div class="mb-6"><label for="id_password" class="block mb-2">كلمة المرور</label><input type="password" name="password" id="id_password" class="w-full p-2 border rounded-md"></div>
-<button type="submit" class="w-full btn-primary py-2 rounded-lg font-semibold">دخول</button>
-</form>
+    <h1 class="text-3xl font-bold text-center text-[var(--primary-color)] mb-2">{% trans "نظام إدارة الإيجارات" %}</h1>
+    <p class="text-center text-gray-500 mb-8">{% trans "تسجيل الدخول" %}</p>
+    {% if form.errors %}<p class="text-red-500 text-sm mb-4 text-center">{% trans "اسم المستخدم أو كلمة المرور غير صحيحة." %}</p>{% endif %}
+    <form method="post">{% csrf_token %}
+        <div class="mb-4"><label for="id_username" class="block mb-2">{% trans "اسم المستخدم" %}</label><input type="text" name="username" id="id_username" class="w-full p-2 border rounded-md"></div>
+        <div class="mb-6"><label for="id_password" class="block mb-2">{% trans "كلمة المرور" %}</label><input type="password" name="password" id="id_password" class="w-full p-2 border rounded-md"></div>
+        <button type="submit" class="w-full btn-primary py-2 rounded-lg font-semibold">{% trans "دخول" %}</button>
+    </form>
 </div>
 </body>
 </html>
