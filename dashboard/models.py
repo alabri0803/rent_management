@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from decimal import Decimal
 import datetime
+from django.db.models import Sum
 
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
@@ -64,7 +65,15 @@ class Lease(models.Model):
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
         self.update_status()
+        if self.pk:
+            unit = Unit.objects.get(pk=self.unit.pk)
+            if self.status in ['active', 'expiring_soon']:
+                unit.is_available = False
+            else:
+                unit.is_available = True
+            unit.save()
         super().save(*args, **kwargs)
+        
     def update_status(self):
         today = timezone.now().date()
         if self.status == 'cancelled': return
@@ -78,6 +87,23 @@ class Lease(models.Model):
         return 'cancelled'
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
+
+    def get_financial_summary(self):
+        today = timezone.now().date()
+        if today < self.start_date:
+            months_due = 0
+        else:
+            effective_end_date = min(today, self.end_date)
+            r = relativedelta(effective_end_date, self.start_date)
+            months_due = r.years * 12 + r.months + 1
+        total_due = self.monthly_rent * months_due
+        total_paid = self.payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        balance = total_due - total_paid
+        return {
+            'total_due': total_due,
+            'total_paid': total_paid,
+            'balance': balance
+        }
     def __str__(self):
         return f"{self.contract_number} - {self.tenant.name}"
 
