@@ -17,8 +17,9 @@ class PortalDashboardView(LoginRequiredMixin, TemplateView):
             context['tenant'] = tenant
             context['lease'] = lease
             if lease:
-                context['payments'] = lease.payments.all()
+                context['payment_summary'] = lease.get_payment_summary()
                 context['documents'] = lease.documents.all()
+                context['maintenance_requests'] = MaintenanceRequest.objects.filter(lease=lease).order_by('-reported_date')[:5]
         except Tenant.DoesNotExist:
             context['error'] = _("لا يوجد ملف مستأجر مرتبط بحسابك.")
         return context
