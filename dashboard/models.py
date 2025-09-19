@@ -66,12 +66,15 @@ class Lease(models.Model):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
         self.update_status()
         if self.pk:
-            unit = Unit.objects.get(pk=self.unit.pk)
+            old_lease = Lease.objects.get(pk=self.pk)
+            if old_lease.unit != self.unit:
+                old_lease.unit.is_available = True
+                old_lease.unit.save()
             if self.status in ['active', 'expiring_soon']:
-                unit.is_available = False
+                self.unit.is_available = False
             else:
-                unit.is_available = True
-            unit.save()
+                self.unit.is_available = True
+            self.unit.save()
         super().save(*args, **kwargs)
         
     def update_status(self):
@@ -88,22 +91,37 @@ class Lease(models.Model):
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
 
-    def get_financial_summary(self):
-        today = timezone.now().date()
-        if today < self.start_date:
-            months_due = 0
-        else:
-            effective_end_date = min(today, self.end_date)
-            r = relativedelta(effective_end_date, self.start_date)
-            months_due = r.years * 12 + r.months + 1
-        total_due = self.monthly_rent * months_due
-        total_paid = self.payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
-        balance = total_due - total_paid
-        return {
-            'total_due': total_due,
-            'total_paid': total_paid,
-            'balance': balance
-        }
+    def get_payment_summary(self):
+        summary = []
+        payments = self.payments.all().order_by('payment_for_year', 'payment_for_month')
+        current_date = self.start_date
+        while current_date <= self.end_date:
+            year, month = current_date.year, current_date.month
+            paid_for_month = payments.filter(payment_for_year=year, payment_for_month=month).aggregate(total=Sum('amount'))['total'] or 0
+            balance = self.monthly_rent - paid_for_month
+            status = 'due'
+            if paid_for_month >= self.monthly_rent:
+                status = 'paid'
+            elif paid_for_month > 0:
+                status = 'partial'
+            today = timezone.now().date()
+            if current_date.year > today.year or (current_date.year == today.year and current_date.month > today.month):
+                status = 'upcoming'
+            summary.append({
+                'month': month,
+                'year': year,
+                'month_name': _(current_date.strftime('%B')),
+                'rent_due': self.monthly_rent,
+                'amount_paid': paid_for_month,
+                'balance': balance,
+                'status': status
+            })
+            current_date += relativedelta(months=1)
+            return summary
+
+    def get_absolute_url(self):
+        return reverse('lease_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return f"{self.contract_number} - {self.tenant.name}"
 
