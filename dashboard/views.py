@@ -54,12 +54,17 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
             monthly_expenses_trend = Expense.objects.filter(expense_date__year=date.year, expense_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
             trend_chart['expense_data'].append(float(monthly_expenses_trend))
         context['trend_chart'] = trend_chart
-
-        # Recent Activities
         context['recent_payments'] = Payment.objects.order_by('-payment_date')[:5]
         context['recent_requests'] = MaintenanceRequest.objects.order_by('-reported_date')[:5]
-
+        total_units = Unit.objects.count()
+        occupied_units = Unit.objects.filter(is_available=False).count()
+        available_units = total_units - occupied_units
+        context['occupancy_chart'] = {
+            'labels': [_("متاح"), _("مستأجر")],
+            'data': [occupied_units, available_units],
+        }
         return context
+
 
 class LeaseListView(StaffRequiredMixin, ListView):
     model = Lease
@@ -105,7 +110,7 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['document_form'] = DocumentForm()
-        context['payments'] = self.object.payments.all()
+        context['paymnt_summary'] = self.get_payment_summary()
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
         return context
 
