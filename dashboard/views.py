@@ -110,7 +110,7 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['document_form'] = DocumentForm()
-        context['paymnt_summary'] = self.get_payment_summary()
+        context['paymnt_summary'] = self.object.get_payment_summary()
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
         return context
 

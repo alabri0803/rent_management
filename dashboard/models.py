@@ -117,7 +117,7 @@ class Lease(models.Model):
                 'status': status
             })
             current_date += relativedelta(months=1)
-            return summary
+        return summary
 
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
