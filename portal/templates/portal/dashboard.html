@@ -2,28 +2,103 @@
 {% load i18n %}
 {% block content %}
 <h2 class="text-2xl font-bold mb-4">{% trans "مرحباً بك،" %} {{ user.tenant.name }}!</h2>
+{% if error %}
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+    <strong class="font-bold">
+        {% trans "خطأ:" %}
+    </strong>
+    <span class="block sm:inline">
+        {{ error }}
+    </span>
+</div>
+{% endif %}
 {% if lease %}
 <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-    <h3 class="text-xl font-bold mb-4">{% trans "تفاصيل عقدك النشط" %}</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div><strong>{% trans "رقم العقد" %}:</strong><p>{{ lease.contract_number }}</p></div>
-        <div><strong>{% trans "الوحدة" %}:</strong><p>{{ lease.unit }}</p></div>
-        <div><strong>{% trans "الإيجار الشهري" %}:</strong><p>{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><strong>{% trans "تاريخ الانتهاء" %}:</strong><p>{{ lease.end_date|date:"d M Y" }}</p></div>
+    <h3 class="text-xl font-bold text-[#993333] border-p pb-2 mb-4">{% trans "تفاصيل عقدك النشط" %}</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div><span class="text-gray-500">{% trans "رقم العقد" %}:</span><p class="font-bold text-lg">{{ lease.contract_number }}</p></div>
+        <div><span class="text-gray-500">{% trans "الوحدة" %}:</span><p class="font-bold text-lg">{{ lease.unit }}</p></div>
+        <div><span class="text-gray-500">{% trans "الإيجار الشهري" %}:</span><p class="font-bold text-lg">{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><span class="text-gray-600">{% trans "تاريخ الانتهاء" %}:</span><p class="font-bold text-lg">{{ lease.end_date|date:"d M Y" }}</p></div>
     </div>
 </div>
+<div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h3 class="text-xl font-bold text-[#993333] border-p pb-2 mb-4">{% trans "الدفعات" %}</h3>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-start p-3 font-semibold">{% trans "الشهر/السنة" %}</th>
+                    <th class="text-start p-3 font-semibold">{% trans "الإيجار المستحق" %}</th>
+                    <th class="text-start p-3 font-semibold">{% trans "الرصيد المتبقي" %}</th>
+                    <th class="text-start p-3 font-semibold">{% trans "الحالة" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month in payment_summary %}
+                <tr class="border-b border-gray-50">
+                    <td class="p-3 font-mono">{{ month.month_name }} {{ month.year }}</td>
+                    <td class="p-3 font-mono">{{ month.rent_due|floatformat:2 }} {% trans "ر.ع" %}</td>
+                    <td class="p-3 font-mono text-green-700">{{ month.amount_paid|floatformat:2 }} {% trans "ر.ع" %}</td>
+                    <td class="p-3 font-mono {% if month.balance > 0 %}text-red-500 font-bold{% endif %}">{{ month.balance|floatformat:2 }} {% trans "ر.ع" %}</td>
+                    <td class="p-3">
+                        {% if month.status == 'paid' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{% trans "مدفوع" %}</span>
+                        {% elif month.status == 'partial' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{% trans "جزئي" %}</span>
+                        {% elif month.status == 'du' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">{% trans "مستحق" %}</span>
+                        {% elif month.status == 'upcoming' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{% trans "قادم" %}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-2 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="font-bold mb-2">{% trans "سجل الدفعات" %}</h3>
-        <ul>{% for payment in payments %}<li class="flex justify-between py-1"><span>{{ payment.payment_date|date:"d M Y" }}</span><span>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</span></li>{% empty %}<li>{% trans "لا توجد دفعات." %}</li>{% endfor %}</ul>
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-[#993333]">{% trans "طلب صيانة جديد" %}</h3>
+            <a href="{% url 'maintenance_list' %}" class="text-blue-600 hover:underline">{% trans "عرض جميع الطلبات" %}</a>
+        </div>
+        <ul class="space-y-3">
+            {% for req in maintenance_requests %}
+            <li class="flex justify-between items-center">
+                <div>
+                    <p class="font-semibold">{{ req.title }}</p>
+                    <p class="text-sm text-gray-500">{{ req.report_date|date:"d M Y" }}</p>
+                </div>
+                <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ req.get_status_display }}</span>
+            </li>
+            {% empty %}
+            <li class="text-gray-500">{% trans "لا توجد طلبات صيانة." %}</li>
+            {% endfor %}
+        </ul>
     </div>
     <div class="bg-white p-6 rounded-lg shadow-md">
-        <h3 class="font-bold mb-2">{% trans "المستندات" %}</h3>
-        <ul>{% for doc in documents %}<li class="py-1"><a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline">{{ doc.title }}</a></li>{% empty %}<li>{% trans "لا توجد مستندات." %}</li>{% endfor %}</ul>
+        <h3 class="text-xl font-bold text-[#993333] border-p pb-2 mb-4">{% trans "المستندات" %}</h3>
+        <ul class="space-y-2">{% for doc in documents %}<li class="bg-gray-50 hover:bg-gray-100 p-3 rounded-md"><a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                <svg xmlns="[http://www.w3.org/2000/svg] (http://www.w3.org/2000/svg)" class="h-5 w-5 me-2" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M4 2a8 8 0 100 16 8 8 0 000-16zM8 9a2 2 0 100-4 2 2 0 000 4zM9 11a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clip-rule="evenodd" /> </svg>
+            {{ doc.title }}
+            </a>
+            </li>
+            {% empty %}
+            <li class="text-center text-gray-500 py-4">{% trans "لا توجد مستندات." %}</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% else %}
-<p>{% trans "ليس لديك عقود نشطة حالياً." %}</p>
+<div class="bg-white p-8 rounded-lg shadow-md mb-8">
+    <h3 class="text-xl font-bold text-[#993333] border-p pb-2 mb-4">{% trans "لا بوحد نشط" %}</h3>
+    <p class="text-gray-500">{% trans "ليس لديك آي عقود إيجار نشطة مرتبطة بحسابك في الوقت الحالي." %}</p>
+</div>
 {% endif %}
-{% if error %}<p class="text-red-500">{{ error }}</p>{% endif %}
 {% endblock %}
