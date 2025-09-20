@@ -4,6 +4,8 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 import datetime
 from django.db.models import Sum
@@ -185,3 +187,20 @@ class Expense(models.Model):
         ordering = ['-expense_date']
     def __str__(self):
         return f"{self.get_category_display()} - {self.amount}"
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications', verbose_name=_("المستخدم"))
+    message = models.TextField(_("الرسالة"))
+    read = models.BooleanField(_("مقروءة"), default=False)
+    timestamp = models.DateTimeField(_("الوقت"), auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    related_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = _("إشعار")
+        verbose_name_plural = _("الإشعارات")
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return self.message

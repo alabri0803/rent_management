@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
@@ -53,3 +53,8 @@ class ExpenseAdmin(admin.ModelAdmin):
 
 # تسجيل نموذج المستندات (عرض افتراضي)
 admin.site.register(Document)
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'message', 'read', 'timestamp')
+    list_filter = ('read', 'user')
