@@ -1,10 +1,10 @@
 from django.urls import path
 from .views import (
-    LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease,
+    LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, cancel_lease,
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GeneratLeaseCancellationPFD, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView
 )
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path('lease/new/', LeaseCreateView.as_view(), name='lease_create'),
     path('lease/<int:pk>/edit/', LeaseUpdateView.as_view(), name='lease_update'),
     path('lease/<int:pk>/delete/', LeaseDeleteView.as_view(), name='lease_delete'),
+    path('lease/<int:pk>/cancel/', cancel_lease, name='lease_cancel'),
     path('lease/<int:pk>/renew/', renew_lease, name='lease_renew'),
     path('lease/<int:lease_pk>/documents/upload/', DocumentUploadView.as_view(), name='document_upload'),
     path('documents/<int:pk>/delete/', DocumentDeleteView.as_view(), name='document_delete'),
@@ -29,4 +30,5 @@ urlpatterns = [
     path('reports/', ReportSelectionView.as_view(), name='report_selection'),
     path('reports/tenant/<int:lease_pk>/', GenerateTenantStatementPDF.as_view(), name='report_tenant_statement'),
     path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='report_monthly_pl'),
+    path('reports/lease/<int:lease_pk>/cancellation-form/', GeneratLeaseCancellationPFD.as_view(), name='report_lease_cancellation'),
 ]

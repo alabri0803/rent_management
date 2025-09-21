@@ -1,32 +1,147 @@
-{% load i18n %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <style>
-        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
-        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .details { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .details td { padding: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: right; }
-        th { background-color: #f2f2f2; }
+        /* Use simple, standard fonts to avoid @font-face issues */
+        body {
+            font-family: 'Helvetica', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* Fallback for RTL languages - use a standard font */
+        .arabic-text {
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+        .bilingual-header { 
+            font-size: 16pt; 
+            font-weight: bold; 
+        }
+        .bilingual-header .en { 
+            font-size: 12pt; 
+            color: #555; 
+            display: block; 
+        }
+        .details { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        .details td { 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            text-align: right; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
+        .en-label { 
+            font-family: 'Helvetica', sans-serif; 
+            font-size: 0.8em; 
+            color: #666; 
+            display: block; 
+            direction: ltr; 
+            text-align: right;
+        }
     </style>
 </head>
 <body>
-    <div class="header"><h1>{% trans "كشف حساب مستأجر" %}</h1></div>
+    <div class="header">
+        <div class="bilingual-header">
+            <span class="arabic-text">كشف حساب مستأجر</span>
+            <span class="en">Tenant Statement</span>
+        </div>
+    </div>
+
     <table class="details">
-        <tr><td><strong>{% trans "المستأجر" %}:</strong></td><td>{{ lease.tenant.name }}</td><td><strong>{% trans "تاريخ الطباعة" %}:</strong></td><td>{{ today|date:"d M Y" }}</td></tr>
-        <tr><td><strong>{% trans "رقم العقد" %}:</strong></td><td>{{ lease.contract_number }}</td><td><strong>{% trans "الوحدة" %}:</strong></td><td>{{ lease.unit }}</td></tr>
-        <tr><td><strong>{% trans "فترة العقد" %}:</strong></td><td colspan="3">{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</td></tr>
+        <tr>
+            <td>
+                <strong>{% trans "المستأجر" %}:</strong><span class="en-label">Tenant:</span>
+            </td>
+            <td>{{ lease.tenant.name }}</td>
+            <td>
+                <strong>{% trans "تاريخ الطباعة" %}:</strong><span class="en-label">Print Date:</span>
+            </td>
+            <td>{{ today|date:"d M Y" }}</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>{% trans "رقم العقد" %}:</strong><span class="en-label">Contract No:</span>
+            </td>
+            <td>{{ lease.contract_number }}</td>
+            <td>
+                <strong>{% trans "الوحدة" %}:</strong><span class="en-label">Unit:</span>
+            </td>
+            <td>{{ lease.unit }}</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>{% trans "فترة العقد" %}:</strong><span class="en-label">Contract Period:</span>
+            </td>
+            <td colspan="3">{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</td>
+        </tr>
     </table>
-    <h3>{% trans "سجل الدفعات" %}</h3>
+
+    <h3>
+        <span class="arabic-text">{% trans "سجل الدفعات" %}</span>
+        <span class="en-label" style="font-size: 1em;">Payment History</span>
+    </h3>
+
     <table>
-        <thead><tr><th>{% trans "تاريخ الدفع" %}</th><th>{% trans "دفعة عن شهر/سنة" %}</th><th>{% trans "المبلغ" %}</th></tr></thead>
+        <thead>
+            <tr>
+                <th>{% trans "تاريخ الدفع" %}<span class="en-label">Payment Date</span></th>
+                <th>{% trans "دفعة عن شهر/سنة" %}<span class="en-label">For Month/Year</span></th>
+                <th>{% trans "المبلغ" %}<span class="en-label">Amount</span></th>
+            </tr>
+        </thead>
         <tbody>
-            {% for payment in payments %}<tr><td>{{ payment.payment_date|date:"d M Y" }}</td><td>{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</td></tr>{% endfor %}
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.payment_date|date:"d M Y" }}</td>
+                <td>{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
+                <td>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align: center;">
+                    <span class="arabic-text">{% trans "لا توجد دفعات مسجلة." %}</span>
+                    <span class="en-label">No payments recorded.</span>
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
+    <div class="signature-area">
+        <table style="border: none;">
+            <tr>
+                <td style="border: none; width: 50%; text-align: center;">
+                    <strong>{% trans "توقيع المستأجر" %}</strong>
+                    <span class="en-label">Tenant Signature</span>
+                    <div style="height: 50px; border-bottom: 1px dashed #000; margin-top: 10px;"></div>
+                </td>
+                <td style="border: none; width: 50%; text-align: center;">
+                    <strong>{% trans "توقيع المسؤول" %}</strong>
+                    <span class="en-label">Manager Signature</span>
+                    <div style="height: 50px; border-bottom: 1px dashed #000; margin-top: 10px;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

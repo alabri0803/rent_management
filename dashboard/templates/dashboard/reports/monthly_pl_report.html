@@ -1,21 +1,96 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><style>body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }</style></head>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face {
+            font-family: 'Tajawal';
+            src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
+        }
+        body { font-family: 'Tajawal', 'Inter', sans-serif; direction: rtl; text-align: right; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .bilingual-header { font-size: 16pt; font-weight: bold; }
+        .bilingual-header .en { font-size: 12pt; color: #555; display: block; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: right; }
+        th { background-color: #f2f2f2; }
+        .en-label { font-family: 'Inter', sans-serif; font-size: 0.8em; color: #666; display: block; direction: ltr; text-align: right;}
+        .total-row td { font-weight: bold; background-color: #f9f9f9; }
+        .net-profit { margin-top: 30px; background-color: #e8f5e9; padding: 15px; border: 1px solid #c8e6c9; font-size: 14pt; font-weight: bold;}
+    </style>
+</head>
 <body>
-    <div style="text-align:center;"><h1>{% trans "تقرير الأرباح والخسائر" %} - {% blocktrans with month=report_month year=report_year %}{{ month }}/{{ year }}{% endblocktrans %}</h1></div>
-    <h2>{% trans "الإيرادات" %}</h2>
+    <div class="header">
+        <div class="bilingual-header">
+            {% trans "تقرير الأرباح والخسائر" %} - {% blocktrans with month=report_month year=report_year %}{{ month }}/{{ year }}{% endblocktrans %}
+            <span class="en">Profit & Loss Statement - {{ report_month }}/{{ report_year }}</span>
+        </div>
+    </div>
+
+    <h2>{% trans "الإيرادات" %} / <span style="font-family: 'Inter', sans-serif;">Income</span></h2>
     <table style="width:100%; border-collapse: collapse;">
-        <thead><tr><th style="border:1px solid #ccc; padding:8px;">{% trans "التاريخ" %}</th><th style="border:1px solid #ccc; padding:8px;">{% trans "المستأجر" %}</th><th style="border:1px solid #ccc; padding:8px;">{% trans "المبلغ" %}</th></tr></thead>
-        <tbody>{% for item in income_list %}<tr><td style="border:1px solid #ccc; padding:8px;">{{ item.payment_date|date:"d M Y" }}</td><td style="border:1px solid #ccc; padding:8px;">{{ item.lease.tenant.name }}</td><td style="border:1px solid #ccc; padding:8px;">{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}</tbody>
-        <tfoot><tr><td colspan="2" style="font-weight:bold; padding:8px;">{% trans "إجمالي الإيرادات" %}</td><td style="font-weight:bold; padding:8px;">{{ total_income|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
+        <thead>
+            <tr>
+                <th>{% trans "التاريخ" %}<span class="en-label">Date</span></th>
+                <th>{% trans "المستأجر" %}<span class="en-label">Tenant</span></th>
+                <th>{% trans "المبلغ" %}<span class="en-label">Amount</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in income_list %}
+            <tr>
+                <td>{{ item.payment_date|date:"d M Y" }}</td>
+                <td>{{ item.lease.tenant.name }}</td>
+                <td>{{ item.amount|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" style="text-align:center;">{% trans "لا توجد إيرادات." %}<span class="en-label">No income.</span></td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2">{% trans "إجمالي الإيرادات" %} / <span style="font-family: 'Inter', sans-serif;">Total Income</span></td>
+                <td>{{ total_income|floatformat:2 }} {% trans "ر.ع" %}</td>
+            </tr>
+        </tfoot>
     </table>
-    <h2 style="margin-top: 30px;">{% trans "المصاريف" %}</h2>
+
+    <h2 style="margin-top: 30px;">{% trans "المصاريف" %} / <span style="font-family: 'Inter', sans-serif;">Expenses</span></h2>
     <table style="width:100%; border-collapse: collapse;">
-         <thead><tr><th style="border:1px solid #ccc; padding:8px;">{% trans "التاريخ" %}</th><th style="border:1px solid #ccc; padding:8px;">{% trans "الوصف" %}</th><th style="border:1px solid #ccc; padding:8px;">{% trans "المبلغ" %}</th></tr></thead>
-        <tbody>{% for item in expenses_list %}<tr><td style="border:1px solid #ccc; padding:8px;">{{ item.expense_date|date:"d M Y" }}</td><td style="border:1px solid #ccc; padding:8px;">{{ item.description }}</td><td style="border:1px solid #ccc; padding:8px;">{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}</tbody>
-        <tfoot><tr><td colspan="2" style="font-weight:bold; padding:8px;">{% trans "إجمالي المصاريف" %}</td><td style="font-weight:bold; padding:8px;">{{ total_expenses|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
+        <thead>
+            <tr>
+                <th>{% trans "التاريخ" %}<span class="en-label">Date</span></th>
+                <th>{% trans "الوصف" %}<span class="en-label">Description</span></th>
+                <th>{% trans "المبلغ" %}<span class="en-label">Amount</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in expenses_list %}
+            <tr>
+                <td>{{ item.expense_date|date:"d M Y" }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.amount|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" style="text-align:center;">{% trans "لا توجد مصاريف." %}<span class="en-label">No expenses.</span></td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2">{% trans "إجمالي المصاريف" %} / <span style="font-family: 'Inter', sans-serif;">Total Expenses</span></td>
+                <td>{{ total_expenses|floatformat:2 }} {% trans "ر.ع" %}</td>
+            </tr>
+        </tfoot>
     </table>
-    <h2 style="margin-top: 30px; background-color: #f2f2f2; padding: 10px;">{% trans "صافي الربح" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}</h2>
+
+    <div class="net-profit">
+        {% trans "صافي الربح" %} / <span style="font-family: 'Inter', sans-serif;">Net Profit</span>:
+        {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}
+    </div>
 </body>
 </html>

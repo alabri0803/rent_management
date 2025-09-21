@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+from django.http import HttpResponseNotAllowed
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
@@ -112,6 +113,7 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
         context['document_form'] = DocumentForm()
         context['paymnt_summary'] = self.object.get_payment_summary()
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
+        context['payments'] = self.object.payments.all()
         return context
 
 class LeaseCreateView(StaffRequiredMixin, CreateView):
@@ -132,6 +134,23 @@ class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     model = Lease; template_name = 'dashboard/lease_confirm_delete.html'; success_url = reverse_lazy('lease_list')
     def form_valid(self, form):
         messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def cancel_lease(request, pk):
+    if request.method != 'POST': 
+        return HttpResponseNotAllowed(['POST'])
+
+    lease = get_object_or_404(Lease, pk=pk)
+
+    if lease.status == 'cancelled':
+        messages.error(request, _("هذا العقد تم إلغاؤه بالفعل."))
+    else:
+        lease.status = 'cancelled'
+        lease.save()
+        messages.success(request, _("تم إلغاء العقد بنجاح."))
+
+    return redirect('lease_detail', pk=pk)
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -222,6 +241,16 @@ class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
             'report_month': month, 'report_year': year,
         }
         return render_to_pdf('dashboard/reports/monthly_pl_report.html', context)
+
+class GeneratLeaseCancellationPFD(StaffRequiredMixin, View):
+    def get(self, request, lease_pk, *args, **kwargs):
+        lease = get_object_or_404(Lease, pk=lease_pk)
+        context = {
+            'lease': lease,
+            'landlord': 'Your Company Name',
+            'today': timezone.now(),
+        }
+        return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
 
 class PaymentListView(StaffRequiredMixin, ListView):
     model = Payment; template_name = 'dashboard/payment_list.html'; context_object_name = 'payments'; paginate_by = 20
