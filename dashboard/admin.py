@@ -1,9 +1,10 @@
 from django.contrib import admin
 from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from modeltranslation.admin import TabbedTranslationAdmin
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
-class BuildingAdmin(admin.ModelAdmin):
+class BuildingAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'address')
     search_fields = ('name',)
 
@@ -15,7 +16,7 @@ class UnitAdmin(admin.ModelAdmin):
 
 # تخصيص عرض المستأجرين
 @admin.register(Tenant)
-class TenantAdmin(admin.ModelAdmin):
+class TenantAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
     list_filter = ('tenant_type',)
     search_fields = ('name', 'phone', 'email')
@@ -45,7 +46,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 
 # تخصيص عرض المصاريف
 @admin.register(Expense)
-class ExpenseAdmin(admin.ModelAdmin):
+class ExpenseAdmin(TabbedTranslationAdmin):
     list_display = ('description', 'building', 'category', 'amount', 'expense_date')
     list_filter = ('category', 'building')
     search_fields = ('description',)
