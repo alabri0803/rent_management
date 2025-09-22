@@ -11,13 +11,13 @@
             <span class="status-badge status-{{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
         </div>
         <div class="flex space-x-2 rtl:space-x-reverse">
+            {% if lease.status != 'canceled' and lease.status != 'expired' %}
             <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
             <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
-            {% if lease.status != 'canceled' %}
-            <button onclick="document.getElementById('cancelModal').classList.remove('hidden')" 
-                    class="bg-orange-500 text-white py-2 px-4 rounded-lg">
-                {% trans "إلغاء العقد" %}
-            </button>
+            <form action="{% url 'lease_cancel' lease.pk %}" method="post" onsubmit="return confirm('{% trans "هل أنت متأكد من  رغبتك في الغاء هذا العقد؟" %}');">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</button>
+            </form>
             {% endif %}
             <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
         </div>
@@ -30,10 +30,11 @@
         <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
         <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
-        {% if lease.status == 'canceled' %}
-        <div><a href="{% url 'report_cancellation' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة استمارة الإلغاء" %} &rarr;</a>
-        </div>
-        {% endif %}
+        <div>
+                <a href="{% url 'generate_lease_cancellation_pdf' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">
+                    {% trans "طباعة استمارة الإلغاء" %} &rarr;
+                </a>
+            </div>
     </div>
 </div>
 
@@ -69,28 +70,6 @@
             <li class="text-center text-gray-500">{% trans "لا توجد مستندات مرفقة." %}</li>
             {% endfor %}
         </ul>
-    </div>
-</div>
-<div id="cancelModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">{% trans "تأكيد إلغاء العقد" %}</h3>
-        <div class="mt-2 px-4 py-3">
-            <p class="text-sm text-gray-500">
-                {% trans "هل أنت متأكد من أنك تريد إلغاء هذا العقد؟ سيتم تحديث الحالة إلى ملغي وستصبح الوحدة متاحة للإيجار. لا يمكن التراجع عن هذا الإجراء." %}
-            </p>
-        </div>
-        <div class="items-center px-4 py-3 space-x-4 rtl:space-x-reverse">
-            <button onclick="document.getElementById('cancelModal').classList.add('hidden')" 
-                    class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-300">
-                {% trans "تراجع" %}
-            </button>
-            <form action="{% url 'lease_cancel' lease.pk %}" method="post" class="inline">
-                {% csrf_token %}
-                <button type="submit" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-orange-600">
-                    {% trans "نعم، قم بالإلغاء" %}
-                </button>
-            </form>
-        </div>
     </div>
 </div>
 {% endblock %}

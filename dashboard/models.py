@@ -66,17 +66,19 @@ class Lease(models.Model):
         verbose_name_plural = _("عقود الإيجار")
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
-        self.update_status()
-        if self.pk:
+        if self.status != 'cancelled':
+            self.update_status()
+        is_new = self._state.adding
+        if not is_new:
             old_lease = Lease.objects.get(pk=self.pk)
             if old_lease.unit != self.unit:
                 old_lease.unit.is_available = True
                 old_lease.unit.save()
-            if self.status in ['active', 'expiring_soon']:
-                self.unit.is_available = False
-            else:
-                self.unit.is_available = True
-            self.unit.save()
+        if self.status in ['active', 'expiring_soon']:
+            self.unit.is_available = False
+        else:
+            self.unit.is_available = True
+        self.unit.save()
         super().save(*args, **kwargs)
         
     def update_status(self):
@@ -85,6 +87,14 @@ class Lease(models.Model):
         if self.end_date < today: self.status = 'expired'
         elif self.end_date - relativedelta(months=1) <= today: self.status = 'expiring_soon'
         else: self.status = 'active'
+
+    def cancel_lease(self):
+        if self.status != 'cancelled':
+            self.status = 'cancelled'
+            self.unit.is_available = True
+            self.unit.save()
+            self.save()
+            
     def get_status_color(self):
         if self.status == 'active': return 'active'
         if self.status == 'expiring_soon': return 'expiring'

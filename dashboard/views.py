@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponse
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
@@ -133,23 +133,17 @@ class LeaseUpdateView(StaffRequiredMixin, UpdateView):
 class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     model = Lease; template_name = 'dashboard/lease_confirm_delete.html'; success_url = reverse_lazy('lease_list')
     def form_valid(self, form):
+        self.object.unit.is_available = True;
+        self.object.unit.save();
         messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def cancel_lease(request, pk):
-    if request.method != 'POST': 
-        return HttpResponseNotAllowed(['POST'])
-
+def cancel_lease_view(request, pk):
     lease = get_object_or_404(Lease, pk=pk)
-
-    if lease.status == 'cancelled':
-        messages.error(request, _("هذا العقد تم إلغاؤه بالفعل."))
-    else:
-        lease.status = 'cancelled'
-        lease.save()
+    if request.method == 'POST':
+        lease.cancel_lease()
         messages.success(request, _("تم إلغاء العقد بنجاح."))
-
     return redirect('lease_detail', pk=pk)
 
 @login_required
@@ -221,7 +215,7 @@ class ReportSelectionView(StaffRequiredMixin, View):
 class GenerateTenantStatementPDF(StaffRequiredMixin, View):
     def get(self, request, lease_pk, *args, **kwargs):
         lease = get_object_or_404(Lease, pk=lease_pk)
-        context = {'lease': lease, 'payments': lease.payments.all(), 'today': timezone.now()}
+        context = {'lease': lease, 'payments': lease.payments.all(), 'today': timezone.now(), 'landlord': _("اسم لمؤجر"),}
         return render_to_pdf('dashboard/reports/tenant_statement.html', context)
 
 class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
@@ -247,11 +241,23 @@ class GeneratLeaseCancellationPFD(StaffRequiredMixin, View):
         lease = get_object_or_404(Lease, pk=lease_pk)
         context = {
             'lease': lease,
-            'landlord': 'Your Company Name',
+            'landlord': _("اسم لمؤجر"),
             'today': timezone.now(),
         }
-        return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
+        pdf = render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
+        return HttpResponse(pdf, content_type='application/pdf')
 
+def generate_lease_cancellation_pdf(request, lease_pk):
+    lease = get_object_or_404(Lease, pk=lease_pk)
+
+    context = {
+        'today': timezone.now().date(),
+        'landlord_name': 'اسم المؤجر',  # استبدل بقيمة مناسبة
+        'lease': lease,
+    }
+
+    return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
+        
 class PaymentListView(StaffRequiredMixin, ListView):
     model = Payment; template_name = 'dashboard/payment_list.html'; context_object_name = 'payments'; paginate_by = 20
 
