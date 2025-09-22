@@ -1,0 +1,1 @@
+web: gunicorn rent_management.wsgi
