@@ -30,7 +30,7 @@ urlpatterns += i18n_patterns(
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('', include('portal.urls')), # Portal is the homepage
-    prefix_default_language=True # Don't prefix the default language (ar)
+    prefix_default_language=False # Don't prefix the default language (ar)
 )
 
 # Serve media files during development
