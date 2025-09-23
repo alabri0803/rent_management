@@ -8,12 +8,32 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from google.cloud import translate_v2 as translate
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+@require_POST
+def translate_text_test(request):
+    try:
+        import json
+        date = json.loads(request.body)
+        text_to_translate = date.get('text', '')
+        target_language = date.get('target_language', 'en')
+        if not text_to_translate:
+            return JsonResponse({'translate_text_test': ''})
+        translate_client = translate.Client()
+        result = translate_client.translate(text_to_translate, target_language=target_language)
+        translated_text = result['translatedText']
+        return JsonResponse({'translate_text_test': translated_text})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -133,8 +153,8 @@ class LeaseUpdateView(StaffRequiredMixin, UpdateView):
 class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     model = Lease; template_name = 'dashboard/lease_confirm_delete.html'; success_url = reverse_lazy('lease_list')
     def form_valid(self, form):
-        self.object.unit.is_available = True;
-        self.object.unit.save();
+        self.object.unit.is_available = True
+        self.object.unit.save()
         messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
 
 @login_required

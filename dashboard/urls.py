@@ -4,7 +4,7 @@ from .views import (
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GeneratLeaseCancellationPFD, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, generate_lease_cancellation_pdf
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GeneratLeaseCancellationPFD, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, generate_lease_cancellation_pdf, translate_text_test
 )
 
 urlpatterns = [
@@ -32,4 +32,5 @@ urlpatterns = [
     path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='report_monthly_pl'),
     path('reports/lease/<int:lease_pk>/cancellation-form/', GeneratLeaseCancellationPFD.as_view(), name='report_lease_cancellation'),
     path('generate_lease_cancellation_pdf/<int:lease_pk>/', generate_lease_cancellation_pdf, name='generate_lease_cancellation_pdf'),
+    path('api/translate/', translate_text_test, name='api_translate'),
 ]

@@ -7,6 +7,8 @@ from modeltranslation.admin import TabbedTranslationAdmin
 class BuildingAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'address')
     search_fields = ('name',)
+    class Media:
+        js = ('js/admin_translate.js',)
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
@@ -20,6 +22,8 @@ class TenantAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
     list_filter = ('tenant_type',)
     search_fields = ('name', 'phone', 'email')
+    class Media:
+        js = ('js/admin_translate.js',)
 
 # تخصيص عرض العقود
 @admin.register(Lease)
@@ -51,6 +55,8 @@ class ExpenseAdmin(TabbedTranslationAdmin):
     list_filter = ('category', 'building')
     search_fields = ('description',)
     date_hierarchy = 'expense_date'
+    class Media:
+        js = ('js/admin_translate.js',)
 
 # تسجيل نموذج المستندات (عرض افتراضي)
 admin.site.register(Document)
