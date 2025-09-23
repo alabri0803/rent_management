@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
-from decouple import config
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-rm=85vc+pgs=^4+m+=d*32)+j7xx*_5t%amcq(=d7iz5q8zp^e'
-GOOGLE_API_KEY = 'AIzaSyDE-K_ANbT3rESnACBnqHY77gJGZlZ290Q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'solo',
     'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,7 +46,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -72,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'dashboard.context_processors.company_details',
             ],
         },
     },
@@ -90,8 +88,7 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -152,8 +149,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #CSRF_TRUSTED_ORIGINS = [
     #"https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
 #]
-LOGIN_REDIRECT_URL = '/router/'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
-if 'DYNO' in os.environ:  # Check if running on Heroku
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

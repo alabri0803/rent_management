@@ -2,6 +2,16 @@ from django import forms
 from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class StaffUserCreationForm(UserCreationForm):
+    is_staff = forms.BooleanField(label=_("موظف(وصول للوحة التحكم)"), required=False)
+    is_superuser = forms.BooleanField(label=_("مشرف(وصول كامل)"), required=False)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email', 'is_staff', 'is_superuser')
 
 class LeaseForm(forms.ModelForm):
     class Meta:

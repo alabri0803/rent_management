@@ -9,31 +9,27 @@ from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from google.cloud import translate_v2 as translate
+from num2words import num2words
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, StaffUserCreationForm
+from django.contrib.auth.models import User
 from .utils import render_to_pdf
 
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-@require_POST
-def translate_text_test(request):
-    try:
-        import json
-        date = json.loads(request.body)
-        text_to_translate = date.get('text', '')
-        target_language = date.get('target_language', 'en')
-        if not text_to_translate:
-            return JsonResponse({'translate_text_test': ''})
-        translate_client = translate.Client()
-        result = translate_client.translate(text_to_translate, target_language=target_language)
-        translated_text = result['translatedText']
-        return JsonResponse({'translate_text_test': translated_text})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+class StaffUserCreateView(StaffRequiredMixin, CreateView):
+    model = User
+    form_class = StaffUserCreationForm
+    template_name = 'dashboard/staff_user_form.html'
+    success_url = reverse_lazy('dashboard_home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة مستخدم جديد (فريق العمل)")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تمت إنشاء المستخدم بنجاح!"))
+        return super().form_valid(form)
 
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

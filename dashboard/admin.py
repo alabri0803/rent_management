@@ -1,21 +1,17 @@
 from django.contrib import admin
-from .models import Companyfile, Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from .models import CompanyProfile, Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
 from modeltranslation.admin import TabbedTranslationAdmin
+from solo.admin import SingletonModelAdmin
 
-@admin.register(Companyfile)
-class CompanyfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'phone', 'email')
-
-    def has_add_permission(self, request):
-        return Companyfile.objects.count() == 0
+@admin.register(CompanyProfile)
+class CompanyProfileAdmin(SingletonModelAdmin):
+    pass
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
 class BuildingAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'address')
     search_fields = ('name',)
-    class Media:
-        js = ('js/admin_translate.js',)
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
@@ -29,8 +25,6 @@ class TenantAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
     list_filter = ('tenant_type',)
     search_fields = ('name', 'phone', 'email')
-    class Media:
-        js = ('js/admin_translate.js',)
 
 # تخصيص عرض العقود
 @admin.register(Lease)
@@ -62,8 +56,6 @@ class ExpenseAdmin(TabbedTranslationAdmin):
     list_filter = ('category', 'building')
     search_fields = ('description',)
     date_hierarchy = 'expense_date'
-    class Media:
-        js = ('js/admin_translate.js',)
 
 # تسجيل نموذج المستندات (عرض افتراضي)
 admin.site.register(Document)

@@ -7,20 +7,18 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
-import datetime
 from django.db.models import Sum
-from django.conf import settings
+from solo.models import SingletonModel
 
-class Companyfile(models.Model):
+class CompanyProfile(SingletonModel):
     name = models.CharField(_("اسم الشركة"), max_length=200)
-    logo = models.ImageField(_("شعار الشركة"), upload_to='company_logos/')
+    logo = models.ImageField(_("شعار الشركة"), upload_to='company_logos/', blank=True, null=True)
     address = models.TextField(_("العنوان"), blank=True, null=True)
     phone = models.CharField(_("رقم الهاتف"), max_length=50, blank=True, null=True)
     email = models.EmailField(_("البريد الإلكتروني"), blank=True, null=True)
 
     class Meta:
-        verbose_name = _("ملف الشركة")
-        verbose_name_plural = _("ملفات الشركة")
+        verbose_name = _("بيانات الشركة")
 
     def __str__(self):
         return self.name
@@ -28,8 +26,6 @@ class Companyfile(models.Model):
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
     address = models.TextField(_("العنوان"))
-    logo = models.ImageField(_("شعار المبنى(اختياري)"), upload_to='building_logos/', blank=True, null=True)
-    
     class Meta:
         verbose_name = _("مبنى")
         verbose_name_plural = _("المباني")
