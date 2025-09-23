@@ -1,6 +1,13 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from .models import Companyfile, Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
 from modeltranslation.admin import TabbedTranslationAdmin
+
+@admin.register(Companyfile)
+class CompanyfileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'phone', 'email')
+
+    def has_add_permission(self, request):
+        return Companyfile.objects.count() == 0
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
