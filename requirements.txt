@@ -9,6 +9,7 @@ cffi==2.0.0
 charset-normalizer==3.4.3
 cryptography==45.0.7
 cssselect2==0.8.0
+dj-database-url==3.0.1
 Django==5.2.5
 django-modeltranslation==0.19.17
 fonttools==4.60.0
@@ -36,6 +37,7 @@ packaging==25.0
 pillow==11.3.0
 proto-plus==1.26.1
 protobuf==6.32.1
+psycopg2-binary==2.9.10
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.23
