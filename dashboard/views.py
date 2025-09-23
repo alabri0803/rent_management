@@ -16,11 +16,6 @@ from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, Paymen
 from django.contrib.auth.models import User
 from .utils import render_to_pdf
 
-# Mixin for Staff Users
-class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_staff
-
 class StaffUserCreateView(StaffRequiredMixin, CreateView):
     model = User
     form_class = StaffUserCreationForm
@@ -35,6 +30,11 @@ class StaffUserCreateView(StaffRequiredMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, _("تمت إنشاء المستخدم بنجاح!"))
         return super().form_valid(form)
+
+# Mixin for Staff Users
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
 
 # --- Dashboard Home ---
 class DashboardHomeView(StaffRequiredMixin, ListView):
