@@ -10,10 +10,6 @@
     <table class="w-full text-start">
         <thead class="bg-gray-50 border-b">
             <tr><th class="p-4">{% trans "تاريخ الدفع" %}</th><th class="p-4">{% trans "المستأجر" %}</th><th class="p-4">{% trans "رقم العقد" %}</th><th class="p-4">{% trans "عن شهر/سنة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th>
-                <td>
-                    <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{% url 'voucher_payment' payment.pk %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة سند" %}</a>
-                </td>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +20,9 @@
                 <td class="p-4">{{ payment.lease.contract_number }}</td>
                 <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
                 <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
-                <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a></td>
+                <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
+                    <a href="{% url 'voucher_payment' payment.pk %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة سند" %}</a>
+                </td>
             </tr>
             {% empty %}
             <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>

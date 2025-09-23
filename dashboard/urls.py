@@ -33,6 +33,6 @@ urlpatterns = [
     path('reports/lease/<int:lease_pk>/cancellation-form/', GeneratLeaseCancellationPFD.as_view(), name='report_lease_cancellation'),
     path('generate_lease_cancellation_pdf/<int:lease_pk>/', generate_lease_cancellation_pdf, name='generate_lease_cancellation_pdf'),
     path('staff/new/', StaffUserCreateView.as_view(), name='staff_create'),
-    path('vouchers/payment/<int:pk>/', GeneratePaymentVoucherPDF.as_view(), name='generate_payment_voucher'),
+    path('vouchers/payment/<int:pk>/', GeneratePaymentVoucherPDF.as_view(), name='voucher_payment'),
     path('vouchers/expense/<int:pk>/', GenerateExpenseVoucherPDF.as_view(), name='generate_expense_voucher'),
 ]

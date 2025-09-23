@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <style>
         /* Use simple, standard fonts to avoid @font-face issues */
-        body {
-            font-family: 'Helvetica', sans-serif;
+        @font-face {
+            font-family: 'Amiri';
+            src: url('{% static "fonts/Amiri-Regular.ttf" %}');
+          }
+          body {
+            font-family: 'Amiri', sans-serif;
             direction: rtl;
             text-align: right;
-        }
+          }
 
         /* Fallback for RTL languages - use a standard font */
         .arabic-text {

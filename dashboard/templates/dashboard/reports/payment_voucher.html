@@ -7,26 +7,78 @@
     <title>{% trans 'سند قبض' %}</title>
     <style>
       @font-face {
-        font-family: 'Amiri';
-        src: url('{% static "fonts/Amiri-Regular.ttf" %}');
+          font-family: 'ArabicPDF';
+          src: url('{% static "fonts/Scheherazade-Regular.ttf" %}') format('truetype');
+          font-weight: normal;
       }
-      body {
-        font-family: 'Amiri', sans-serif;
-        direction: rtl;
-        text-align: right;
-      }
-      .voucher-box {
-        border: 2px solid #000;
-        padding: 20px;
-        margin: 20px;
-      }
-      .header img {
-        max-height: 80px;
-      }
+
+        body {
+            font-family: 'ArabicPDF';
+            direction: rtl;
+            text-align: right;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .voucher-box {
+            border: 2px solid #000;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .header img {
+            max-height: 80px;
+            float: right;
+            margin-left: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .details-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .amount-box {
+            display: inline-block;
+            border: 1px solid #000;
+            padding: 2px 5px;
+            margin: 0 5px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        /* للعناصر التي تحتاج خط إنجليزي */
+        .english-text {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
     </style>
   </head>
   <body>
     <div class="voucher-box">
+      <img src="{% static 'fonts/Roboto-Regular.ttf' %}" alt="test" style="display:none;">
       <div class="header">
         {% if company.logo %}<img src="{{ company.logo.path }}">{% endif %}
         <h1>{{ company.name }}</h1>

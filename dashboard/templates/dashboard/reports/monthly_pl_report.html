@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <style>
         @font-face {
-            font-family: 'Tajawal';
-            src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');
-        }
-        @font-face {
-            font-family: 'Inter';
-            src: url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
-        }
-        body { font-family: 'Tajawal', 'Inter', sans-serif; direction: rtl; text-align: right; }
+            font-family: 'Amiri';
+            src: url('{% static "fonts/Amiri-Regular.ttf" %}');
+          }
+          body {
+            font-family: 'Amiri', sans-serif;
+            direction: rtl;
+            text-align: right;
+          }
         .header { text-align: center; margin-bottom: 20px; }
         .bilingual-header { font-size: 16pt; font-weight: bold; }
         .bilingual-header .en { font-size: 12pt; color: #555; display: block; }

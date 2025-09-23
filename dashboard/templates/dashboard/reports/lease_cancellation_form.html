@@ -6,15 +6,13 @@
     <style>
         @font-face {
             font-family: 'Amiri';
-            src: url(data:font/truetype;charset=utf-8;base64,{{ amiri_font_base64 }}) format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        body {
-            font-family: 'Traditional Arabic', 'Arial', sans-serif;
+            src: url('{% static "fonts/Amiri-Regular.ttf" %}');
+          }
+          body {
+            font-family: 'Amiri', sans-serif;
             direction: rtl;
             text-align: right;
-        }
+          }
         .en {
             font-family: Arial, sans-serif;
             direction: ltr;
