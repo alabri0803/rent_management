@@ -19,6 +19,17 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def login_router_view(request):
+    if request.user.groups.filter(name__in=['Supervisor', 'Employee']).exists() or request.user.is_superuser:
+        return redirect('dashboard_home')
+    elif hasattr(request.user, 'tenant'):
+        return redirect('portal_dashboard')
+    else:
+        return redirect('logout')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +41,7 @@ urlpatterns += i18n_patterns(
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('', include('portal.urls')), # Portal is the homepage
+    path('router/', login_router_view, name='login_router'),
     prefix_default_language=True # Don't prefix the default language (ar)
 )
 

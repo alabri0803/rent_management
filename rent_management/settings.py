@@ -152,7 +152,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #CSRF_TRUSTED_ORIGINS = [
     #"https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
 #]
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/router/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 if 'DYNO' in os.environ:  # Check if running on Heroku
