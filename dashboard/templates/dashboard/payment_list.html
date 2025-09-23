@@ -9,7 +9,12 @@
 <div class="card overflow-hidden">
     <table class="w-full text-start">
         <thead class="bg-gray-50 border-b">
-            <tr><th class="p-4">{% trans "تاريخ الدفع" %}</th><th class="p-4">{% trans "المستأجر" %}</th><th class="p-4">{% trans "رقم العقد" %}</th><th class="p-4">{% trans "عن شهر/سنة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th></tr>
+            <tr><th class="p-4">{% trans "تاريخ الدفع" %}</th><th class="p-4">{% trans "المستأجر" %}</th><th class="p-4">{% trans "رقم العقد" %}</th><th class="p-4">{% trans "عن شهر/سنة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th>
+                <td>
+                    <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
+                    <a href="{% url 'voucher_payment' payment.pk %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة سند" %}</a>
+                </td>
+            </tr>
         </thead>
         <tbody>
             {% for payment in payments %}

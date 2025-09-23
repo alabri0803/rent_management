@@ -16,6 +16,11 @@ from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, Paymen
 from django.contrib.auth.models import User
 from .utils import render_to_pdf
 
+# Mixin for Staff Users
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
 class StaffUserCreateView(StaffRequiredMixin, CreateView):
     model = User
     form_class = StaffUserCreationForm
@@ -30,11 +35,6 @@ class StaffUserCreateView(StaffRequiredMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, _("تمت إنشاء المستخدم بنجاح!"))
         return super().form_valid(form)
-
-# Mixin for Staff Users
-class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_staff
 
 # --- Dashboard Home ---
 class DashboardHomeView(StaffRequiredMixin, ListView):
@@ -290,3 +290,25 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
+
+class GeneratePaymentVoucherPDF(StaffRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        payment = get_object_or_404(Payment, pk=pk)
+        context = {
+            'payment': payment,
+            'today': timezone.now().date(),
+            'amount_in_words_ar': num2words(payment.amount, lang='ar'),
+            'amount_in_words_en': num2words(payment.amount, lang='en'),
+        }
+        return render_to_pdf('dashboard/reports/payment_voucher.html', context)
+
+class GenerateExpenseVoucherPDF(StaffRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        expense = get_object_or_404(Expense, pk=pk)
+        context = {
+            'expense': expense,
+            'today': timezone.now().date(),
+            'amount_in_words_ar': num2words(expense.amount, lang='ar'),
+            'amount_in_words_en': num2words(expense.amount, lang='en'),
+        }
+        return render_to_pdf('dashboard/reports/expense_voucher.html', context)
