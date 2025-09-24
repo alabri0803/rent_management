@@ -10,10 +10,70 @@ from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from django.conf import settings
+from django.http import HttpResponse
+import openpyxl
+from openpyxl.styles import Font
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def export_payments_to_excel(request):
+    # 1. إعداد استجابة HTTP لتكون ملف Excel
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    # تحديد اسم الملف الذي سيتم تحميله
+    response['Content-Disposition'] = 'attachment; filename="payments_report.xlsx"'
+
+    # 2. إنشاء ملف عمل Excel وكتابة البيانات
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Payments Report'
+
+    # تغيير اتجاه الورقة من اليمين إلى اليسار
+    worksheet.sheet_view.rightToLeft = True
+
+    # 3. كتابة رؤوس الأعمدة (Headers)
+    columns = [
+        _('تاريخ الدفع'), _('المستأجر'), _('رقم العقد'), 
+        _('عن شهر'), _('عن سنة'), _('المبلغ (ر.ع)')
+    ]
+    row_num = 1
+
+    # تنسيق الخط للرؤوس
+    header_font = Font(bold=True)
+
+    for col_num, column_title in enumerate(columns, 1):
+        cell = worksheet.cell(row=row_num, column=col_num, value=column_title)
+        cell.font = header_font
+
+    # 4. جلب البيانات من قاعدة البيانات وكتابتها في الملف
+    payments = Payment.objects.all().order_by('-payment_date')
+
+    for payment in payments:
+        row_num += 1
+        row = [
+            payment.payment_date,
+            payment.lease.tenant.name,
+            payment.lease.contract_number,
+            payment.payment_for_month,
+            payment.payment_for_year,
+            payment.amount,
+        ]
+        for col_num, cell_value in enumerate(row, 1):
+            cell = worksheet.cell(row=row_num, column=col_num, value=cell_value)
+            # تنسيق حقل التاريخ والمبلغ
+            if col_num == 1: # عمود التاريخ
+                cell.number_format = 'YYYY-MM-DD'
+            if col_num == 6: # عمود المبلغ
+                cell.number_format = '0.00'
+
+    # 5. حفظ الملف وإرساله في الاستجابة
+    workbook.save(response)
+    return response
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)

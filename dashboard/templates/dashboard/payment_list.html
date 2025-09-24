@@ -4,7 +4,10 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-gray-800">{% trans "المدفوعات" %}</h2>
+    <div class="flex space-x-2 rtl:space-x-reverse">
+        <a href="{% url 'export_payments_excel' %}" class="bg-green-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-green-700">{% trans "تصدير" %}</a>
     <a href="{% url 'payment_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة دفعة جديدة" %}</a>
+    </div>
 </div>
 <div class="card overflow-hidden">
     <table class="w-full text-start">

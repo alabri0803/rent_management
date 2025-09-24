@@ -4,7 +4,7 @@ from .views import (
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, cancel_lease, GeneratePaymentVoucherPDF, GenerateDisbursementVoucherPDF, GenerateLeaseCancellationPDF
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, cancel_lease, GeneratePaymentVoucherPDF, GenerateDisbursementVoucherPDF, GenerateLeaseCancellationPDF, export_payments_to_excel
 )
 
 urlpatterns = [
@@ -33,4 +33,5 @@ urlpatterns = [
     path('reports/lease/<int:lease_pk>/cancellation-form/', GenerateLeaseCancellationPDF.as_view(), name='report_lease_cancellation'),
     path('reports/payment/<int:payment_pk>/voucher/', GeneratePaymentVoucherPDF.as_view(), name='report_payment_voucher'),
     path('reports/expense/<int:expense_pk>/voucher/', GenerateDisbursementVoucherPDF.as_view(), name='report_disbursement_voucher'),
+    path('payment/export/excel/', export_payments_to_excel, name='export_payments_excel'),
 ]
