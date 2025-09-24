@@ -1,7 +1,35 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><style>body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }</style></head>
+<head><meta charset="UTF-8"><style>
+        @font-face {
+            font-family: 'Tajawal';
+            src: url("{{ STATIC_URL }}fonts/Tajawal-Regular.ttf"); /* تأكد من صحة المسار */
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+        }
+        /* أضف هذا النمط لضمان عرض الأعمدة جنبًا إلى جنب */
+        .bilingual-container {
+            display: -pdf-flex-box; /* خاص بـ xhtml2pdf */
+            flex-direction: row;
+            width: 100%;
+        }
+        .bilingual-col {
+            width: 50%;
+            padding: 5px;
+        }
+        .en {
+            direction: ltr;
+            text-align: left;
+        }
+        .ar {
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
 <body>
     <div style="text-align:center;"><h1>{% trans "تقرير الأرباح والخسائر" %} - {% blocktrans with month=report_month year=report_year %}{{ month }}/{{ year }}{% endblocktrans %}</h1></div>
     <h2>{% trans "الإيرادات" %}</h2>

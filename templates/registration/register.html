@@ -1,0 +1,15 @@
+{% extends 'portal/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إنشاء حساب جديد" %}{% endblock %}
+{% block content %}
+<div class="card max-w-lg mx-auto p-8 mt-10">
+    <h2 class="text-2xl font-bold mb-6 text-center">{% trans "إنشاء حساب جديد" %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="space-y-4">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="w-full bg-[#993333] text-white py-2 mt-6 rounded-lg hover:bg-opacity-90">{% trans "تسجيل" %}</button>
+    </form>
+</div>
+{% endblock %}

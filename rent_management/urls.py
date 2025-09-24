@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from portal.views import CustomLoginView, register_user
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +29,9 @@ urlpatterns = [
 
 # Language-prefixed URLs
 urlpatterns += i18n_patterns(
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/register/', register_user, name='register'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard/', include('dashboard.urls')),
     path('', include('portal.urls')), # Portal is the homepage
     prefix_default_language=True # Don't prefix the default language (ar)

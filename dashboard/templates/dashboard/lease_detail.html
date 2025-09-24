@@ -13,7 +13,12 @@
         <div class="flex space-x-2 rtl:space-x-reverse">
             <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
             <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
+            {% if lease.status != 'cancelled' %}
+            <a href="{% url 'lease_cancel' lease.pk %}" class="bg-gray-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</a>
+            {% endif %}
             <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
+        </div>
+        <div><a href="{% url 'report_lease_cancellation' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة إستمارة إلغاء العقد" %} &rarr;</a>
         </div>
     </div>
     <div class="border-t my-6"></div>

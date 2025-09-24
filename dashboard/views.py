@@ -14,6 +14,24 @@ from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def cancel_lease(request, pk):
+    lease = get_object_or_404(Lease, pk=pk)
+    if request.method == 'POST':
+        # تحديث حالة العقد
+        lease.status = 'cancelled'
+        lease.save()
+        # جعل الوحدة متاحة مرة أخرى
+        lease.unit.is_available = True
+        lease.unit.save()
+        messages.success(request, _("تم إلغاء العقد بنجاح."))
+        return redirect('lease_detail', pk=lease.pk)
+
+    return render(request, 'dashboard/lease_confirm_cancel.html', {'lease': lease})
+
+
+
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
@@ -239,3 +257,21 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
+
+class GeneratePaymentVoucherPDF(StaffRequiredMixin, View):
+    def get(self, request, payment_pk, *args, **kwargs):
+        payment = get_object_or_404(Payment, pk=payment_pk)
+        context = {
+            'payment': payment,
+            'STATIC_URL': settings.STATIC_URL,
+        }
+        return render_to_pdf('dashboard/reports/payment_voucher.html', context)
+
+class GenerateDisbursementVoucherPDF(StaffRequiredMixin, View):
+    def get(self, request, expense_pk, *args, **kwargs):
+        expense = get_object_or_404(Expense, pk=expense_pk)
+        context = {
+            'expense': expense,
+            'STATIC_URL': settings.STATIC_URL,
+        }
+        return render_to_pdf('dashboard/reports/disbursement_voucher.html', context)
