@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, CompanyProfile
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
@@ -58,3 +58,8 @@ admin.site.register(Document)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'read', 'timestamp')
     list_filter = ('read', 'user')
+
+@admin.register(CompanyProfile)
+class CompanyProfileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'commercial_registration', 'phone', 'email', 'address')
+    search_fields = ('name', 'commercial_registration', 'phone', 'email', 'address')
