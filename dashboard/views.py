@@ -8,68 +8,16 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from django.http import HttpResponse
-from num2words import num2words
+from datetime import datetime
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, StaffUserCreationForm
-from django.contrib.auth.models import User
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
-
-# views.py
-from weasyprint import HTML, CSS
-from django.template.loader import render_to_string
-
-def export_to_pdf(request):
-    # بيانات المثال
-    context = {
-        'title': 'تقرير باللغة العربية',
-        'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية'
-    }
-
-    # تحميل القالب
-    html_string = render_to_string('dashboard/reports/payment_voucher.html', context)
-
-    # إنشاء CSS يدعم العربية
-    css = CSS(string='''
-        @font-face {
-            font-family: 'ArabicFont';
-            src: url('/static/fonts/arabic-font.ttf');
-        }
-        body {
-            font-family: 'ArabicFont', sans-serif;
-            direction: rtl;
-            text-align: right;
-        }
-    ''')
-
-    # إنشاء PDF
-    html = HTML(string=html_string)
-    pdf_file = html.write_pdf(stylesheets=[css])
-
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    return response
 
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
-
-class StaffUserCreateView(StaffRequiredMixin, CreateView):
-    model = User
-    form_class = StaffUserCreationForm
-    template_name = 'dashboard/staff_user_form.html'
-    success_url = reverse_lazy('dashboard_home')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _("إضافة مستخدم جديد (فريق العمل)")
-        return context
-
-    def form_valid(self, form):
-        messages.success(self.request, _("تمت إنشاء المستخدم بنجاح!"))
-        return super().form_valid(form)
 
 # --- Dashboard Home ---
 class DashboardHomeView(StaffRequiredMixin, ListView):
@@ -164,7 +112,6 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
         context['document_form'] = DocumentForm()
         context['paymnt_summary'] = self.object.get_payment_summary()
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
-        context['payments'] = self.object.payments.all()
         return context
 
 class LeaseCreateView(StaffRequiredMixin, CreateView):
@@ -184,18 +131,7 @@ class LeaseUpdateView(StaffRequiredMixin, UpdateView):
 class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     model = Lease; template_name = 'dashboard/lease_confirm_delete.html'; success_url = reverse_lazy('lease_list')
     def form_valid(self, form):
-        self.object.unit.is_available = True
-        self.object.unit.save()
         messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
-
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-def cancel_lease_view(request, pk):
-    lease = get_object_or_404(Lease, pk=pk)
-    if request.method == 'POST':
-        lease.cancel_lease()
-        messages.success(request, _("تم إلغاء العقد بنجاح."))
-    return redirect('lease_detail', pk=pk)
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -266,7 +202,7 @@ class ReportSelectionView(StaffRequiredMixin, View):
 class GenerateTenantStatementPDF(StaffRequiredMixin, View):
     def get(self, request, lease_pk, *args, **kwargs):
         lease = get_object_or_404(Lease, pk=lease_pk)
-        context = {'lease': lease, 'payments': lease.payments.all(), 'today': timezone.now(), 'landlord': _("اسم لمؤجر"),}
+        context = {'lease': lease, 'payments': lease.payments.all(), 'today': timezone.now()}
         return render_to_pdf('dashboard/reports/tenant_statement.html', context)
 
 class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
@@ -287,28 +223,6 @@ class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
         }
         return render_to_pdf('dashboard/reports/monthly_pl_report.html', context)
 
-class GeneratLeaseCancellationPFD(StaffRequiredMixin, View):
-    def get(self, request, lease_pk, *args, **kwargs):
-        lease = get_object_or_404(Lease, pk=lease_pk)
-        context = {
-            'lease': lease,
-            'landlord': _("اسم لمؤجر"),
-            'today': timezone.now(),
-        }
-        pdf = render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
-        return HttpResponse(pdf, content_type='application/pdf')
-
-def generate_lease_cancellation_pdf(request, lease_pk):
-    lease = get_object_or_404(Lease, pk=lease_pk)
-
-    context = {
-        'today': timezone.now().date(),
-        'landlord_name': 'اسم المؤجر',  # استبدل بقيمة مناسبة
-        'lease': lease,
-    }
-
-    return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
-        
 class PaymentListView(StaffRequiredMixin, ListView):
     model = Payment; template_name = 'dashboard/payment_list.html'; context_object_name = 'payments'; paginate_by = 20
 
@@ -325,25 +239,3 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
-
-class GeneratePaymentVoucherPDF(StaffRequiredMixin, View):
-    def get(self, request, pk, *args, **kwargs):
-        payment = get_object_or_404(Payment, pk=pk)
-        context = {
-            'payment': payment,
-            'today': timezone.now().date(),
-            'amount_in_words_ar': num2words(payment.amount, lang='ar'),
-            'amount_in_words_en': num2words(payment.amount, lang='en'),
-        }
-        return render_to_pdf('dashboard/reports/payment_voucher.html', context)
-
-class GenerateExpenseVoucherPDF(StaffRequiredMixin, View):
-    def get(self, request, pk, *args, **kwargs):
-        expense = get_object_or_404(Expense, pk=pk)
-        context = {
-            'expense': expense,
-            'today': timezone.now().date(),
-            'amount_in_words_ar': num2words(expense.amount, lang='ar'),
-            'amount_in_words_en': num2words(expense.amount, lang='en'),
-        }
-        return render_to_pdf('dashboard/reports/expense_voucher.html', context)

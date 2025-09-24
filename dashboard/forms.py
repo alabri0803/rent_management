@@ -2,16 +2,6 @@ from django import forms
 from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-
-class StaffUserCreationForm(UserCreationForm):
-    is_staff = forms.BooleanField(label=_("موظف(وصول للوحة التحكم)"), required=False)
-    is_superuser = forms.BooleanField(label=_("مشرف(وصول كامل)"), required=False)
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email', 'is_staff', 'is_superuser')
 
 class LeaseForm(forms.ModelForm):
     class Meta:
@@ -69,7 +59,7 @@ class ExpenseForm(forms.ModelForm):
             if field_name == 'receipt':
                 field.widget.attrs.update({'class': 'w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'})
             else:
-                 field.widget.attrs.update({'class': common_class})
+                field.widget.attrs.update({'class': common_class})
 
 class PaymentForm(forms.ModelForm):
     class Meta:

@@ -1,23 +1,11 @@
+from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from dashboard.models import Lease, Tenant, MaintenanceRequest
 from dashboard.forms import MaintenanceRequestForm
-from django.contrib.auth.views import LoginView
-
-class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
-
-    def get_success_url(self):
-        user = self.request.user
-        if user.is_staff or user.is_superuser:
-            return reverse('dashboard_home')
-        elif hasattr(user, 'tenant'):
-            return reverse('portal_dashboard')
-        else:
-            return reverse('login')
 
 class PortalDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'portal/dashboard.html'

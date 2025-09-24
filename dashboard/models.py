@@ -7,21 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
+import datetime
 from django.db.models import Sum
-from solo.models import SingletonModel
-
-class CompanyProfile(SingletonModel):
-    name = models.CharField(_("اسم الشركة"), max_length=200)
-    logo = models.ImageField(_("شعار الشركة"), upload_to='company_logos/', blank=True, null=True)
-    address = models.TextField(_("العنوان"), blank=True, null=True)
-    phone = models.CharField(_("رقم الهاتف"), max_length=50, blank=True, null=True)
-    email = models.EmailField(_("البريد الإلكتروني"), blank=True, null=True)
-
-    class Meta:
-        verbose_name = _("بيانات الشركة")
-
-    def __str__(self):
-        return self.name
 
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
@@ -79,35 +66,25 @@ class Lease(models.Model):
         verbose_name_plural = _("عقود الإيجار")
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
-        if self.status != 'cancelled':
-            self.update_status()
-        is_new = self._state.adding
-        if not is_new:
+        self.update_status()
+        if self.pk:
             old_lease = Lease.objects.get(pk=self.pk)
             if old_lease.unit != self.unit:
                 old_lease.unit.is_available = True
                 old_lease.unit.save()
-        if self.status in ['active', 'expiring_soon']:
-            self.unit.is_available = False
-        else:
-            self.unit.is_available = True
-        self.unit.save()
+            if self.status in ['active', 'expiring_soon']:
+                self.unit.is_available = False
+            else:
+                self.unit.is_available = True
+            self.unit.save()
         super().save(*args, **kwargs)
-        
+
     def update_status(self):
         today = timezone.now().date()
         if self.status == 'cancelled': return
         if self.end_date < today: self.status = 'expired'
         elif self.end_date - relativedelta(months=1) <= today: self.status = 'expiring_soon'
         else: self.status = 'active'
-
-    def cancel_lease(self):
-        if self.status != 'cancelled':
-            self.status = 'cancelled'
-            self.unit.is_available = True
-            self.unit.save()
-            self.save()
-            
     def get_status_color(self):
         if self.status == 'active': return 'active'
         if self.status == 'expiring_soon': return 'expiring'

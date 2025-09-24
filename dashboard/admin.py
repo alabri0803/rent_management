@@ -1,15 +1,9 @@
 from django.contrib import admin
-from .models import CompanyProfile, Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
-from modeltranslation.admin import TabbedTranslationAdmin
-from solo.admin import SingletonModelAdmin
-
-@admin.register(CompanyProfile)
-class CompanyProfileAdmin(SingletonModelAdmin):
-    pass
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
-class BuildingAdmin(TabbedTranslationAdmin):
+class BuildingAdmin(admin.ModelAdmin):
     list_display = ('name', 'address')
     search_fields = ('name',)
 
@@ -21,7 +15,7 @@ class UnitAdmin(admin.ModelAdmin):
 
 # تخصيص عرض المستأجرين
 @admin.register(Tenant)
-class TenantAdmin(TabbedTranslationAdmin):
+class TenantAdmin(admin.ModelAdmin):
     list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
     list_filter = ('tenant_type',)
     search_fields = ('name', 'phone', 'email')
@@ -51,7 +45,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 
 # تخصيص عرض المصاريف
 @admin.register(Expense)
-class ExpenseAdmin(TabbedTranslationAdmin):
+class ExpenseAdmin(admin.ModelAdmin):
     list_display = ('description', 'building', 'category', 'amount', 'expense_date')
     list_filter = ('category', 'building')
     search_fields = ('description',)

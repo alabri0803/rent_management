@@ -25,7 +25,7 @@
         <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
         <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>
         <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "الصيانة" %}</a>
-        
+
         <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
     </nav>
     <div class="mt-auto">

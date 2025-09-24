@@ -11,14 +11,8 @@
             <span class="status-badge status-{{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
         </div>
         <div class="flex space-x-2 rtl:space-x-reverse">
-            {% if lease.status != 'canceled' and lease.status != 'expired' %}
             <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
             <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
-            <form action="{% url 'lease_cancel' lease.pk %}" method="post" onsubmit="return confirm('{% trans "هل أنت متأكد من  رغبتك في الغاء هذا العقد؟" %}');">
-                {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</button>
-            </form>
-            {% endif %}
             <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
         </div>
     </div>
@@ -30,11 +24,6 @@
         <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
         <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
-        <div>
-                <a href="{% url 'generate_lease_cancellation_pdf' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">
-                    {% trans "طباعة استمارة الإلغاء" %} &rarr;
-                </a>
-            </div>
     </div>
 </div>
 

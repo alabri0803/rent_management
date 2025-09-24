@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
-# WeasyPrint FontConfiguration not needed in current version
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +32,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'solo',
-    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,7 +67,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
-                'dashboard.context_processors.company_details',
             ],
         },
     },
@@ -127,8 +123,6 @@ LANGUAGES = [
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale')
 ]
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'ar'
-MODELTRANSLATION_LANGUAGES = ('ar', 'en')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -136,9 +130,6 @@ MODELTRANSLATION_LANGUAGES = ('ar', 'en')
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-if not os.path.exists(os.path.join(BASE_DIR, 'static')):
-    os.makedirs(os.path.join(BASE_DIR, 'static'))
-    os.makedirs(os.path.join(BASE_DIR, 'static', 'fonts'))
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -147,16 +138,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#CSRF_TRUSTED_ORIGINS = [
-    #"https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
-#]
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
+]
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
-# settings.py
-
-# Arabic fonts configuration for WeasyPrint
-# Font configuration removed - WeasyPrint will use system fonts
-# FONT_CONFIG = {
-#     'font_path': os.path.join(BASE_DIR, 'static/fonts/')
-# }
