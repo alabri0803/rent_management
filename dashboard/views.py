@@ -21,8 +21,10 @@ from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
 
 def export_to_pdf(request):
+    payment = get_object_or_404(Payment, pk=1)
     # بيانات المثال
     context = {
+        'payment': payment,
         'title': 'تقرير باللغة العربية',
         'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية'
     }
