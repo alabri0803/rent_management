@@ -1,23 +1,61 @@
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
-<html>
-  <head>
+<html dir="rtl" lang="ar">
+<head>
     <meta charset="utf-8">
     <title>{% trans 'سند قبض' %}</title>
     <style>
-      @font-face {
-          font-family: 'ArabicPDF';
-          src: url('{% static "fonts/Scheherazade-Regular.ttf" %}') format('truetype');
-          font-weight: normal;
-      }
+        /* تعريف جميع الخطوط العربية */
+        @font-face {
+            font-family: 'Scheherazade New';
+            src: url('{% static "fonts/ScheherazadeNew-Regular.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Traditional Arabic';
+            src: url('{% static "fonts/Traditional-Arabic.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Amiri';
+            src: url('{% static "fonts/Amiri-Regular.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Lateef';
+            src: url('{% static "fonts/Lateef-Regular.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Arial';
+            src: url('{% static "fonts/Arial.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Times New Roman';
+            src: url('{% static "fonts/Times-New-Roman.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
         body {
-            font-family: 'ArabicPDF';
+            font-family: 'Scheherazade New', 'Traditional Arabic', 'Amiri', 'Lateef', 'Arial', sans-serif;
             direction: rtl;
             text-align: right;
             margin: 0;
             padding: 20px;
+            line-height: 1.6;
         }
 
         .voucher-box {
@@ -25,86 +63,167 @@
             padding: 20px;
             margin: 20px auto;
             max-width: 800px;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         .header img {
             max-height: 80px;
-            float: right;
-            margin-left: 20px;
+            display: block;
+            margin: 0 auto 10px;
         }
 
         .header h1 {
-            margin: 0;
-            text-align: center;
+            margin: 10px 0;
+            font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+            font-size: 28px;
+            font-weight: bold;
         }
 
         .title {
             text-align: center;
             font-size: 24px;
-            margin: 10px 0;
+            margin: 20px 0;
             font-weight: bold;
+            font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+            color: #2c3e50;
         }
 
         .details-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 30px 0;
+            font-size: 16px;
         }
 
         .details-table td {
-            padding: 8px;
+            padding: 12px 8px;
             border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        .details-table td strong {
+            font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+            color: #2c3e50;
         }
 
         .amount-box {
             display: inline-block;
             border: 1px solid #000;
-            padding: 2px 5px;
+            padding: 4px 8px;
             margin: 0 5px;
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
         }
 
         .footer {
-            margin-top: 40px;
+            margin-top: 50px;
             text-align: left;
+            direction: ltr;
         }
 
-        /* للعناصر التي تحتاج خط إنجليزي */
+        .footer p {
+            font-family: 'Arial', sans-serif;
+            margin: 10px 0;
+        }
+
+        /* للأرقام والنصوص الإنجليزية */
         .english-text {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            font-family: 'Arial', 'Times New Roman', sans-serif;
             direction: ltr;
             text-align: left;
         }
+
+        /* للعناوين الرئيسية */
+        .main-title {
+            font-family: 'Traditional Arabic', serif;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* للنصوص المهمة */
+        .important-text {
+            font-family: 'Amiri', serif;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* للتفاصيل الصغيرة */
+        .small-text {
+            font-family: 'Lateef', serif;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* طباعة التحسينات */
+        @media print {
+            .voucher-box {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            body {
+                padding: 10px;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="voucher-box">
-      <img src="{% static 'fonts/Roboto-Regular.ttf' %}" alt="test" style="display:none;">
-      <div class="header">
-        {% if company.logo %}<img src="{{ company.logo.path }}">{% endif %}
-        <h1>{{ company.name }}</h1>
-        <div class="title">{% trans 'سند قبض' %}{% trans 'Receipt Voucher' %}</div>
-      </div>
-      <table class="details-table">
-        <tr>
-          <td><strong>التاريخ:</strong>{{ payment.payment_date|date:"d/m/Y" }}</td>
-          <td>Receipt No:<strong>{{ payment.pk }}</strong></td>
-        </tr>
-        <tr>
-          <td colspan="2"><strong>استلمنا من الفاضل:</strong>{{ payment.lease.name }}</td>
-        </tr>
-        <tr>
-          <td colspan="2"><strong>مبلغا وقدره:</strong><span class="amount-box"></span>{{ payment.amount|floatformat:2 }} OMR</td>
-        </tr>
-        <tr>
-          <td colspan="2"><strong>فقط:</strong>{{ amount_in_words_ar }} ريال عماني لا غير</td>
-        </tr>
-        <tr>
-          <td colspan="2"><strong>وذلك عن:</strong>دفعة إيجار {{ payment.lease.unit }} عن شهر {{ payment.payment_for_month }}/{{ payment.payment_for_year }}.</td>
-        </tr>
-      </table>
-      <div class="footer">
-        <p><strong>المستلم:</strong>_____________________________</p>
-      </div>
+        <div class="header">
+            {% if company.logo %}
+                <img src="{{ company.logo.path }}" alt="{{ company.name }}">
+            {% endif %}
+            <h1>{{ company.name }}</h1>
+            <div class="title">
+                {% trans 'سند قبض' %} / {% trans 'Receipt Voucher' %}
+            </div>
+        </div>
+
+        <table class="details-table">
+            <tr>
+                <td width="50%"><strong>التاريخ:</strong> {{ payment.payment_date|date:"d/m/Y" }}</td>
+                <td width="50%" class="english-text">
+                    <strong>Receipt No:</strong> {{ payment.pk }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>استلمنا من الفاضل:</strong> 
+                    <span class="important-text">{{ payment.lease.name }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>مبلغا وقدره:</strong>
+                    <span class="amount-box">{{ payment.amount|floatformat:2 }} OMR</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>فقط:</strong> 
+                    <span class="important-text">{{ amount_in_words_ar }} ريال عماني لا غير</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>وذلك عن:</strong> 
+                    دفعة إيجار {{ payment.lease.unit }} عن شهر {{ payment.payment_for_month }}/{{ payment.payment_for_year }}
+                </td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            <p><strong>المستلم:</strong> _____________________________</p>
+            <p class="small-text">تاريخ الطباعة: {% now "d/m/Y H:i" %}</p>
+        </div>
     </div>
-  </body>
+</body>
 </html>

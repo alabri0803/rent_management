@@ -10,37 +10,42 @@ import base64
 
 def link_callback(uri, rel):
     """
-    حل متقدم لدعم الخطوط العربية
+    حل متقدم لدعم الخطوط العربية مع تحسينات
     """
     # للخطوط العربية
-    if uri.startswith('fonts/') or uri.endswith(('.ttf', '.otf')):
+    if uri.startswith('fonts/') or uri.endswith(('.ttf', '.otf', '.woff', '.woff2')):
         font_name = os.path.basename(uri)
-        font_path = finders.find(f'fonts/{font_name}')
-        if font_path:
-            return font_path
 
         # البحث في مجلدات متعددة
         possible_paths = [
+            finders.find(f'fonts/{font_name}'),
+            finders.find(f'static/fonts/{font_name}'),
             os.path.join(settings.BASE_DIR, 'static', 'fonts', font_name),
             os.path.join(settings.BASE_DIR, 'staticfiles', 'fonts', font_name),
             os.path.join(settings.STATIC_ROOT, 'fonts', font_name) if settings.STATIC_ROOT else None,
+            os.path.join(settings.BASE_DIR, 'fonts', font_name),
         ]
 
         for path in possible_paths:
             if path and os.path.exists(path):
                 return path
 
-    # للصور والملفات الأخرى
-    result = finders.find(uri)
-    if result:
-        if not isinstance(result, (list, tuple)):
+        print(f"Font not found: {font_name}")
+
+    # للصور
+    if uri.startswith('images/') or uri.endswith(('.png', '.jpg', '.jpeg', '.gif')):
+        result = finders.find(uri)
+        if result:
             return result
-        else:
-            return result[0] if result else None
 
     # للروابط المطلقة
     if uri.startswith('http'):
         return uri
+
+    # البحث العام
+    result = finders.find(uri)
+    if result:
+        return result
 
     return None
 
@@ -59,7 +64,7 @@ def get_system_fonts_stack():
     إرجاع سلسلة خطوط النظام الكاملة
     """
     return (
-        'Scheherazade',
+        "'Scheherazade New', 'Traditional Arabic', 'Arial', 'Times New Roman', sans-serif"
     )
 
 def get_arabic_fonts_stack():
@@ -67,7 +72,7 @@ def get_arabic_fonts_stack():
     إرجاع سلسلة خطوط عربية كاملة
     """
     return (
-        'Scheherazade',
+        "'Scheherazade New', 'Traditional Arabic', 'Amiri', 'Lateef', 'Arial', sans-serif"
     )
 
 def get_monospace_fonts_stack():
@@ -75,7 +80,7 @@ def get_monospace_fonts_stack():
     إرجاع سلسلة خطوط Monospace
     """
     return (
-        'Scheherazade',
+        "'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace"
     )
 
 def get_comprehensive_fonts_context():
@@ -86,8 +91,8 @@ def get_comprehensive_fonts_context():
         'system_fonts_stack': get_system_fonts_stack(),
         'arabic_fonts_stack': get_arabic_fonts_stack(),
         'monospace_fonts_stack': get_monospace_fonts_stack(),
-        'safe_fonts_stack': 'Scheherazade',
-        'serif_fonts_stack': 'Scheherazade',
+        'safe_fonts_stack': get_arabic_fonts_stack(),
+        'serif_fonts_stack': "'Times New Roman', 'Georgia', 'Traditional Arabic', serif",
     }
 
 def load_all_fonts():
@@ -96,32 +101,32 @@ def load_all_fonts():
     """
     font_base64_data = {}
 
-    # الخطوط العربية الأساسية
+    # الخطوط العربية الأساسية (يجب أن تكون موجودة في مجلد static/fonts/)
     arabic_fonts = [
-        'Scheherazade-Regular.tt',
+        'ScheherazadeNew-Regular.ttf',
+        'Traditional-Arabic.ttf',
+        'Amiri-Regular.ttf',
+        'Lateef-Regular.ttf',
+        'Arial.ttf',
+        'Times-New-Roman.ttf',
+        'Courier-New.ttf',
     ]
 
-    # الخطوط النظامية الإضافية
-    system_fonts = [
-        'Scheherazade-Regular.tt',
-    ]
+    for font_name in arabic_fonts:
+        font_path = None
 
-    all_fonts = list(set(arabic_fonts + system_fonts))
+        # البحث في مسارات متعددة
+        possible_paths = [
+            finders.find(f'fonts/{font_name}'),
+            os.path.join(settings.BASE_DIR, 'static', 'fonts', font_name),
+            os.path.join(settings.BASE_DIR, 'staticfiles', 'fonts', font_name),
+            os.path.join(settings.BASE_DIR, 'fonts', font_name),
+        ]
 
-    for font_name in all_fonts:
-        font_path = finders.find(f'fonts/{font_name}')
-        if not font_path:
-            # البحث في مسارات أخرى
-            possible_paths = [
-                os.path.join(settings.BASE_DIR, 'static', 'fonts', font_name),
-                os.path.join(settings.BASE_DIR, 'staticfiles', 'fonts', font_name),
-                os.path.join(settings.BASE_DIR, 'fonts', font_name),
-            ]
-
-            for path in possible_paths:
-                if path and os.path.exists(path):
-                    font_path = path
-                    break
+        for path in possible_paths:
+            if path and os.path.exists(path):
+                font_path = path
+                break
 
         if font_path and os.path.exists(font_path):
             font_base64 = font_to_base64(font_path)
@@ -129,9 +134,11 @@ def load_all_fonts():
             font_base64_data[f'{font_key}_base64'] = font_base64
             font_base64_data[f'{font_key}_name'] = font_name.replace('.ttf', '')
             font_base64_data[f'{font_key}_available'] = True
+            print(f"Font loaded successfully: {font_name}")
         else:
             font_key = font_name.replace('-', '_').replace('.', '_').lower()
             font_base64_data[f'{font_key}_available'] = False
+            print(f"Font not found: {font_name}")
 
     return font_base64_data
 
@@ -149,6 +156,7 @@ def render_to_pdf(template_path: str, context: dict) -> HttpResponse:
         'pdf_generation': True,
         'rtl_direction': True,
         'language': 'ar',
+        'static_url': settings.STATIC_URL,
     })
 
     template = get_template(template_path)
@@ -171,7 +179,6 @@ def render_to_pdf(template_path: str, context: dict) -> HttpResponse:
     else:
         return HttpResponse(_("حدث خطأ في إنشاء PDF") + f"<pre>{pdf.err}</pre>")
 
-# دالة مساعدة للاستخدام السريع
 def generate_pdf_response(template_path, context=None, filename=None):
     """
     دالة مساعدة لإنشاء PDF مع الخطوط الكاملة
