@@ -22,7 +22,8 @@ from django.template.loader import render_to_string
 
 def export_to_pdf(request):
     lease = get_object_or_404(Lease, pk=1)
-    payment = get_object_or_404(Payment, pk=1, lease=lease)
+    tenant = lease.tenant
+    payment = get_object_or_404(Payment, pk=1, lease=lease, tenant=tenant)
     
     from num2words import num2words
     amount_in_words = num2words(payment.amount, lang='ar')
