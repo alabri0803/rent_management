@@ -16,6 +16,40 @@ from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, Paymen
 from django.contrib.auth.models import User
 from .utils import render_to_pdf
 
+# views.py
+from weasyprint import HTML, CSS
+from django.template.loader import render_to_string
+
+def export_to_pdf(request):
+    # بيانات المثال
+    context = {
+        'title': 'تقرير باللغة العربية',
+        'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية'
+    }
+
+    # تحميل القالب
+    html_string = render_to_string('dashboard/reports/payment_voucher.html', context)
+
+    # إنشاء CSS يدعم العربية
+    css = CSS(string='''
+        @font-face {
+            font-family: 'ArabicFont';
+            src: url('/static/fonts/arabic-font.ttf');
+        }
+        body {
+            font-family: 'ArabicFont', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+    ''')
+
+    # إنشاء PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(stylesheets=[css])
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    return response
 
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

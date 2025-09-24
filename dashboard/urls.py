@@ -4,7 +4,7 @@ from .views import (
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GeneratLeaseCancellationPFD, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, generate_lease_cancellation_pdf, StaffUserCreateView, GeneratePaymentVoucherPDF, GenerateExpenseVoucherPDF
+    ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GeneratLeaseCancellationPFD, PaymentCreateView, PaymentUpdateView, PaymentListView, DashboardHomeView, generate_lease_cancellation_pdf, StaffUserCreateView, GeneratePaymentVoucherPDF, GenerateExpenseVoucherPDF, export_to_pdf
 )
 
 urlpatterns = [
@@ -35,4 +35,5 @@ urlpatterns = [
     path('staff/new/', StaffUserCreateView.as_view(), name='staff_create'),
     path('vouchers/payment/<int:pk>/', GeneratePaymentVoucherPDF.as_view(), name='voucher_payment'),
     path('vouchers/expense/<int:pk>/', GenerateExpenseVoucherPDF.as_view(), name='generate_expense_voucher'),
+    path('export_to_pdf/', export_to_pdf, name='export_to_pdf'),
 ]

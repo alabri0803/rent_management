@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
+# WeasyPrint FontConfiguration not needed in current version
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,3 +153,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
+# settings.py
+
+# Arabic fonts configuration for WeasyPrint
+# Font configuration removed - WeasyPrint will use system fonts
+# FONT_CONFIG = {
+#     'font_path': os.path.join(BASE_DIR, 'static/fonts/')
+# }
