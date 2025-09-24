@@ -15,62 +15,43 @@ from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, StaffUserCreationForm
 from django.contrib.auth.models import User
 from .utils import render_to_pdf
-from .utils.pdf_utils import generate_pdf_response
+
 # views.py
 from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
 
 def export_to_pdf(request, pk):
-    """
-    دالة لتصدير سند القبض كـ PDF
-    """
-    # الحصول على الدفعة المطلوبة
-    payment = get_object_or_404(Payment.objects.select_related('lease', 'lease__unit', 'lease__tenant'), pk=pk)
-
-    # بيانات الشركة (افتراضية - يمكن تعديلها حسب نموذجك)
-    company = {
-        'name': 'شركة الإسكان المتطور',
-        'logo': None  # يمكن إضافة مسار اللوجو إذا كان موجوداً
-    }
-
-    # تحويل المبلغ إلى كلمات عربية (تتطلب دالة مساعدة)
-    amount_in_words_ar = convert_amount_to_arabic_words(payment.amount)
-
+    payment = get_object_or_404(Payment, pk=pk)
+    # الحصول على البيانات من النموذج
     context = {
         'payment': payment,
-        'company': company,
-        'amount_in_words_ar': amount_in_words_ar,
-        'filename': f'receipt_voucher_{pk}.pdf'
+        'today': timezone.now(),
+        'landlord': _("اسم المؤجر")
     }
+    # تحميل القالب
+    html_string = render_to_string('dashboard/reports/payment_voucher.html', context)
+    # بيانات المثال
 
-    return generate_pdf_response('payments/receipt_voucher.html', context)
+    # إنشاء CSS يدعم العربية
+    css = CSS(string='''
+        @font-face {
+            font-family: 'ArabicFont';
+            src: url('/static/fonts/arabic-font.ttf');
+        }
+        body {
+            font-family: 'ArabicFont', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+    ''')
 
-def convert_amount_to_arabic_words(amount):
-    """
-    دالة لتحويل المبلغ إلى كلمات عربية
-    يمكن استبدالها بمكتبة متخصصة أو تحسينها
-    """
-    # هذه دالة مبسطة - يمكن استخدام مكتبة مثل num2words
-    units = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة']
-    tens = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون']
+    # إنشاء PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(stylesheets=[css])
 
-    try:
-        # تحويل إلى عدد صحيح
-        integer_part = int(amount)
-        decimal_part = round((amount - integer_part) * 100)
-
-        if integer_part == 0:
-            result = "صفر"
-        else:
-            result = f"{integer_part}"  # يمكن تطوير هذه الدالة
-
-        if decimal_part > 0:
-            result += f" و{decimal_part} فلس"
-
-        return result + " ريال عماني"
-
-    except:
-        return f"{amount} ريال عماني"
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    return response
 
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
