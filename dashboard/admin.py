@@ -61,5 +61,6 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyProfile)
 class CompanyProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'commercial_registration', 'phone', 'email', 'address')
-    search_fields = ('name', 'commercial_registration', 'phone', 'email', 'address')
+    list_display = ('name', 'phone', 'email')
+    def has_add_permission(self, request):
+        return not CompanyProfile.objects.count() == 0
