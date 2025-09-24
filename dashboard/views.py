@@ -19,84 +19,57 @@ from .utils import render_to_pdf
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
+import pandas as pd
+from django.http import HttpResponse
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def export_payments_to_excel(request):
-    try:
-        response = HttpResponse(
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8',
-        )
-        response['Content-Disposition'] = 'attachment; filename="payments_report.xlsx"'
+    # Get data as DataFrame
+    payments = Payment.objects.all().order_by('-payment_date').values(
+        'payment_date',
+        'lease__tenant__name',
+        'lease__contract_number',
+        'payment_for_month',
+        'payment_for_year',
+        'amount'
+    )
 
-        workbook = openpyxl.Workbook()
-        worksheet = workbook.active
-        worksheet.title = 'Payments Report'
-        worksheet.sheet_view.rightToLeft = True
+    df = pd.DataFrame(list(payments))
 
-        # Ensure Arabic text is properly encoded
-        columns = [
-            str(_('تاريخ الدفع')),  # Force string conversion
-            str(_('المستأجر')),
-            str(_('رقم العقد')), 
-            str(_('عن شهر')),
-            str(_('عن سنة')),
-            str(_('المبلغ (ر.ع)'))
-        ]
+    # Rename columns to Arabic
+    df.columns = [
+        _('تاريخ الدفع'),
+        _('المستأجر'), 
+        _('رقم العقد'),
+        _('عن شهر'),
+        _('عن سنة'),
+        _('المبلغ (ر.ع)')
+    ]
 
-        row_num = 1
-        header_font = Font(bold=True)
+    # Create response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="payments_report.xlsx"'
 
-        for col_num, column_title in enumerate(columns, 1):
-            cell = worksheet.cell(row=row_num, column=col_num, value=column_title)
-            cell.font = header_font
+    # Use xlsxwriter engine for better Unicode support
+    with pd.ExcelWriter(response, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='Payments Report', index=False)
 
-        payments = Payment.objects.all().order_by('-payment_date')
+        # Get workbook and worksheet for additional formatting
+        workbook = writer.book
+        worksheet = writer.sheets['Payments Report']
 
-        for payment in payments:
-            row_num += 1
-            row = [
-                payment.payment_date,
-                str(payment.lease.tenant.name),  # Ensure string conversion
-                str(payment.lease.contract_number),
-                str(payment.payment_for_month),
-                str(payment.payment_for_year),
-                float(payment.amount),  # Ensure it's float for number format
-            ]
+        # Set right-to-left direction
+        worksheet.right_to_left()
 
-            for col_num, cell_value in enumerate(row, 1):
-                cell = worksheet.cell(row=row_num, column=col_num, value=cell_value)
-                if col_num == 1:  # Date column
-                    cell.number_format = 'YYYY-MM-DD'
-                if col_num == 6:  # Amount column
-                    cell.number_format = '0.00'
+        # Format headers
+        header_format = workbook.add_format({
+            'bold': True,
+            'align': 'center'
+        })
 
-        workbook.save(response)
-        return response
-
-    except Exception:
-        # Fallback to CSV if Excel fails
-        return export_payments_to_csv(request)
-
-def export_payments_to_csv(request):
-    import csv
-    response = HttpResponse(content_type='text/csv; charset=utf-8')
-    response['Content-Disposition'] = 'attachment; filename="payments_report.csv"'
-    response.write(u'\ufeff'.encode('utf8'))  # BOM for UTF-8
-
-    writer = csv.writer(response)
-    writer.writerow([
-        _('تاريخ الدفع'), _('المستأجر'), _('رقم العقد'), 
-        _('عن شهر'), _('عن سنة'), _('المبلغ (ر.ع)')
-    ])
-
-    payments = Payment.objects.all().order_by('-payment_date')
-    for payment in payments:
-        writer.writerow([
-            payment.payment_date,
-            payment.lease.tenant.name,
-            payment.lease.contract_number,
-            payment.payment_for_month,
-            payment.payment_for_year,
-            payment.amount,
-        ])
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num, value, header_format)
 
     return response
 
