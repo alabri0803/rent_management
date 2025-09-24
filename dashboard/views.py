@@ -21,12 +21,18 @@ from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
 
 def export_to_pdf(request):
+    lease = get_object_or_404(Lease, pk=1)
     payment = get_object_or_404(Payment, pk=1)
+    
+    from num2words import num2words
+    amount_in_words = num2words(payment.amount, lang='ar')
     # بيانات المثال
     context = {
+        'lease': lease,
         'payment': payment,
         'title': 'تقرير باللغة العربية',
-        'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية'
+        'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية',
+        'amount_in_words': amount_in_words,
     }
 
     # تحميل القالب
