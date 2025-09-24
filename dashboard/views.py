@@ -83,7 +83,7 @@ def export_payments_to_csv(request):
 
     writer = csv.writer(response)
     writer.writerow([
-        _('تاريخ الدفع'), _('المستأجر'), _('رقم العقد'), 
+        _('المستأجر'), _('رقم العقد'), 
         _('عن شهر'), _('عن سنة'), _('المبلغ (ر.ع)')
     ])
 
