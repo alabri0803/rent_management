@@ -20,17 +20,15 @@ from .utils import render_to_pdf
 from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
 
-def export_to_pdf(request, pk):
-    payment = get_object_or_404(Payment, pk=pk)
-    # الحصول على البيانات من النموذج
+def export_to_pdf(request):
+    # بيانات المثال
     context = {
-        'payment': payment,
-        'today': timezone.now(),
-        'landlord': _("اسم المؤجر")
+        'title': 'تقرير باللغة العربية',
+        'content': 'هذا محتوى عربي يدعم التشكيل والخطوط العربية'
     }
+
     # تحميل القالب
     html_string = render_to_string('dashboard/reports/payment_voucher.html', context)
-    # بيانات المثال
 
     # إنشاء CSS يدعم العربية
     css = CSS(string='''

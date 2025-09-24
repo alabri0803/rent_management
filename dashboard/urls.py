@@ -35,5 +35,5 @@ urlpatterns = [
     path('staff/new/', StaffUserCreateView.as_view(), name='staff_create'),
     path('vouchers/payment/<int:pk>/', GeneratePaymentVoucherPDF.as_view(), name='voucher_payment'),
     path('vouchers/expense/<int:pk>/', GenerateExpenseVoucherPDF.as_view(), name='generate_expense_voucher'),
-    path('vouchers/payment/<int:pk>/', export_to_pdf, name='export_to_pdf'),
+    path('export_to_pdf/', export_to_pdf, name='export_to_pdf'),
 ]
