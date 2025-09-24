@@ -37,6 +37,16 @@ class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
 
+class GenerateLeaseCancellationPDF(StaffRequiredMixin, View):
+    def get(self, request, lease_pk, *args, **kwargs):
+        lease = get_object_or_404(Lease, pk=lease_pk)
+        context = {
+            'lease': lease,
+            'today': timezone.now(),
+            'STATIC_URL': settings.STATIC_URL, # تمرير مسار الملفات الثابتة
+        }
+        return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
+
 # --- Dashboard Home ---
 class DashboardHomeView(StaffRequiredMixin, ListView):
     model = Lease
