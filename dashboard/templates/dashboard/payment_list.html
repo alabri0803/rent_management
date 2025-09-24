@@ -21,7 +21,7 @@
                 <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
                 <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
                 <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{% url 'export_to_pdf' %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة سند" %}</a>
+                    <a href="{% url 'export_to_pdf' payment.pk %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة سند" %}</a>
                 </td>
             </tr>
             {% empty %}
