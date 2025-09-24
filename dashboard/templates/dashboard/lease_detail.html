@@ -23,7 +23,7 @@
     </div>
     <div class="border-t my-6"></div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div><h4 class="font-bold">{% trans "الوحدة" %}</h4><p>{{ lease.unit }}</p></div>
+        <div><h4 class="font-bold">{% trans "تفاصيل الوحدة" %}</h4><p>{{ lease.unit }}</p></div>
         <div><h4 class="font-bold">{% trans "الإيجار الشهري" %}</h4><p>{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
         <div><h4 class="font-bold">{% trans "فترة العقد" %}</h4><p>{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
