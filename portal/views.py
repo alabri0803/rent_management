@@ -6,37 +6,6 @@ from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from dashboard.models import Lease, Tenant, MaintenanceRequest
 from dashboard.forms import MaintenanceRequestForm
-from django.contrib.auth.views import LoginView
-from django.contrib.auth import login
-from django.shortcuts import redirect
-from .forms import CustomUserCreationForm
-
-class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
-
-    def get_success_url(self):
-        user = self.request.user
-        if user.is_authenticated:
-            if user.is_staff:
-                return reverse_lazy('dashboard_home')
-            else:
-                return reverse_lazy('portal_dashboard')
-        return reverse_lazy('login') # Fallback
-
-def register_user(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Note: If user is a tenant, you might want to link it to a Tenant object here
-            # For now, we'll just log them in.
-            login(request, user)
-            if user.is_staff:
-                return redirect('dashboard_home')
-            return redirect('portal_dashboard')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
 
 class PortalDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'portal/dashboard.html'

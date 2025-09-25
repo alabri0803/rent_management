@@ -13,12 +13,7 @@
         <div class="flex space-x-2 rtl:space-x-reverse">
             <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
             <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
-            {% if lease.status != 'cancelled' %}
-            <a href="{% url 'lease_cancel' lease.pk %}" class="bg-gray-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</a>
-            {% endif %}
             <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
-        </div>
-        <div><a href="{% url 'report_lease_cancellation' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة إستمارة إلغاء العقد" %} &rarr;</a>
         </div>
     </div>
     <div class="border-t my-6"></div>
@@ -28,9 +23,6 @@
         <div><h4 class="font-bold">{% trans "فترة العقد" %}</h4><p>{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
-        <div><h4 class="font-bold">{% trans "الحالة" %}</h4><p>{{ lease.unit.get_status_display }}</p></div>
-        <div><h4 class="font-bold">{% trans "المساحة" %}</h4><p>{{ lease.unit.area|default:"-" }} {% if lease.unit.area %}{% trans "م²" %}{% endif %}</p></div>
-        <div><h4 class="font-bold">{% trans "نوع الوحدة" %}</h4><p>{{ lease.unit.get_unit_type_display }}</p></div>
         <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
     </div>
 </div>

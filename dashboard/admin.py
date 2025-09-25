@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, CompanyProfile, UnitImage
-from django.utils.translation import gettext_lazy as _
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
@@ -8,26 +7,11 @@ class BuildingAdmin(admin.ModelAdmin):
     list_display = ('name', 'address')
     search_fields = ('name',)
 
-class UnitImageInline(admin.TabularInline):
-    model = UnitImage
-    extra = 1
-    fields = ('image', 'caption')
-
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('unit_number', 'building', 'unit_type', 'status', 'area', 'is_available')
-    list_filter = ('building', 'unit_type', 'status', 'is_available')
+    list_display = ('unit_number', 'building', 'unit_type', 'floor', 'is_available')
+    list_filter = ('building', 'unit_type', 'is_available')
     search_fields = ('unit_number', 'building__name')
-    fieldsets = (
-        (None, {
-            'fields': ('building', 'unit_number', 'unit_type', 'floor', 'status')
-        }),
-        (_('تفاصيل إضافية'), {
-            'fields': ('area', 'amenties', 'notes'),
-            'classes': ('collapse',),
-        }),
-    )
-    inlines = [UnitImageInline]
 
 # تخصيص عرض المستأجرين
 @admin.register(Tenant)
@@ -74,9 +58,3 @@ admin.site.register(Document)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'read', 'timestamp')
     list_filter = ('read', 'user')
-
-@admin.register(CompanyProfile)
-class CompanyProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'phone', 'email')
-    def has_add_permission(self, request):
-        return not CompanyProfile.objects.count() == 0

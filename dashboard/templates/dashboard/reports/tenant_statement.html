@@ -4,32 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        @font-face {
-            font-family: 'Tajawal';
-            src: url("{{ STATIC_URL }}fonts/Tajawal-Regular.ttf"); /* تأكد من صحة المسار */
-        }
-        body {
-            font-family: 'Tajawal', sans-serif;
-            direction: rtl;
-        }
-        /* أضف هذا النمط لضمان عرض الأعمدة جنبًا إلى جنب */
-        .bilingual-container {
-            display: -pdf-flex-box; /* خاص بـ xhtml2pdf */
-            flex-direction: row;
-            width: 100%;
-        }
-        .bilingual-col {
-            width: 50%;
-            padding: 5px;
-        }
-        .en {
-            direction: ltr;
-            text-align: left;
-        }
-        .ar {
-            direction: rtl;
-            text-align: right;
-        }
+        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
+        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .details { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .details td { padding: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: right; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>

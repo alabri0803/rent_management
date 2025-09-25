@@ -4,10 +4,7 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-gray-800">{% trans "المدفوعات" %}</h2>
-    <div class="flex space-x-2 rtl:space-x-reverse">
-        <a href="{% url 'export_payments_excel' %}" class="bg-green-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-green-700">{% trans "تصدير" %}</a>
     <a href="{% url 'payment_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة دفعة جديدة" %}</a>
-    </div>
 </div>
 <div class="card overflow-hidden">
     <table class="w-full text-start">
@@ -22,9 +19,7 @@
                 <td class="p-4">{{ payment.lease.contract_number }}</td>
                 <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
                 <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
-                <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{% url 'report_payment_voucher' payment.pk %}" target="_blank" class="text-green-600 hover:underline ml-2">{% trans "طباعة" %}</a>
-                </td>
+                <td class="p-4"><a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a></td>
             </tr>
             {% empty %}
             <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>

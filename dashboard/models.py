@@ -7,22 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
+import datetime
 from django.db.models import Sum
-
-class CompanyProfile(models.Model):
-    name = models.CharField(_("اسم الشركة"), max_length=200)
-    logo = models.ImageField(_("شعار الشركة"), upload_to='company_logos/', blank=True, null=True)
-    commercial_registration = models.CharField(_("رقم السجل التجاري"), max_length=100, blank=True)
-    phone = models.CharField(_("رقم الهاتف"), max_length=20, blank=True)
-    email = models.EmailField(_("البريد الإلكتروني"), blank=True)
-    address = models.TextField(_("العنوان"), blank=True)
-
-    class Meta:
-        verbose_name = _("ملف الشركة")
-        verbose_name_plural = _("ملفات الشركة")
-
-    def __str__(self):
-        return self.name
 
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
@@ -34,33 +20,17 @@ class Building(models.Model):
         return self.name
 
 class Unit(models.Model):
-    UNIT_STATUS_CHOICES = [('available', _('متاحة')), ('rented', _('موجرة')), ('maintenance', _('تحت الصيانة'))]
     UNIT_TYPE_CHOICES = [('office', _('مكتب')), ('apartment', _('شقة')), ('shop', _('محل'))]
     building = models.ForeignKey(Building, on_delete=models.CASCADE, verbose_name=_("المبنى"))
     unit_number = models.CharField(_("رقم الوحدة"), max_length=20)
     unit_type = models.CharField(_("نوع الوحدة"), max_length=20, choices=UNIT_TYPE_CHOICES)
     floor = models.IntegerField(_("الطابق"))
     is_available = models.BooleanField(_("متاحة للإيجار"), default=True)
-    area = models.DecimalField(_("المساحة(متر مربع)"), max_digits=8, decimal_places=2, blank=True, null=True)
-    amenties = models.TextField(_("المرافق والمميزات"), blank=True, help_text=_("مفصولة بفاصلة، مثال: مكيف، واي فاي، غسالة، إلخ."))
-    status = models.CharField(_("حالة الوحدة"), max_length=20, choices=UNIT_STATUS_CHOICES, default='available')
-    notes = models.TextField(_("ملاحظات إدارية"), blank=True, help_text=_("ملاحظات خاصة بالموظفين، غير مرئية للمستأجرين."))
     class Meta:
         verbose_name = _("وحدة")
         verbose_name_plural = _("الوحدات")
     def __str__(self):
         return f"{self.building.name} - {self.unit_number}"
-
-class UnitImage(models.Model):
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='images', verbose_name=_("الوحدة"))
-    image = models.ImageField(_("صورة الوحدة"), upload_to='unit_images/')
-
-    class Meta:
-        verbose_name = _("صورة الوحدة")
-        verbose_name_plural = _("صور الوحدات")
-
-    def __str__(self):
-        return f"Image for {self.unit}"
 
 class Tenant(models.Model):
     TENANT_TYPE_CHOICES = [('individual', _('فرد')), ('company', _('شركة'))]

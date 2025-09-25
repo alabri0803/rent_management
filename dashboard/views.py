@@ -8,130 +8,16 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from django.conf import settings
-from django.http import HttpResponse
-import openpyxl
-from openpyxl.styles import Font
+from datetime import datetime
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
 from .utils import render_to_pdf
 
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-def export_payments_to_excel(request):
-    try:
-        response = HttpResponse(
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8',
-        )
-        response['Content-Disposition'] = 'attachment; filename="payments_report.xlsx"'
-
-        workbook = openpyxl.Workbook()
-        worksheet = workbook.active
-        worksheet.title = 'Payments Report'
-        worksheet.sheet_view.rightToLeft = True
-
-        # Ensure Arabic text is properly encoded
-        columns = [
-            str(_('تاريخ الدفع')),  # Force string conversion
-            str(_('المستأجر')),
-            str(_('رقم العقد')), 
-            str(_('عن شهر')),
-            str(_('عن سنة')),
-            str(_('المبلغ (ر.ع)'))
-        ]
-
-        row_num = 1
-        header_font = Font(bold=True)
-
-        for col_num, column_title in enumerate(columns, 1):
-            cell = worksheet.cell(row=row_num, column=col_num, value=column_title)
-            cell.font = header_font
-
-        payments = Payment.objects.all().order_by('-payment_date')
-
-        for payment in payments:
-            row_num += 1
-            row = [
-                payment.payment_date,
-                str(payment.lease.tenant.name),  # Ensure string conversion
-                str(payment.lease.contract_number),
-                str(payment.payment_for_month),
-                str(payment.payment_for_year),
-                float(payment.amount),  # Ensure it's float for number format
-            ]
-
-            for col_num, cell_value in enumerate(row, 1):
-                cell = worksheet.cell(row=row_num, column=col_num, value=cell_value)
-                if col_num == 1:  # Date column
-                    cell.number_format = 'YYYY-MM-DD'
-                if col_num == 6:  # Amount column
-                    cell.number_format = '0.00'
-
-        workbook.save(response)
-        return response
-
-    except Exception:
-        # Fallback to CSV if Excel fails
-        return export_payments_to_csv(request)
-
-def export_payments_to_csv(request):
-    import csv
-    response = HttpResponse(content_type='text/csv; charset=utf-8')
-    response['Content-Disposition'] = 'attachment; filename="payments_report.csv"'
-    response.write(u'\ufeff'.encode('utf8'))  # BOM for UTF-8
-
-    writer = csv.writer(response)
-    writer.writerow([
-        _('المستأجر'), _('رقم العقد'), 
-        _('عن شهر'), _('عن سنة'), _('المبلغ (ر.ع)')
-    ])
-
-    payments = Payment.objects.all().order_by('-payment_date')
-    for payment in payments:
-        writer.writerow([
-            payment.payment_date,
-            payment.lease.tenant.name,
-            payment.lease.contract_number,
-            payment.payment_for_month,
-            payment.payment_for_year,
-            payment.amount,
-        ])
-
-    return response
-
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-def cancel_lease(request, pk):
-    lease = get_object_or_404(Lease, pk=pk)
-    if request.method == 'POST':
-        # تحديث حالة العقد
-        lease.status = 'cancelled'
-        lease.save()
-        # جعل الوحدة متاحة مرة أخرى
-        lease.unit.is_available = True
-        lease.unit.save()
-        messages.success(request, _("تم إلغاء العقد بنجاح."))
-        return redirect('lease_detail', pk=lease.pk)
-
-    return render(request, 'dashboard/lease_confirm_cancel.html', {'lease': lease})
-
-
-
 # Mixin for Staff Users
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
-
-class GenerateLeaseCancellationPDF(StaffRequiredMixin, View):
-    def get(self, request, lease_pk, *args, **kwargs):
-        lease = get_object_or_404(Lease, pk=lease_pk)
-        context = {
-            'lease': lease,
-            'today': timezone.now(),
-            'STATIC_URL': settings.STATIC_URL, # تمرير مسار الملفات الثابتة
-        }
-        return render_to_pdf('dashboard/reports/lease_cancellation_form.html', context)
 
 # --- Dashboard Home ---
 class DashboardHomeView(StaffRequiredMixin, ListView):
@@ -353,21 +239,3 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
-
-class GeneratePaymentVoucherPDF(StaffRequiredMixin, View):
-    def get(self, request, payment_pk, *args, **kwargs):
-        payment = get_object_or_404(Payment, pk=payment_pk)
-        context = {
-            'payment': payment,
-            'STATIC_URL': settings.STATIC_URL,
-        }
-        return render_to_pdf('dashboard/reports/payment_voucher.html', context)
-
-class GenerateDisbursementVoucherPDF(StaffRequiredMixin, View):
-    def get(self, request, expense_pk, *args, **kwargs):
-        expense = get_object_or_404(Expense, pk=expense_pk)
-        context = {
-            'expense': expense,
-            'STATIC_URL': settings.STATIC_URL,
-        }
-        return render_to_pdf('dashboard/reports/disbursement_voucher.html', context)

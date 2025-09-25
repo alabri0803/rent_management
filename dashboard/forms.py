@@ -3,14 +3,7 @@ from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-class FormStyleMixin:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            common_class = 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'
-            field.widget.attrs.update({'class': common_class})
-
-class LeaseForm(FormStyleMixin, forms.ModelForm):
+class LeaseForm(forms.ModelForm):
     class Meta:
         model = Lease
         fields = ['unit', 'tenant', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
@@ -26,7 +19,7 @@ class LeaseForm(FormStyleMixin, forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
-class MaintenanceRequestForm(FormStyleMixin, forms.ModelForm):
+class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = ['title', 'description', 'priority', 'image']
@@ -36,7 +29,7 @@ class MaintenanceRequestForm(FormStyleMixin, forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
-class MaintenanceRequestUpdateForm(FormStyleMixin, forms.ModelForm):
+class MaintenanceRequestUpdateForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = ['status', 'staff_notes']
@@ -45,7 +38,7 @@ class MaintenanceRequestUpdateForm(FormStyleMixin, forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
-class DocumentForm(FormStyleMixin, forms.ModelForm):
+class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = ['title', 'file']
@@ -54,7 +47,7 @@ class DocumentForm(FormStyleMixin, forms.ModelForm):
         self.fields['title'].widget.attrs.update({'class': 'w-full p-2 border rounded-md', 'placeholder': _('مثال: نسخة من العقد الموقّع')})
         self.fields['file'].widget.attrs.update({'class': 'w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'})
 
-class ExpenseForm(FormStyleMixin, forms.ModelForm):
+class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
         fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt']
@@ -68,7 +61,7 @@ class ExpenseForm(FormStyleMixin, forms.ModelForm):
             else:
                 field.widget.attrs.update({'class': common_class})
 
-class PaymentForm(FormStyleMixin, forms.ModelForm):
+class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'notes']
