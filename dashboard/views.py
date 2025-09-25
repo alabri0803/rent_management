@@ -380,8 +380,8 @@ class TenantDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
                 notification.save()
                 messages.success(request, _("تم إرسال الرسالة بنجاح."))
             else:
-                messages.error(request, _("لا يمكن ارسال الرسالة قد لا يكون للمستاجر حساب مرتبط."))
-            return redirect(self.get_success_url())
+                messages.error(request, _("هذا العقد غير مرتبط باي قالب"))
+            return redirect('lease_detail', pk=kwargs['pk'])
 
     def get_success_url(self):
         return reverse('tenant_detail', kwargs={'pk': self.object.pk})
