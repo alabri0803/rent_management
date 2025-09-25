@@ -1,13 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from dateutil.relativedelta import relativedelta
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from decimal import Decimal
-import datetime
 from django.db.models import Sum
 
 class Company(models.Model):
