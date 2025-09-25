@@ -98,11 +98,15 @@ class Lease(models.Model):
     office_fee = models.DecimalField(_("رسوم المكتب"), max_digits=10, decimal_places=2, default=5.00)
     admin_fee = models.DecimalField(_("الرسوم الإدارية"), max_digits=10, decimal_places=2, default=1.00)
     registration_fee = models.DecimalField(_("رسوم تسجيل العقد (3%)"), max_digits=10, decimal_places=2, blank=True)
+    template = models.ForeignKey('ContractTemplate', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("قالب العقد المستخدم"))
+    auto_renew = models.BooleanField(_("تجديد تلقائي عند الانتهاء"), default=False)
+    cancellation_date = models.DateField(_("تاريخ الإلغاء"), blank=True, null=True)
+    cancellation_reason = models.TextField(_("سبب الإلغاء"), blank=True, null=True)
     
     class Meta:
         verbose_name = _("عقد إيجار")
         verbose_name_plural = _("عقود الإيجار")
-        permissions = [("can_view_financial_summary", _("يمكنه عرض ملخص مالي"))]
+        permissions = [("can_view_financial_summary", _("يمكنه عرض ملخص مالي")), ("canc_cancel_lease", _("يمكنه إلغاء عقد"))]
         
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
@@ -120,11 +124,15 @@ class Lease(models.Model):
         super().save(*args, **kwargs)
 
     def update_status(self):
+        if self.status == 'cancelled': 
+            return
         today = timezone.now().date()
-        if self.status == 'cancelled': return
-        if self.end_date < today: self.status = 'expired'
-        elif self.end_date - relativedelta(months=1) <= today: self.status = 'expiring_soon'
-        else: self.status = 'active'
+        if self.end_date < today: 
+            self.status = 'expired'
+        elif self.end_date - relativedelta(months=1) <= today: 
+            self.status = 'expiring_soon'
+        else: 
+            self.status = 'active'
             
     def get_status_color(self):
         if self.status == 'active': return 'active'
@@ -253,3 +261,14 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
+class ContractTemplate(models.Model):
+    title = models.CharField(_("عنوان القالب"), max_length=200, help_text=_("مثال: عقد إيجار شقة"))
+    body = models.TextField(_("محتوى القالب"), help_text=_("استخدم المتغيرات التالية ليتم استبداله تلقائيا: {{tenant_name}}, {{ unit_full_address }}, {{ start_date }}, {{ end_date }}, {{ monthly_rent_amount }}, {{ monthly_rent_words }}, {{ contract_number }}."))
+
+    class Meta:
+        verbose_name = _("قالب عقد")
+        verbose_name_plural = _("قوالب العقود")
+
+    def __str__(self):
+        return self.title

@@ -1,0 +1,22 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* تأكد من أن الخط المستخدم هنا يدعم اللغة العربية */
+        @font-face {
+            font-family: 'Tajawal';
+            src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');
+        }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            direction: rtl; 
+            text-align: right; 
+        }
+    </style>
+</head>
+<body>
+    {{ content|safe }}
+</body>
+</html>

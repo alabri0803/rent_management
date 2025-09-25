@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company, ContractTemplate
 from django.utils.translation import gettext_lazy as _
 
 # تخصيص عرض ملف الشركة
@@ -37,8 +37,8 @@ class TenantAdmin(admin.ModelAdmin):
 # تخصيص عرض العقود
 @admin.register(Lease)
 class LeaseAdmin(admin.ModelAdmin):
-    list_display = ('contract_number', 'tenant', 'unit', 'start_date', 'end_date', 'monthly_rent', 'status')
-    list_filter = ('status', 'unit__building')
+    list_display = ('contract_number', 'tenant', 'unit', 'start_date', 'end_date', 'monthly_rent', 'status', 'auto_renew')
+    list_filter = ('status', 'unit__building', 'auto_renew')
     search_fields = ('contract_number', 'tenant__name', 'unit__unit_number')
     date_hierarchy = 'start_date'
 
@@ -73,3 +73,8 @@ class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'read', 'timestamp', 'sent_by')
     list_filter = ('read', 'user')
     search_fields = ('message', 'user__username')
+
+@admin.register(ContractTemplate)
+class ContractTemplateAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+    search_fields = ('title',)

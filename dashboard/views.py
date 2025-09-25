@@ -1,3 +1,4 @@
+from django import template
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
@@ -8,10 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from django.template import Context, Template
+from num2words import num2words
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Notification
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, TenantForm, SendMessageForm
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, SendMessageForm, LeaseCancellationForm
 from .utils import render_to_pdf
 
 # Mixin for Staff Users
@@ -378,8 +380,55 @@ class TenantDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
                 notification.save()
                 messages.success(request, _("تم إرسال الرسالة بنجاح."))
             else:
-                messages.error(request, _("لا يمكن ارسال الرسالة قد لا يكون للمستاجر حساب مرتبط."))
-            return redirect(self.get_success_url())
+                messages.error(request, _("هذا العقد غير مرتبط باي قالب"))
+            return redirect('lease_detail', pk=kwargs['pk'])
 
     def get_success_url(self):
         return reverse('tenant_detail', kwargs={'pk': self.object.pk})
+
+class CancelLeaseView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'dashboard.canc_cancel_lease'
+    model = Lease
+    form_class = LeaseCancellationForm
+    template_name = 'dashboard/lease_cancel_form.html'
+
+    def from_valid(self, form):
+        lease = self.get_object()
+        lease.status = 'cancelled'
+        lease.unit.is_available = True
+        lease.unit.save()
+        messages.success(self.request, _("تم إلغاء العقد بنجاح."))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('lease_detail', kwargs={'pk': self.object.pk})
+
+class GenerateContractPDF(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'dashboard.view_lease'
+
+    def get(self, request, pk):
+        lease = get_object_or_404(Lease, pk=pk)
+        if not lease.template:
+            messages.error(request, _("هذا العقد غير مرتبط بأي قالب."))
+            return redirect('lease_detail', pk=pk)
+
+        template_str = lease.template.body
+        template = Template(template_str)
+
+        # تحضير context للتعويض في القالب
+        context_data = {
+            'tenant_name': lease.tenant.name,
+            'unit_full_address': f"{lease.unit.unit_number}, {lease.unit.building.name}, {lease.unit.building.address}",
+            'start_date': lease.start_date.strftime('%d/%m/%Y'),
+            'end_date': lease.end_date.strftime('%d/%m/%Y'),
+            'monthly_rent_amount': f"{lease.monthly_rent:,.2f}",
+            'monthly_rent_words': num2words(lease.monthly_rent, lang='ar'), # يتطلب تثبيت pip install num2words
+            'contract_number': lease.contract_number,
+        }
+        context = Context(context_data)
+        html_content = template.render(context)
+
+        # استخدام دالة render_to_pdf الموجودة مسبقًا
+        # ملاحظة: يجب تعديل دالة render_to_pdf لتستخدم خط يدعم العربية
+        pdf_context = {'content': html_content}
+        return render_to_pdf('dashboard/reports/contract_template.html', pdf_context)

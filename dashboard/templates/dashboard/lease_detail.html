@@ -4,18 +4,31 @@
 {% block content %}
 <div class="mb-6"><a href="{% url 'lease_list' %}" class="text-blue-600 hover:underline">&larr; {% trans "العودة إلى قائمة العقود" %}</a></div>
 <div class="card p-8 mb-8">
-    <div class="flex justify-between items-start">
+    <div class="flex justify-between items-start">            
         <div>
             <h2 class="text-3xl font-bold text-gray-800">{{ lease.tenant.name }}</h2>
             <p class="text-gray-500">{% trans "رقم العقد" %}: {{ lease.contract_number }}</p>
             <span class="status-badge status-{{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
         </div>
         <div class="flex space-x-2 rtl:space-x-reverse">
+            {% if lease.template %}
+            <a href="{% url 'lease_print_pdf' lease.pk %}" target="_blank" class="bag-gray-500 text-white py-2 px-4 rounded-lg">{% trans "طباعة العقد" %} &rarr;</a>
+            {% endif %}
             <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
             <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
+            {% if lease.status != 'cancelled' and perms.dashboard.cancel_lease %}
+            <a href="{% url 'lease_cancel' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</a>
+            {% endif %}
             <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-500 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
         </div>
     </div>
+    {% if lease.status == 'cancelled' %}
+    <div class="border-t my-6 pt-4 border-red-500 text-red-50 p-4 rounded-md">
+        <h4 class="font-bold text-red-700">{% trans "تفاصيل الإلغاء" %}</h4>
+        <p><strong>{% trans "تاريخ الإلغاء" %}:"</strong> {{ lease.cancelled_date|date:"d M Y" }}</p>
+        <p><strong>{% trans "السبب" %}:"</strong> {{ lease.cancellation_reason }}</p>
+    </div>
+    {% endif %}
     <div class="border-t my-6"></div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div><h4 class="font-bold">{% trans "الوحدة" %}</h4><p>{{ lease.unit }}</p></div>

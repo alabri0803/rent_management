@@ -1,13 +1,16 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant, Notification
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant, Notification, ContractTemplate
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 class LeaseForm(forms.ModelForm):
     class Meta:
         model = Lease
-        fields = ['unit', 'tenant', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
-        widgets = {'start_date': forms.DateInput(attrs={'type': 'date'}), 'end_date': forms.DateInput(attrs={'type': 'date'})}
+        fields = ['unit', 'tenant', 'template', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}), 
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Show only available units, or the currently selected one if editing
@@ -91,3 +94,18 @@ class SendMessageForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['message'].label = _("رسالة جديدة")
         self.fields['message'].widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
+
+class LeaseCancellationForm(forms.ModelForm):
+    class Meta:
+        model = Lease
+        fields = ['cancellation_date', 'cancellation_reason']
+        widgets = {
+            'cancellation_date': forms.DateInput(attrs={'type': 'date', 'required': True}),
+            'cancellation_reason': forms.Textarea(attrs={'rows': 4, 'required': True}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cancellation_date'].initial = timezone.now().date()
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
