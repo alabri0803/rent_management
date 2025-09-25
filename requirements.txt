@@ -49,6 +49,7 @@ pycparser==2.23
 pydyf==0.11.0
 pyHanko==0.31.0
 pyhanko-certvalidator==0.29.0
+PyMySQL==1.1.2
 pypdf==6.0.0
 pyphen==0.17.2
 python-bidi==0.6.6
@@ -73,3 +74,4 @@ webencodings==0.5.1
 whitenoise==6.9.0
 xhtml2pdf==0.2.17
 zopfli==0.2.3.post1
+mysqlclient
