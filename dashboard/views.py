@@ -10,8 +10,8 @@ from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Notification
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, TenantForm, SendMessageForm
 from .utils import render_to_pdf
 
 # Mixin for Staff Users
@@ -335,3 +335,51 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح."))
         return super().form_valid(form)
+
+class TenantListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'dashboard.view_tenant'
+    model = Tenant
+    template_name = 'dashboard/tenant_list.html'
+    context_object_name = 'tenants'
+    paginate_by = 15
+
+    def get_queryset(self):
+        queryset = Tenant.objects.all().order_by('name')
+        search_query = self.request.GET.get('q', '')
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(phone__icontains=search_query) | Q(email__icontains=search_query))
+        return queryset
+
+class TenantDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = 'dashboard.view_tenant'
+    model = Tenant
+    template_name = 'dashboard/tenant_detail.html'
+    context_object_name = 'tenant'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tenant = self.object
+        context['message_form'] = SendMessageForm()
+        context['all_leases'] = Lease.objects.filter(tenant=tenant).order_by('-start_date')
+        context['all_payments'] = Payment.objects.filter(lease__tenant=tenant).order_by('-payment_date')
+        context['all_maintenance'] = MaintenanceRequest.objects.filter(lease__tenant=tenant).order_by('-reported_date')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'update_tenant' in request.POST:
+            return super().post(request, *args, **kwargs)
+        elif 'send_message' in request.POST:
+            tenant = self.get_object()
+            form = SendMessageForm(request.POST)
+            if form.is_valid() and tenant.user:
+                notification = form.save(commit=False)
+                notification.user = tenant.user
+                notification.sent_by = request.user
+                notification.save()
+                messages.success(request, _("تم إرسال الرسالة بنجاح."))
+            else:
+                messages.error(request, _("لا يمكن ارسال الرسالة قد لا يكون للمستاجر حساب مرتبط."))
+            return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('tenant_detail', kwargs={'pk': self.object.pk})

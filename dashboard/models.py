@@ -67,11 +67,18 @@ class Tenant(models.Model):
     phone = models.CharField(_("رقم الهاتف"), max_length=15)
     email = models.EmailField(_("البريد الإلكتروني"), blank=True, null=True)
     authorized_signatory = models.CharField(_("المفوض بالتوقيع"), max_length=150, blank=True, null=True, help_text=_("يُملأ فقط في حال كان المستأجر شركة"))
+    commercial_reg_no = models.CharField(_("رقم السجل التجاري"), max_length=50, blank=True, null=True)
+    tax_card_no = models.CharField(_("رقم البطاقة الضريبية"), max_length=50, blank=True, null=True)
+    rating = models.PositiveIntegerField(_("تقيم العميل"), choices=[(i, str(i)) for i in range(1, 6)], default=3, help_text=_("تقيم داخلي للعميل من 1 إلى 5 نجوم"))
+    internal_notes = models.TextField(_("ملاحظات داخلية"), blank=True, null=True, help_text=_("ملاحظات داخلية للموظفين فقط"))
     
     class Meta:
         verbose_name = _("مستأجر")
         verbose_name_plural = _("المستأجرين")
         permissions = [("can_view_tenant_portal", _("يمكنه عرض بوابة المستأجرين"))]
+
+    def get_absolute_url(self):
+        return reverse('tenant_detail', kwargs={'pk': self.pk})
         
     def __str__(self):
         return self.name
@@ -237,9 +244,7 @@ class Notification(models.Model):
     message = models.TextField(_("الرسالة"))
     read = models.BooleanField(_("مقروءة"), default=False)
     timestamp = models.DateTimeField(_("الوقت"), auto_now_add=True)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    related_object = GenericForeignKey('content_type', 'object_id')
+    sent_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications', verbose_name=_("مرسل من"))
 
     class Meta:
         verbose_name = _("إشعار")

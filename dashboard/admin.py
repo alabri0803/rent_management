@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company
+from django.utils.translation import gettext_lazy as _
 
 # تخصيص عرض ملف الشركة
 @admin.register(Company)
@@ -24,9 +25,14 @@ class UnitAdmin(admin.ModelAdmin):
 # تخصيص عرض المستأجرين
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
-    list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
-    list_filter = ('tenant_type',)
-    search_fields = ('name', 'phone', 'email')
+    list_display = ('name', 'tenant_type', 'phone', 'email', 'rating', 'user')
+    list_filter = ('tenant_type', 'rating')
+    search_fields = ('name', 'phone', 'email', 'commercial_reg_no')
+    fieldsets = (
+        (_('المعلومات الأساسية'), {'fields': ('name', 'tenant_type', 'phone', 'email', 'user')}),
+        (_('معلومات الشركة'), {'fields': ('authorized_signatory', 'commercial_reg_no', 'tax_card_no')}),
+        (_('التقيم الداخلي'), {'fields': ('rating', 'internal_notes')}),
+    )
 
 # تخصيص عرض العقود
 @admin.register(Lease)
@@ -64,5 +70,6 @@ admin.site.register(Document)
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'message', 'read', 'timestamp')
+    list_display = ('user', 'message', 'read', 'timestamp', 'sent_by')
     list_filter = ('read', 'user')
+    search_fields = ('message', 'user__username')

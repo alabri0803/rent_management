@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant, Notification
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -71,3 +71,23 @@ class PaymentForm(forms.ModelForm):
         self.fields['payment_for_year'].initial = timezone.now().year
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
+
+class TenantForm(forms.ModelForm):
+    class Meta:
+        model = Tenant
+        fields = ['rating', 'internal_notes']
+        widgets = {'internal_notes': forms.Textarea(attrs={'rows': 4})}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+
+class SendMessageForm(forms.Form):
+    class Meta:
+        model = Notification
+        fields = ['message']
+        widgets = {'message': forms.Textarea(attrs={'rows': 3, 'placeholder': _('اكتب رسالتك هنا...')})}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['message'].label = _("رسالة جديدة")
+        self.fields['message'].widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
