@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
 from .models import Tenant, MaintenanceRequest, Lease, Notification
 
@@ -13,8 +13,14 @@ def create_tenant_user_account(sender, instance, created, **kwargs):
             username = f"user_{instance.phone}"
         if User.objects.filter(username=username).exists():
             username = f"{username}_{instance.id}"
+            
         user = User.objects.create_user(username=username, email=instance.email, password=instance.phone)
         user.first_name = instance.name
+        try:
+            tenant_group = Group.objects.get(name='tenant')
+            user.groups.add(tenant_group)
+        except Group.DoesNotExist:
+            pass
         user.save()
         instance.user = user
         instance.save()

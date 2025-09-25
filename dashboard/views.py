@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -20,7 +20,8 @@ class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.is_staff
 
 # --- Dashboard Home ---
-class DashboardHomeView(StaffRequiredMixin, ListView):
+class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'dashboard.view_lease'
     model = Lease
     template_name = 'dashboard/home.html'
     context_object_name = 'leases'
@@ -66,17 +67,20 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
         return context
 
 
-class LeaseListView(StaffRequiredMixin, ListView):
+class LeaseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'dashboard.view_lease'
     model = Lease
     template_name = 'dashboard/lease_list.html'
     context_object_name = 'leases'
     paginate_by = 10
+    
     def get_queryset(self):
         queryset = Lease.objects.all().order_by('-start_date')
         search_query = self.request.GET.get('q', '')
         if search_query:
-            queryset = queryset.filter(Q(contract_number__icontains=search_query) | Q(tenant__name__icontains=search_query) | Q(unit__unit_number__icontains=search_query))
+            queryset = queryset.filter(Q(tenant__name__icontains=search_query) | Q(contract_number__icontains=search_query) | Q(unit__unit_number__icontains=search_query))
         return queryset
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         for lease in Lease.objects.all(): lease.save()
@@ -103,10 +107,12 @@ class LeaseListView(StaffRequiredMixin, ListView):
         context['chart_data'] = chart_data
         return context
 
-class LeaseDetailView(StaffRequiredMixin, DetailView):
+class LeaseDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = 'dashboard.view_lease'
     model = Lease
     template_name = 'dashboard/lease_detail.html'
     context_object_name = 'lease'
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['document_form'] = DocumentForm()
@@ -114,24 +120,47 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
         return context
 
-class LeaseCreateView(StaffRequiredMixin, CreateView):
-    model = Lease; form_class = LeaseForm; template_name = 'dashboard/lease_form.html'; success_url = reverse_lazy('lease_list')
+class LeaseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'dashboard.add_lease'
+    model = Lease
+    form_class = LeaseForm
+    template_name = 'dashboard/lease_form.html'
+    success_url = reverse_lazy('lease_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("إضافة عقد جديد"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة عقد جديد")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تمت إضافة العقد بنجاح!")); return super().form_valid(form)
+        messages.success(self.request, _("تمت إضافة العقد بنجاح!"))
+        return super().form_valid(form)
 
-class LeaseUpdateView(StaffRequiredMixin, UpdateView):
-    model = Lease; form_class = LeaseForm; template_name = 'dashboard/lease_form.html'; success_url = reverse_lazy('lease_list')
+class LeaseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'dashboard.change_lease'
+    model = Lease
+    form_class = LeaseForm
+    template_name = 'dashboard/lease_form.html'
+    success_url = reverse_lazy('lease_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("تعديل العقد"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل العقد")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم تحديث العقد بنجاح!")); return super().form_valid(form)
+        messages.success(self.request, _("تم تحديث العقد بنجاح!"))
+        return super().form_valid(form)
 
-class LeaseDeleteView(StaffRequiredMixin, DeleteView):
-    model = Lease; template_name = 'dashboard/lease_confirm_delete.html'; success_url = reverse_lazy('lease_list')
+class LeaseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'dashboard.delete_lease'
+    model = Lease
+    template_name = 'dashboard/lease_confirm_delete.html'
+    success_url = reverse_lazy('lease_list')
+    
     def form_valid(self, form):
-        messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم حذف العقد بنجاح."))
+        return super().form_valid(form)
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -146,54 +175,101 @@ def renew_lease(request, pk):
         else:
             new_end_date = request.POST.get('manual_date')
             if not new_end_date:
-                messages.error(request, _("الرجاء إدخال تاريخ انتهاء صحيح.")); return redirect('lease_detail', pk=pk)
+                messages.error(request, _("الرجاء إدخال تاريخ انتهاء صحيح."))
+                return redirect('lease_detail', pk=pk)
         new_lease = Lease.objects.create(unit=original_lease.unit, tenant=original_lease.tenant, contract_number=f"{original_lease.contract_number}-R", monthly_rent=original_lease.monthly_rent, start_date=new_start_date, end_date=new_end_date, electricity_meter=original_lease.electricity_meter, water_meter=original_lease.water_meter)
         original_lease.status = 'expired'; original_lease.save()
-        messages.success(request, _("تم تجديد العقد بنجاح!")); return redirect('lease_detail', pk=new_lease.pk)
+        messages.success(request, _("تم تجديد العقد بنجاح!"))
+        return redirect('lease_detail', pk=new_lease.pk)
     return render(request, 'dashboard/lease_renew.html', {'lease': original_lease})
 
 class DocumentUploadView(StaffRequiredMixin, CreateView):
-    model = Document; form_class = DocumentForm
+    model = Document
+    form_class = DocumentForm
     def form_valid(self, form):
-        lease = get_object_or_404(Lease, pk=self.kwargs.get('lease_pk')); form.instance.lease = lease
-        messages.success(self.request, _("تم رفع المستند بنجاح!")); return super().form_valid(form)
+        lease = get_object_or_404(Lease, pk=self.kwargs.get('lease_pk'))
+        form.instance.lease = lease
+        messages.success(self.request, _("تم رفع المستند بنجاح!"))
+        return super().form_valid(form)
     def get_success_url(self): return reverse('lease_detail', kwargs={'pk': self.kwargs.get('lease_pk')})
 
 class DocumentDeleteView(StaffRequiredMixin, DeleteView):
-    model = Document; template_name = 'dashboard/document_confirm_delete.html'
-    def get_success_url(self): return reverse('lease_detail', kwargs={'pk': self.object.lease.pk})
+    model = Document
+    template_name = 'dashboard/document_confirm_delete.html'
+    
+    def get_success_url(self): 
+        return reverse('lease_detail', kwargs={'pk': self.object.lease.pk})
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم حذف المستند بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم حذف المستند بنجاح."))
+        return super().form_valid(form)
 
-class MaintenanceRequestAdminListView(StaffRequiredMixin, ListView):
-    model = MaintenanceRequest; template_name = 'dashboard/maintenance_list.html'; context_object_name = 'requests'; paginate_by = 15
+class MaintenanceRequestAdminListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'dashboard.view_maintenancerequest'
+    model = MaintenanceRequest
+    template_name = 'dashboard/maintenance_list.html'
+    context_object_name = 'requests'
+    paginate_by = 15
 
-class MaintenanceRequestAdminUpdateView(StaffRequiredMixin, UpdateView):
-    model = MaintenanceRequest; form_class = MaintenanceRequestUpdateForm; template_name = 'dashboard/maintenance_detail.html'; success_url = reverse_lazy('maintenance_admin_list')
+class MaintenanceRequestAdminUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'dashboard.change_maintenancerequest'
+    model = MaintenanceRequest
+    form_class = MaintenanceRequestUpdateForm
+    template_name = 'dashboard/maintenance_detail.html'
+    success_url = reverse_lazy('maintenance_admin_list')
+    
     def form_valid(self, form):
-        messages.success(self.request, _("تم تحديث حالة طلب الصيانة بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم تحديث حالة طلب الصيانة بنجاح."))
+        return super().form_valid(form)
 
-class ExpenseListView(StaffRequiredMixin, ListView):
-    model = Expense; template_name = 'dashboard/expense_list.html'; context_object_name = 'expenses'; paginate_by = 20
+class ExpenseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'dashboard.view_expense'
+    model = Expense
+    template_name = 'dashboard/expense_list.html'
+    context_object_name = 'expenses'
+    paginate_by = 20
 
-class ExpenseCreateView(StaffRequiredMixin, CreateView):
-    model = Expense; form_class = ExpenseForm; template_name = 'dashboard/expense_form.html'; success_url = reverse_lazy('expense_list')
+class ExpenseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'dashboard.add_expense'
+    model = Expense
+    form_class = ExpenseForm
+    template_name = 'dashboard/expense_form.html'
+    success_url = reverse_lazy('expense_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("إضافة مصروف جديد"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة مصروف جديد")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم تسجيل المصروف بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم تسجيل المصروف بنجاح."))
+        return super().form_valid(form)
 
-class ExpenseUpdateView(StaffRequiredMixin, UpdateView):
-    model = Expense; form_class = ExpenseForm; template_name = 'dashboard/expense_form.html'; success_url = reverse_lazy('expense_list')
+class ExpenseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'dashboard.change_expense'
+    model = Expense
+    form_class = ExpenseForm
+    template_name = 'dashboard/expense_form.html'
+    success_url = reverse_lazy('expense_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("تعديل المصروف"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل المصروف")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم تحديث المصروف بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم تحديث المصروف بنجاح."))
+        return super().form_valid(form)
 
-class ExpenseDeleteView(StaffRequiredMixin, DeleteView):
-    model = Expense; template_name = 'dashboard/expense_confirm_delete.html'; success_url = reverse_lazy('expense_list')
+class ExpenseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'dashboard.delete_expense'
+    model = Expense
+    template_name = 'dashboard/expense_confirm_delete.html'
+    success_url = reverse_lazy('expense_list')
+    
     def form_valid(self, form):
-        messages.success(self.request, _("تم حذف المصروف بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم حذف المصروف بنجاح."))
+        return super().form_valid(form)
 
 class ReportSelectionView(StaffRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -209,7 +285,8 @@ class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         year = request.GET.get('year'); month = request.GET.get('month')
         if not year or not month:
-            messages.error(request, _("الرجاء تحديد السنة والشهر.")); return redirect('report_selection')
+            messages.error(request, _("الرجاء تحديد السنة والشهر."))
+            return redirect('report_selection')
         year, month = int(year), int(month)
         income = Payment.objects.filter(payment_date__year=year, payment_date__month=month)
         expenses = Expense.objects.filter(expense_date__year=year, expense_date__month=month)
@@ -224,18 +301,37 @@ class GenerateMonthlyPLReportPDF(StaffRequiredMixin, View):
         return render_to_pdf('dashboard/reports/monthly_pl_report.html', context)
 
 class PaymentListView(StaffRequiredMixin, ListView):
-    model = Payment; template_name = 'dashboard/payment_list.html'; context_object_name = 'payments'; paginate_by = 20
+    model = Payment
+    template_name = 'dashboard/payment_list.html'
+    context_object_name = 'payments'
+    paginate_by = 20
 
 class PaymentCreateView(StaffRequiredMixin, CreateView):
-    model = Payment; form_class = PaymentForm; template_name = 'dashboard/payment_form.html'; success_url = reverse_lazy('payment_list')
+    model = Payment
+    form_class = PaymentForm
+    template_name = 'dashboard/payment_form.html'
+    success_url = reverse_lazy('payment_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("إضافة دفعة جديدة"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة دفعة جديدة")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم تسجيل الدفعة بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم تسجيل الدفعة بنجاح."))
+        return super().form_valid(form)
 
 class PaymentUpdateView(StaffRequiredMixin, UpdateView):
-    model = Payment; form_class = PaymentForm; template_name = 'dashboard/payment_form.html'; success_url = reverse_lazy('payment_list')
+    model = Payment
+    form_class = PaymentForm
+    template_name = 'dashboard/payment_form.html'
+    success_url = reverse_lazy('payment_list')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل الدفعة")
+        return context
+        
     def form_valid(self, form):
-        messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
+        messages.success(self.request, _("تم تحديث الدفعة بنجاح."))
+        return super().form_valid(form)

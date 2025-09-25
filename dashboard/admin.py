@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company
+
+# تخصيص عرض ملف الشركة
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'primary_color', 'secondary_color')
+
+    def has_add_permission(self, request):
+        return self.model.objects.count() == 0
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)

@@ -3,19 +3,44 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 import datetime
 from django.db.models import Sum
 
+class Company(models.Model):
+    name = models.CharField(_("اسم الشركة"), max_length=150, default="شركة إدارة الإيجارات")
+    logo = models.ImageField(_("الشعار"), upload_to='company_logos/', blank=True, null=True)
+    primary_color = models.CharField(_("اللون الأساسي"), max_length=7, default="#993333", help_text=_("مثال:#993333 "))
+    secondary_color = models.CharField(_("اللون الثانوي"), max_length=7, default="#D4Af37", help_text=_("مثال:#333399 "))
+
+    class Meta:
+        verbose_name = _("ملف الشركة")
+        verbose_name_plural = _("ملفات الشركة")
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super(Company, self).save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
     address = models.TextField(_("العنوان"))
+    
     class Meta:
         verbose_name = _("مبنى")
         verbose_name_plural = _("المباني")
+        permissions = [("can_view_buildings_reports", _("يمكنه عرض تقارير المباني"))]
+        
     def __str__(self):
         return self.name
 
@@ -26,9 +51,11 @@ class Unit(models.Model):
     unit_type = models.CharField(_("نوع الوحدة"), max_length=20, choices=UNIT_TYPE_CHOICES)
     floor = models.IntegerField(_("الطابق"))
     is_available = models.BooleanField(_("متاحة للإيجار"), default=True)
+    
     class Meta:
         verbose_name = _("وحدة")
         verbose_name_plural = _("الوحدات")
+        
     def __str__(self):
         return f"{self.building.name} - {self.unit_number}"
 
@@ -40,9 +67,12 @@ class Tenant(models.Model):
     phone = models.CharField(_("رقم الهاتف"), max_length=15)
     email = models.EmailField(_("البريد الإلكتروني"), blank=True, null=True)
     authorized_signatory = models.CharField(_("المفوض بالتوقيع"), max_length=150, blank=True, null=True, help_text=_("يُملأ فقط في حال كان المستأجر شركة"))
+    
     class Meta:
         verbose_name = _("مستأجر")
         verbose_name_plural = _("المستأجرين")
+        permissions = [("can_view_tenant_portal", _("يمكنه عرض بوابة المستأجرين"))]
+        
     def __str__(self):
         return self.name
 
@@ -61,9 +91,12 @@ class Lease(models.Model):
     office_fee = models.DecimalField(_("رسوم المكتب"), max_digits=10, decimal_places=2, default=5.00)
     admin_fee = models.DecimalField(_("الرسوم الإدارية"), max_digits=10, decimal_places=2, default=1.00)
     registration_fee = models.DecimalField(_("رسوم تسجيل العقد (3%)"), max_digits=10, decimal_places=2, blank=True)
+    
     class Meta:
         verbose_name = _("عقد إيجار")
         verbose_name_plural = _("عقود الإيجار")
+        permissions = [("can_view_financial_summary", _("يمكنه عرض ملخص مالي"))]
+        
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
         self.update_status()
@@ -85,11 +118,13 @@ class Lease(models.Model):
         if self.end_date < today: self.status = 'expired'
         elif self.end_date - relativedelta(months=1) <= today: self.status = 'expiring_soon'
         else: self.status = 'active'
+            
     def get_status_color(self):
         if self.status == 'active': return 'active'
         if self.status == 'expiring_soon': return 'expiring'
         if self.status == 'expired': return 'expired'
         return 'cancelled'
+        
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
 
@@ -134,11 +169,14 @@ class Payment(models.Model):
     payment_for_month = models.IntegerField(_("دفعة عن شهر"), choices=[(i, _(str(i))) for i in range(1, 13)])
     payment_for_year = models.IntegerField(_("دفعة عن سنة"), default=timezone.now().year)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
+    
     class Meta:
         verbose_name = _("دفعة")
         verbose_name_plural = _("الدفعات")
         ordering = ['-payment_date']
         unique_together = ('lease', 'payment_for_month', 'payment_for_year')
+        
+        
     def __str__(self):
         return f"{self.amount} for {self.lease.contract_number} ({self.payment_for_month}/{self.payment_for_year})"
 
@@ -153,10 +191,12 @@ class MaintenanceRequest(models.Model):
     image = models.ImageField(_("صورة مرفقة (اختياري)"), upload_to='maintenance_requests/', blank=True, null=True)
     reported_date = models.DateTimeField(_("تاريخ الإبلاغ"), auto_now_add=True)
     staff_notes = models.TextField(_("ملاحظات الموظف"), blank=True, null=True)
+    
     class Meta:
         verbose_name = _("طلب صيانة")
         verbose_name_plural = _("طلبات الصيانة")
         ordering = ['-reported_date']
+        
     def __str__(self):
         return self.title
 
@@ -165,10 +205,12 @@ class Document(models.Model):
     title = models.CharField(_("عنوان المستند"), max_length=200)
     file = models.FileField(_("الملف"), upload_to='lease_documents/')
     uploaded_at = models.DateTimeField(_("تاريخ الرفع"), auto_now_add=True)
+    
     class Meta:
         verbose_name = _("مستند")
         verbose_name_plural = _("المستندات")
         ordering = ['-uploaded_at']
+        
     def __str__(self):
         return self.title
 
@@ -181,10 +223,12 @@ class Expense(models.Model):
     expense_date = models.DateField(_("تاريخ المصروف"))
     receipt = models.FileField(_("إيصال/فاتورة (اختياري)"), upload_to='expense_receipts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
     class Meta:
         verbose_name = _("مصروف")
         verbose_name_plural = _("المصاريف")
         ordering = ['-expense_date']
+        
     def __str__(self):
         return f"{self.get_category_display()} - {self.amount}"
 
