@@ -44,12 +44,27 @@
     <div class="card p-6">
         <h3 class="text-xl font-bold mb-4">{% trans "سجل الدفعات" %}</h3>
         <table class="w-full">
-            <thead><tr class="border-b"><th class="text-start py-2">{% trans "التاريخ" %}</th><th class="text-start py-2">{% trans "عن شهر/سنة" %}</th><th class="text-end py-2">{% trans "المبلغ" %}</th></tr></thead>
+            <thead>
+                <tr class="border-b">
+                    <th class="text-start py-2">{% trans "سند القبض" %}</th>
+                    <th class="text-start py-2">{% trans "التاريخ" %}</th>
+                    <th class="text-end py-2">{% trans "المبلغ" %}</th>
+                    <th class="text-end py-2">{% trans "إجراء" %}</th>
+                </tr>
+            </thead>
             <tbody>
-                {% for payment in payments %}
-                <tr class="border-b"><td class="py-2">{{ payment.payment_date|date:"d M Y" }}</td><td class="py-2">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td class="py-2 text-end font-mono">{{ payment.amount|floatformat:2 }}</td></tr>
+                {% for payment in lease.payments.all %}
+                <tr class="border-b">
+                    <td class="py-2 font-mono">{{ payment.voucher_number }}"</td>
+                    <td class="py-2">{{ payment.payment_date|date:"d M Y" }}</td>
+                    <td class="py-2 text-end font-mono">{{ payment.amount|floatformat:2 }}</td>
+                    <td class="py-2 text-end"><a href="{% url 'voucher_receipt_print' payment.pk %}" target="_blank" class="text-blue-600 text-sm">{% trans "طباعة" %}</a>
+                    </td>
+                </tr>
                 {% empty %}
-                <tr><td colspan="3" class="py-4 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
+                <tr>
+                    <td colspan="3" class="py-4 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td>
+                </tr>
                 {% endfor %}
             </tbody>
             <tfoot><tr class="font-bold"><td class="py-3">{% trans "الإجمالي المدفوع" %}</td><td></td><td class="py-3 text-end font-mono">{{ total_paid|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>

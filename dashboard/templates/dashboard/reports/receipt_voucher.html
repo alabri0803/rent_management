@@ -1,0 +1,24 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><style>@font-face {font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');} body {font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right;} .container{border: 2px solid #333; padding: 20px; margin: 20px;} .header{text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;} .details-table{width: 100%; margin-top: 20px;} .details-table td{padding: 8px;} .footer{margin-top: 50px; display: flex; justify-content: space-between;}</style></head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>{{ company.name }}</h2><h1>{% trans "سند قبض" %}</h1>
+        <p>{% trans "Voucher No" %}: {{ payment.voucher_number }}</p>
+    </div>
+    <table class="details-table">
+        <tr><td><strong>{% trans "استلمنا من السيد/السادة" %}:</strong></td><td>{{ payment.lease.tenant.name }}</td></tr>
+        <tr><td><strong>{% trans "مبلغ وقدره" %}:</strong></td><td>{{ amount_in_words }} فقط لا غير.</td></tr>
+        <tr><td><strong>{% trans "وذلك عن" %}:</strong></td><td>{% blocktrans with month=payment.payment_for_month year=payment.payment_for_year unit=payment.lease.unit %}دفعة إيجار شهر {{ month }}/{{ year }} للوحدة رقم {{ unit }}{% endblocktrans %}</td></tr>
+        <tr><td><strong>{% trans "طريقة الدفع" %}:</strong></td><td>{{ payment.get_payment_method_display }}</td></tr>
+        <tr><td><strong>{% trans "التاريخ" %}:</strong> {{ payment.payment_date|date:"d/m/Y" }}</td><td><strong>{% trans "المبلغ" %}:</strong> {{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</td></tr>
+    </table>
+    <div class="footer">
+        <p><strong>{% trans "توقيع المستلم" %}:</strong> ............................</p>
+        <p><strong>{% trans "الختم" %}</strong></p>
+    </div>
+</div>
+</body>
+</html>

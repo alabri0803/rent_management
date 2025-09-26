@@ -1,0 +1,17 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><style>@font-face {font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');} body {font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right;} table{width:100%; border-collapse: collapse;} th, td{padding: 8px; border: 1px solid #ccc;} th{background-color:#f2f2f2;}</style></head>
+<body>
+    <div style="text-align:center;"><h1>{% trans "كشف حساب عقار" %}</h1><h3>{{ building.name }}</h3><p>{% blocktrans %}عن الفترة من {{ start_date }} إلى {{ end_date }}{% endblocktrans %}</p></div>
+    <h2>{% trans "الإيرادات (سندات القبض)" %}</h2>
+    <table><thead><tr><th>{% trans "التاريخ" %}</th><th>{% trans "السند" %}</th><th>{% trans "المستأجر" %}</th><th>{% trans "المبلغ" %}</th></tr></thead><tbody>
+    {% for item in income_list %}<tr><td>{{ item.payment_date|date:"d M Y" }}</td><td>{{ item.voucher_number }}</td><td>{{ item.lease.tenant.name }}</td><td>{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}
+    </tbody><tfoot><tr><td colspan="3"><strong>{% trans "إجمالي الإيرادات" %}</strong></td><td><strong>{{ total_income|floatformat:2 }}</strong></td></tr></tfoot></table>
+    <h2 style="margin-top: 20px;">{% trans "المصروفات (سندات الصرف)" %}</h2>
+    <table><thead><tr><th>{% trans "التاريخ" %}</th><th>{% trans "السند" %}</th><th>{% trans "الوصف" %}</th><th>{% trans "المبلغ" %}</th></tr></thead><tbody>
+    {% for item in expenses_list %}<tr><td>{{ item.expense_date|date:"d M Y" }}</td><td>{{ item.voucher_number }}</td><td>{{ item.description }}</td><td>{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}
+    </tbody><tfoot><tr><td colspan="3"><strong>{% trans "إجمالي المصروفات" %}</strong></td><td><strong>{{ total_expenses|floatformat:2 }}</strong></td></tr></tfoot></table>
+    <h2 style="margin-top: 20px; background-color: #f2f2f2; padding: 10px;">{% trans "صافي الربح/الخسارة" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}</h2>
+</body>
+</html>

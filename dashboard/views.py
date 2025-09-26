@@ -9,10 +9,10 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from django.template import Context, Template
+from django.template import Context, Template, context
 from num2words import num2words
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Building, Notification
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, SendMessageForm, LeaseCancellationForm
 from .utils import render_to_pdf
 
@@ -273,9 +273,13 @@ class ExpenseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
         messages.success(self.request, _("تم حذف المصروف بنجاح."))
         return super().form_valid(form)
 
-class ReportSelectionView(StaffRequiredMixin, View):
+class ReportSelectionView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'dashboard.view_lease'
     def get(self, request, *args, **kwargs):
-        return render(request, 'dashboard/report_selection.html')
+        context = {
+            'buildings': Building.objects.all(),
+        }
+        return render(request, 'dashboard/report_selection.html', context)
 
 class GenerateTenantStatementPDF(StaffRequiredMixin, View):
     def get(self, request, lease_pk, *args, **kwargs):
@@ -432,3 +436,49 @@ class GenerateContractPDF(LoginRequiredMixin, PermissionRequiredMixin, View):
         # ملاحظة: يجب تعديل دالة render_to_pdf لتستخدم خط يدعم العربية
         pdf_context = {'content': html_content}
         return render_to_pdf('dashboard/reports/contract_template.html', pdf_context)
+
+class GenerateReceiptVoucherPDF(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'dashboard.view_payment'
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        context = {
+            'payment': payment,
+            'amount_in_words': num2words(payment.amount, lang='ar'),
+        }
+        return render_to_pdf('dashboard/reports/receipt_voucher.html', context)
+
+class GeneratePaymentVoucherPDF(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'dashboard.view_expense'
+    def get(self, request, pk):
+        expense = get_object_or_404(Expense, pk=pk)
+        context = {
+            'expense': expense,
+            'amount_in_words': num2words(expense.amount, lang='ar'),
+        }
+        return render_to_pdf('dashboard/reports/payment_voucher.html', context)
+
+class GenerateBuildingStatementPDF(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'dashboard.view_buildings_reports'
+    def get(self, request, *args, **kwargs):
+        building_id = request.GET.get('building')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if not all([building_id, start_date, end_date]):
+            messages.error(request, _("الرجاء تحديد المبنى وتاريخ البدء والانتهاء."))
+            return redirect('report_selection')
+        building = get_object_or_404(Building, pk=building_id)
+        income = Payment.objects.filter(lease__unit__building=building, payment_date__range=[start_date, end_date]).order_by('payment_date')
+        expenses = Expense.objects.filter(building=building, expense_date__range=[start_date, end_date]).order_by('expense_date')
+        total_income = income.aggregate(total=Sum('amount'))['total'] or 0
+        total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0
+        context = {
+            'building': building,
+            'start_date': start_date,
+            'end_date': end_date,
+            'income_list': income,
+            'expenses_list': expenses,
+            'total_income': total_income,
+            'total_expenses': total_expenses,
+            'net_profit': total_income - total_expenses,
+        }
+        return render_to_pdf('dashboard/reports/building_statement.html', context)

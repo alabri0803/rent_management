@@ -53,7 +53,7 @@ class DocumentForm(forms.ModelForm):
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
-        fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt']
+        fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt', 'paid_to']
         widgets = {'expense_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,7 +67,7 @@ class ExpenseForm(forms.ModelForm):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'notes']
+        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'cheque_details', 'payment_method', 'notes', 'payment_for_year']
         widgets = {'payment_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

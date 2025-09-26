@@ -10,6 +10,22 @@ from decimal import Decimal
 import datetime
 from django.db.models import Sum
 
+def get_next_voucher_number(prefix):
+    today = timezone.now().date()
+    year = today.year
+    last_voucher = None
+    if prefix == 'RCPT':
+        last_voucher = Invoice.objects.filter(voucher_number__startswith=f"RCPT-{year}").order_by('-voucher_number').last()
+    elif prefix == 'PV':
+        last_voucher = Expense.objects.filter(voucher_number__startswith=f"PV-{year}").order_by('-voucher_number').last()
+
+    if not last_voucher:
+        return f"{prefix}-{year}-0001"
+
+    last_num = int(last_voucher.voucher_number.split('-')[-1])
+    new_num = last_num + 1
+    return f"{prefix}-{year}-{new_num:04d}"
+
 class Company(models.Model):
     name = models.CharField(_("اسم الشركة"), max_length=150, default="شركة إدارة الإيجارات")
     logo = models.ImageField(_("الشعار"), upload_to='company_logos/', blank=True, null=True)
@@ -178,23 +194,37 @@ class Lease(models.Model):
         return f"{self.contract_number} - {self.tenant.name}"
 
 class Payment(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ('cash', _('نقدي')), 
+        ('bank_transfer', _('تحويل بنكي')), 
+        ('cheque', _('شيك')), 
+        ('online', _('دفع إلكتروني')),
+    ]
     lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments', verbose_name=_("العقد"))
+    voucher_number = models.CharField(_("رقم سند القبض"), max_length=50, unique=True, editable=False)
     payment_date = models.DateField(_("تاريخ الدفع"))
     amount = models.DecimalField(_("المبلغ المدفوع"), max_digits=10, decimal_places=2)
+    payment_method = models.CharField(_("طريقة الدفع"), max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cash')
+    cheque_details = models.CharField(_("تفاصيل الشيك/التحويل"), max_length=150, blank=True, null=True, help_text=_("يُملأ فقط في حال كانت طريقة الدفع شيك"))
     payment_for_month = models.IntegerField(_("دفعة عن شهر"), choices=[(i, _(str(i))) for i in range(1, 13)])
     payment_for_year = models.IntegerField(_("دفعة عن سنة"), default=timezone.now().year)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
     
     class Meta:
-        verbose_name = _("دفعة")
-        verbose_name_plural = _("الدفعات")
+        verbose_name = _("سند قبض (دفعة إيجار)")
+        verbose_name_plural = _("سندات القبض (دفعات الإيجار)")
         ordering = ['-payment_date']
         unique_together = ('lease', 'payment_for_month', 'payment_for_year')
+
+    def save(self, *args, **kwargs):
+        if not self.voucher_number:
+            self.voucher_number = get_next_voucher_number('RCPT')
+        super().save(*args, **kwargs)
         
         
     def __str__(self):
-        return f"{self.amount} for {self.lease.contract_number} ({self.payment_for_month}/{self.payment_for_year})"
-
+        return f"{self.voucher_number} - {self.amount}"
+        
 class MaintenanceRequest(models.Model):
     STATUS_CHOICES = [('submitted', _('تم الإرسال')), ('in_progress', _('قيد التنفيذ')), ('completed', _('مكتمل')), ('cancelled', _('ملغي'))]
     PRIORITY_CHOICES = [('low', _('منخفضة')), ('medium', _('متوسطة')), ('high', _('عالية'))]
@@ -232,6 +262,8 @@ class Document(models.Model):
 class Expense(models.Model):
     EXPENSE_CATEGORY_CHOICES = [('maintenance', _('صيانة')), ('utilities', _('خدمات (كهرباء، ماء)')), ('salaries', _('رواتب')), ('marketing', _('تسويق')), ('admin', _('رسوم إدارية/حكومية')), ('other', _('أخرى'))]
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='expenses', verbose_name=_("المبنى"))
+    voucher_number = models.CharField(_("رقم سند الصرف"), max_length=50, unique=True, editable=False)
+    paid_to = models.CharField(_("مدفوع إلى / المستفيد"), max_length=150)
     category = models.CharField(_("فئة المصروف"), max_length=50, choices=EXPENSE_CATEGORY_CHOICES)
     description = models.CharField(_("الوصف"), max_length=255)
     amount = models.DecimalField(_("المبلغ"), max_digits=10, decimal_places=2)
@@ -240,13 +272,18 @@ class Expense(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = _("مصروف")
-        verbose_name_plural = _("المصاريف")
+        verbose_name = _("سند صرف (مصروف)")
+        verbose_name_plural = _("سندات الصرف (المصروفات)")
         ordering = ['-expense_date']
+
+    def save(self, *args, **kwargs):
+        if not self.voucher_number:
+            self.voucher_number = get_next_voucher_number('PV')
+        super().save(*args, **kwargs)
         
     def __str__(self):
-        return f"{self.get_category_display()} - {self.amount}"
-
+        return f"{self.voucher_number} - {self.description}"
+        
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications', verbose_name=_("المستخدم"))
     message = models.TextField(_("الرسالة"))
