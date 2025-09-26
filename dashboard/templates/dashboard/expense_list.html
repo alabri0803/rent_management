@@ -24,7 +24,7 @@
                 <td class="p-4">{{ expense.description }}</td>
                 <td class="p-4 font-mono">{{ expense.amount|floatformat:2 }}</td>
                 <td class="p-4"><a href="{% url 'expense_update' expense.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{% url 'voucer_payment_print' expense.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة" %}</a>
+                    <a href="{% url 'voucher_payment_print' expense.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة" %}</a>
                 </td>
             </tr>
             {% endfor %}
