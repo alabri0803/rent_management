@@ -6,12 +6,27 @@
     <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {{ company_name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@material-tailwind/html@latest/index.global.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap');
-        :root { 
+        :root {
+            --fc-border-color: #e2e8f0;
+            --fc-daygrid-event-dot-width: 8px;
+            --fc-list-event-dot-hover-bg-color: #f1f5f9;
+            --fc-today-bg-color: rgba(153, 51, 51, 0.1);
             --primary-color: #993333; 
             --secondary-color: #D4AF37; 
-        } 
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.25rem;
+        }
+        .fc .fc-button-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .fc-direction-rtl .fc-list-day-text, .fc-direction-rtl .fc-list-day-side-text {
+            float: right;
+        }
         body { 
             font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; 
             background-color: #f7fafc; 

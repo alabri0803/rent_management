@@ -1,3 +1,4 @@
+from itertools import chain
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
@@ -6,14 +7,18 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.db.models import Sum, Count, Q, Avg, F
+from django.db.models import Sum, Count, Q, Avg, F, Value
+from django.db.models.functions import Coalesce
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+from operator import attrgetter
 from dateutil.relativedelta import relativedelta
 from django.template import Context, Template
 from num2words import num2words
 from datetime import datetime
 from django.views.generic import TemplateView
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Building
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Building, Notification
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, SendMessageForm, LeaseCancellationForm
 from .utils import render_to_pdf
 
@@ -32,40 +37,49 @@ class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         today = timezone.now()
+        current_month = today.month
+        current_year = today.year
 
         # Stats Cards
         active_leases = Lease.objects.filter(status__in=['active', 'expiring_soon'])
-        monthly_expenses = Expense.objects.filter(expense_date__year=today.year, expense_date__month=today.month).aggregate(total=Sum('amount'))['total'] or 0
-        expected_income = active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0
+        total_overdue = 0
+        for lease in active_leases:
+            summary = lease.get_payment_summary()
+            for month_summary in summary:
+                is_past_due = (month_summary['year'] < current_year) or (month_summary['year'] == current_year and month_summary['month'] < current_month)
+                if is_past_due and month_summary['status'] in ['due', 'partial']:
+                    total_overdue += month_summary['balance']
 
         context['stats'] = {
-            'active_count': active_leases.count(),
-            'expected_monthly_income': expected_income,
-            'monthly_expenses': monthly_expenses,
-            'net_income': expected_income - monthly_expenses
+            'active_lease_count': active_leases.count(),
+            'monthly_expenses_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
+            'expiring_this_month': Lease.objects.filter(status='expiring_soon', end_date__month=current_month, end_date__year=current_year).count(),
+            'vacant_units_count': Unit.objects.filter(is_available=True).count(),
+            'total_overdue_rent': total_overdue,
+            'maintenance_requests_count': MaintenanceRequest.objects.filter(status__in=['submitted', 'in_progress']).count(),
         }
+        lease_avents = []
+        leases_for_calendar = Lease.objects.filter(status__in=['active', 'expiring_soon'])
+        for lease in leases_for_calendar:
+            lease_avents.append({
+                'title': f"{lease.tenant.name} - {lease.unit.unit_number}",
+                'start': lease.end_date,
+                'url': lease.get_absolute_url(),
+                'color': '#ef4444' if lease.status == 'expiring_soon' else '#3b82f6',
+            })
+            context['lease_avents_json'] = json.dumps(lease_avents, cls=DjangoJSONEncoder)
+            context['notifications'] = Notification.objects.filter(user=self.request.user, read=False).order_by('-timestamp')[:5]
+            latest_payments = Payment.objects.all().order_by('-payment_date')[:5]
+            latest_expenses = Expense.objects.all().order_by('-expense_date')[:5]
+            for p in latest_payments: p.type = 'income'; p.date = p.payment_date
+            for e in latest_expenses: e.type = 'expense'; e.date = e.expense_date
 
         # Financial Trend Chart (Last 12 months)
-        trend_chart = {'labels': [], 'income_data': [], 'expense_data': []}
-        for i in range(12, 0, -1):
-            date = today - relativedelta(months=i-1)
-            month_name_en = date.strftime("%b") # English month name for consistency in JS
-            trend_chart['labels'].append(month_name_en)
-
-            monthly_income = Payment.objects.filter(payment_date__year=date.year, payment_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
-            trend_chart['income_data'].append(float(monthly_income))
-
-            monthly_expenses_trend = Expense.objects.filter(expense_date__year=date.year, expense_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
-            trend_chart['expense_data'].append(float(monthly_expenses_trend))
-        context['trend_chart'] = trend_chart
-        context['recent_payments'] = Payment.objects.order_by('-payment_date')[:5]
-        context['recent_requests'] = MaintenanceRequest.objects.order_by('-reported_date')[:5]
-        total_units = Unit.objects.count()
-        occupied_units = Unit.objects.filter(is_available=False).count()
-        available_units = total_units - occupied_units
-        context['occupancy_chart'] = {
-            'labels': [_("متاح"), _("مستأجر")],
-            'data': [occupied_units, available_units],
+        financial_feed = sorted(chain(latest_payments, latest_expenses), key=attrgetter('date'), reverse=True)
+        context['financial_feed'] = financial_feed[:7]
+        context['occupancy_chart_data'] = {
+            'occupied': Unit.objects.filter(is_available=False).count(),
+            'available': Unit.objects.filter(is_available=True).count(),
         }
         return context
 

@@ -313,6 +313,12 @@ class Notification(models.Model):
         verbose_name_plural = _("الإشعارات")
         ordering = ['-timestamp']
 
+    def get_related_object_url(self):
+        if self.related_object:
+            if hasattr(self.related_object, 'get_absolute_url'):
+                return self.related_object.get_absolute_url()
+        return None
+            
     def __str__(self):
         return self.message
 
