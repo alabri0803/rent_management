@@ -128,6 +128,20 @@
             }
         });
         calendar.render();
-    })
+        new Chart(document.getElementById('occupancyChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['{% trans "مشغولة" %}', '{% trans "شاغرة" %}'],
+                datasets: [{
+                    data: [{{ occupancy_chart_data.occupied }}, {{ occupancy_chart_data.available }}],
+                    backgroundColor: ['#993333', '#e5e7eb'],
+                    hoveroffset: 4
+                }]
+            },
+            options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+            });
+        });
 </script>
 {% endblock %}
