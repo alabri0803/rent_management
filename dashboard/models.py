@@ -127,7 +127,7 @@ class Lease(models.Model):
         
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
-        is_new = self._state.addin
+        is_new = self._state.adding
         old_status = None
         if not is_new:
             old_lease = Lease.objects.get(pk=self.pk)
