@@ -105,43 +105,42 @@
         <canvas id="occupancyChart" style="max-height: 250px;"></canvas>
     </div>
 </div>
-
-<!-- JavaScript Charts -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: '{{ LANGUAGE_CODE }}',
-            direction: 'rtl',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek'
-            },
-            events: {{ lease_events_json|safe}},
-            eventClick: function(info) {
-                info.jsEvent.preventDefault();
-                if (info.event.url) {
-                    window.open(info.event.url, "_self");
-                }
+document.addEventListener('DOMContentLoaded', function() {
+    // Calendar Initialization
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: '{{ LANGUAGE_CODE }}', // For Arabic buttons and day names
+        direction: 'rtl',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+        },
+        events: {{ lease_events_json|safe }},
+        eventClick: function(info) {
+            info.jsEvent.preventDefault(); // don't let the browser navigate
+            if (info.event.url) {
+                window.open(info.event.url, "_self");
             }
-        });
-        calendar.render();
-        new Chart(document.getElementById('occupancyChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['{% trans "مشغولة" %}', '{% trans "شاغرة" %}'],
-                datasets: [{
-                    data: [{{ occupancy_chart_data.occupied }}, {{ occupancy_chart_data.available }}],
-                    backgroundColor: ['#993333', '#e5e7eb'],
-                    hoveroffset: 4
-                }]
-            },
-            options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-            });
-        });
+        }
+    });
+    calendar.render();
+
+    // Occupancy Chart
+    new Chart(document.getElementById('occupancyChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ["{% trans 'مشغولة' %}", "{% trans 'شاغرة' %}"],
+            datasets: [{
+                data: [{{ occupancy_chart_data.occupied }}, {{ occupancy_chart_data.available }}],
+                backgroundColor: ['#993333', '#e5e7eb'],
+                hoverOffset: 4
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+});
 </script>
 {% endblock %}
