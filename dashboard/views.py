@@ -67,7 +67,7 @@ class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 'url': lease.get_absolute_url(),
                 'color': '#ef4444' if lease.status == 'expiring_soon' else '#3b82f6',
             })
-            context['lease_events_json'] = json.dumps(lease_avents, cls=DjangoJSONEncoder)
+            context['lease_events_json'] = json.dumps(lease_events, cls=DjangoJSONEncoder)
             context['notifications'] = Notification.objects.filter(user=self.request.user, read=False).order_by('-timestamp')[:5]
             latest_payments = Payment.objects.all().order_by('-payment_date')[:5]
             latest_expenses = Expense.objects.all().order_by('-expense_date')[:5]
