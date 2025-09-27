@@ -51,12 +51,12 @@ class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     total_overdue += month_summary['balance']
 
         context['stats'] = {
-            'active_lease_count': active_leases.count(),
-            'monthly_expenses_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
+            'active_leases_count': active_leases.count(),
+            'monthly_expected_income': active_leases.aggregate(total=Sum('monthly_rent'))['total'] or 0,
             'expiring_this_month': Lease.objects.filter(status='expiring_soon', end_date__month=current_month, end_date__year=current_year).count(),
             'vacant_units_count': Unit.objects.filter(is_available=True).count(),
             'total_overdue_rent': total_overdue,
-            'maintenance_requests_count': MaintenanceRequest.objects.filter(status__in=['submitted', 'in_progress']).count(),
+            'maintenance_requests_open': MaintenanceRequest.objects.filter(status__in=['submitted', 'in_progress']).count(),
         }
         lease_avents = []
         leases_for_calendar = Lease.objects.filter(status__in=['active', 'expiring_soon'])
