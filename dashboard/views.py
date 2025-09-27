@@ -1,3 +1,4 @@
+from django.db.models.fields.composite import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
@@ -6,12 +7,12 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm
 from .utils import render_to_pdf
 
 # Mixin for Staff Users
@@ -54,23 +55,39 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
             monthly_expenses_trend = Expense.objects.filter(expense_date__year=date.year, expense_date__month=date.month).aggregate(total=Sum('amount'))['total'] or 0
             trend_chart['expense_data'].append(float(monthly_expenses_trend))
         context['trend_chart'] = trend_chart
-        context['recent_payments'] = Payment.objects.order_by('-payment_date')[:5]
+        
+        recent_payments = Payment.objects.order_by('-payment_date')[:5]
+        recent_expenses = Expense.objects.order_by('-expense_date')[:5]
+        context['recent_payments'] = recent_payments
+        context['recent_expenses'] = recent_expenses
+
         context['recent_requests'] = MaintenanceRequest.objects.order_by('-reported_date')[:5]
+
         total_units = Unit.objects.count()
         occupied_units = Unit.objects.filter(is_available=False).count()
         available_units = total_units - occupied_units
-        context['occupancy_chart'] = {
-            'labels': [_("متاح"), _("مستأجر")],
-            'data': [occupied_units, available_units],
+        context['occupancy_rate'] = {
+            'labels': [_('مشغولة'), _('متاحة')],
+            'data': [occupied_units, available_units]
         }
+        
+        renewals = Lease.objects.filter(end_date__gte=today.date()).values('contract_number', 'end_date', 'tenant__name')
+        calendar_events = []
+        for renewal in renewals:
+            calendar_events.append({
+                'title': f"{_('تجديد عقد')}{renewal['contract_number']} - {renewal['tenant__name']}",
+                'start': renewal['end_date'].isoformat(),
+                'allDay': True,
+            })
+        context['calendar_events'] = json.dumps(calendar_events)
         return context
-
 
 class LeaseListView(StaffRequiredMixin, ListView):
     model = Lease
     template_name = 'dashboard/lease_list.html'
     context_object_name = 'leases'
     paginate_by = 10
+    
     def get_queryset(self):
         queryset = Lease.objects.all().order_by('-start_date')
         search_query = self.request.GET.get('q', '')
@@ -112,7 +129,20 @@ class LeaseDetailView(StaffRequiredMixin, DetailView):
         context['document_form'] = DocumentForm()
         context['paymnt_summary'] = self.object.get_payment_summary()
         context['total_paid'] = self.object.payments.aggregate(total=Sum('amount'))['total'] or 0
+        context['rating_form'] = TenantRatingForm(instance=self.object.tenant)
         return context
+
+class UpdateTenantRatingView(StaffRequiredMixin, View):
+    def post(self, request, pk):
+        tenant = get_object_or_404(Tenant, pk=pk)
+        form = TenantRatingForm(request.POST, instance=tenant)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("تم تحديث تقييم العميل."))
+        else:
+            messages.error(request, _("حدث خطأ أثناء تحديث التقيم ."))
+        lease = get_object_or_404(Lease, tenant=tenant).first()
+        return redirect('lease_detail', pk=lease.pk)
 
 class LeaseCreateView(StaffRequiredMixin, CreateView):
     model = Lease; form_class = LeaseForm; template_name = 'dashboard/lease_form.html'; success_url = reverse_lazy('lease_list')
@@ -147,10 +177,12 @@ def renew_lease(request, pk):
             new_end_date = request.POST.get('manual_date')
             if not new_end_date:
                 messages.error(request, _("الرجاء إدخال تاريخ انتهاء صحيح.")); return redirect('lease_detail', pk=pk)
-        new_lease = Lease.objects.create(unit=original_lease.unit, tenant=original_lease.tenant, contract_number=f"{original_lease.contract_number}-R", monthly_rent=original_lease.monthly_rent, start_date=new_start_date, end_date=new_end_date, electricity_meter=original_lease.electricity_meter, water_meter=original_lease.water_meter)
+        new_contract_number = f"{original_lease.contract_number}-R{Lease.objects.filter(contract_number__startswith=f'{original_lease.contract_number}-R').count()}"
+        new_lease = Lease.objects.create(unit=original_lease.unit, tenant=original_lease.tenant, contract_number=new_contract_number, monthly_rent=original_lease.monthly_rent, start_date=new_start_date, end_date=new_end_date, electricity_meter=original_lease.electricity_meter, water_meter=original_lease.water_meter)
         original_lease.status = 'expired'; original_lease.save()
         messages.success(request, _("تم تجديد العقد بنجاح!")); return redirect('lease_detail', pk=new_lease.pk)
     return render(request, 'dashboard/lease_renew.html', {'lease': original_lease})
+
 
 class DocumentUploadView(StaffRequiredMixin, CreateView):
     model = Document; form_class = DocumentForm
@@ -239,3 +271,53 @@ class PaymentUpdateView(StaffRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs); context['title'] = _("تعديل الدفعة"); return context
     def form_valid(self, form):
         messages.success(self.request, _("تم تحديث الدفعة بنجاح.")); return super().form_valid(form)
+
+class PaymentDeleteView(StaffRequiredMixin, DeleteView):
+    model = Payment; template_name = 'dashboard/payment_confirm_delete.html'; success_url = reverse_lazy('payment_list')
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف الدفعة بنجاح.")); return super().form_valid(form)
+
+class GeneratePaymentReceiptPDF(StaffRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        payment = get_object_or_404(Payment, pk=pk)
+        context = {'payment': payment, 'lease': payment.lease, 'company': Company.objects.first()}
+        return render_to_pdf('dashboard/reports/payment_receipt.html', context)
+
+class GenerateAnnualReportPDF(StaffRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        year = request.GET.get('year')
+        if not year:
+            messages.error(request, _("الرجاء تحديد السنة.")); return redirect('report_selection')
+        year = int(year)
+        income = Payment.objects.filter(payment_date__year=year)
+        expenses = Expense.objects.filter(expense_date__year=year)
+        total_income = payments.aggregate(total=Sum('amount'))['total'] or 0
+        total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0
+        context = {
+            'income_list': income, 'expenses_list': expenses,
+            'total_income': total_income, 'total_expenses': total_expenses,
+            'net_profit': total_income - total_expenses,
+            'report_year': year,
+            'company': Company.objects.first()
+        }
+        return render_to_pdf('dashboard/reports/annual_report.html', context)
+
+class GenerateOccupancyReportPDF(StaffRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        buildings = Building.objects.all().prefetch_related('unit_set')
+        total_units = Unit.objects.count()
+        occupied_units = Unit.objects.filter(is_available=False).count()
+        occupancy_rate = (occupied_units / total_units * 100) if total_units > 0 else 0
+        context = {'buildings': buildings, 'total_units': total_units, 'occupied_units': occupied_units, 'occupancy_rate': occupancy_rate, 'company': Company.objects.first(), 'today': timezone.now()}
+        return render_to_pdf('dashboard/reports/occupancy_report.html', context)
+
+class CompanyUpdateView(StaffRequiredMixin, UpdateView):
+    model = Company; form_class = CompanyForm; template_name = 'dashboard/company_form.html'; success_url = reverse_lazy('company_update')
+    def get_object(self): 
+        obj, created = Company.objects.get_or_create(pk=1)
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs); context['title'] = _("اعدادات الشركة الهوية"); return context
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث معلومات الشركة بنجاح.")); return super().form_valid(form)

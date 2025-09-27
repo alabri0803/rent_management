@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company, ContractTemplate
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'contact_email', 'contact_phone')
+
+@admin.register(ContractTemplate)
+class ContractTemplateAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
 # تخصيص عرض المباني والوحدات
 @admin.register(Building)
@@ -16,8 +24,8 @@ class UnitAdmin(admin.ModelAdmin):
 # تخصيص عرض المستأجرين
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
-    list_display = ('name', 'tenant_type', 'phone', 'email', 'user')
-    list_filter = ('tenant_type',)
+    list_display = ('name', 'tenant_type', 'phone', 'email', 'user', 'rating')
+    list_filter = ('tenant_type', 'rating')
     search_fields = ('name', 'phone', 'email')
 
 # تخصيص عرض العقود

@@ -1,13 +1,24 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Company, Tenant
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
+class CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = ['name', 'logo', 'contact_email', 'contact_phone', 'address']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
 class LeaseForm(forms.ModelForm):
     class Meta:
         model = Lease
         fields = ['unit', 'tenant', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
         widgets = {'start_date': forms.DateInput(attrs={'type': 'date'}), 'end_date': forms.DateInput(attrs={'type': 'date'})}
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Show only available units, or the currently selected one if editing
@@ -19,11 +30,29 @@ class LeaseForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
 
+class LeaseCancelForm(forms.ModelForm):
+    class Meta:
+        model = Lease
+        fields = ['cancellation_reason']
+        widgets = {'cancellation_reason': forms.Textarea(attrs={'rows': 4, 'placeholder': _('يرجي ذكر سبب إلغاء العقد...')})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
+
+class TenantRatingForm(forms.ModelForm):
+    class Meta:
+        model = Tenant
+        fields = ['rating']
+        widgets = {'rating': forms.Select(attrs={'class': 'w-full p-2 border rounded-md'})}
+
 class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = ['title', 'description', 'priority', 'image']
         widgets = {'description': forms.Textarea(attrs={'rows': 4})}
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -33,6 +62,7 @@ class MaintenanceRequestUpdateForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = ['status', 'staff_notes']
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -42,6 +72,7 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = ['title', 'file']
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['title'].widget.attrs.update({'class': 'w-full p-2 border rounded-md', 'placeholder': _('مثال: نسخة من العقد الموقّع')})
@@ -52,6 +83,7 @@ class ExpenseForm(forms.ModelForm):
         model = Expense
         fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt']
         widgets = {'expense_date': forms.DateInput(attrs={'type': 'date'})}
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -66,6 +98,7 @@ class PaymentForm(forms.ModelForm):
         model = Payment
         fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'notes']
         widgets = {'payment_date': forms.DateInput(attrs={'type': 'date'})}
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['payment_for_year'].initial = timezone.now().year

@@ -10,12 +10,28 @@ from decimal import Decimal
 import datetime
 from django.db.models import Sum
 
+class Company(models.Model):
+    name = models.CharField(_("اسم الشركة"), max_length=200)
+    logo = models.ImageField(_("الشعار"), upload_to='company_logos/', blank=True, null=True)
+    contact_email = models.EmailField(_("البريد الإلكتروني للتواصل"), blank=True, null=True)
+    contact_phone = models.CharField(_(" الهاتف للتواصل"), max_length=20, blank=True, null=True)
+    address = models.TextField(_("العنوان"), blank=True, null=True)
+
+    class Meta:
+        verbose_name = _("ملف الشركة")
+        verbose_name_plural = _("ملف الشركة")
+
+    def __str__(self):
+        return self.name
+
 class Building(models.Model):
     name = models.CharField(_("اسم المبنى"), max_length=100)
     address = models.TextField(_("العنوان"))
+    
     class Meta:
         verbose_name = _("مبنى")
         verbose_name_plural = _("المباني")
+        
     def __str__(self):
         return self.name
 
@@ -26,9 +42,11 @@ class Unit(models.Model):
     unit_type = models.CharField(_("نوع الوحدة"), max_length=20, choices=UNIT_TYPE_CHOICES)
     floor = models.IntegerField(_("الطابق"))
     is_available = models.BooleanField(_("متاحة للإيجار"), default=True)
+    
     class Meta:
         verbose_name = _("وحدة")
         verbose_name_plural = _("الوحدات")
+        
     def __str__(self):
         return f"{self.building.name} - {self.unit_number}"
 
@@ -40,11 +58,25 @@ class Tenant(models.Model):
     phone = models.CharField(_("رقم الهاتف"), max_length=15)
     email = models.EmailField(_("البريد الإلكتروني"), blank=True, null=True)
     authorized_signatory = models.CharField(_("المفوض بالتوقيع"), max_length=150, blank=True, null=True, help_text=_("يُملأ فقط في حال كان المستأجر شركة"))
+    rating = models.IntegerField(_("تقييم العميل"), default=3, choices=[(i, str(i)) for i in range(1, 6)], help_text= _("من 1 إلى 5 نجوم."))
+    
     class Meta:
         verbose_name = _("مستأجر")
         verbose_name_plural = _("المستأجرين")
+        
     def __str__(self):
         return self.name
+
+class ContractTemplate(models.Model):
+    title = models.CharField(_("عنوان القالب"), max_length=200)
+    body = models.TextField(_("محتوى القالب"), help_text=_("استخدم HTML لتخصيص القالب."))
+
+    class Meta:
+        verbose_name = _("قالب عقد")
+        verbose_name_plural = _("قوالب العقود")
+
+    def __str__(self):
+        return self.title
 
 class Lease(models.Model):
     STATUS_CHOICES = [('active', _('نشط')), ('expiring_soon', _('قريب الانتهاء')), ('expired', _('منتهي')), ('cancelled', _('ملغي'))]
@@ -61,22 +93,30 @@ class Lease(models.Model):
     office_fee = models.DecimalField(_("رسوم المكتب"), max_digits=10, decimal_places=2, default=5.00)
     admin_fee = models.DecimalField(_("الرسوم الإدارية"), max_digits=10, decimal_places=2, default=1.00)
     registration_fee = models.DecimalField(_("رسوم تسجيل العقد (3%)"), max_digits=10, decimal_places=2, blank=True)
+    cancellation_date = models.DateField(_("تاريخ الإلغاء"), blank=True, null=True)
+    cancellation_reason = models.TextField(_("سبب الإلغاء"), blank=True, null=True)
+    
     class Meta:
         verbose_name = _("عقد إيجار")
         verbose_name_plural = _("عقود الإيجار")
+        
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
-        self.update_status()
         if self.pk:
             old_lease = Lease.objects.get(pk=self.pk)
             if old_lease.unit != self.unit:
                 old_lease.unit.is_available = True
                 old_lease.unit.save()
-            if self.status in ['active', 'expiring_soon']:
-                self.unit.is_available = False
-            else:
-                self.unit.is_available = True
-            self.unit.save()
+                
+        if self.status in ['active', 'expiring_soon']:
+            self.unit.is_available = False
+        else:
+            self.unit.is_available = True
+        self.unit.save()
+
+        is_being_cancelled = 'cancellation_reson' in kwargs.get('update_fields', [])
+        if not is_being_cancelled:
+            self.update_status()
         super().save(*args, **kwargs)
 
     def update_status(self):
@@ -85,6 +125,7 @@ class Lease(models.Model):
         if self.end_date < today: self.status = 'expired'
         elif self.end_date - relativedelta(months=1) <= today: self.status = 'expiring_soon'
         else: self.status = 'active'
+            
     def get_status_color(self):
         if self.status == 'active': return 'active'
         if self.status == 'expiring_soon': return 'expiring'
@@ -106,9 +147,12 @@ class Lease(models.Model):
                 status = 'paid'
             elif paid_for_month > 0:
                 status = 'partial'
+                
             today = timezone.now().date()
-            if current_date.year > today.year or (current_date.year == today.year and current_date.month > today.month):
+            due_date = datetime.date(year, month, 1)
+            if due_date < today and status != 'due':
                 status = 'upcoming'
+
             summary.append({
                 'month': month,
                 'year': year,
@@ -134,13 +178,17 @@ class Payment(models.Model):
     payment_for_month = models.IntegerField(_("دفعة عن شهر"), choices=[(i, _(str(i))) for i in range(1, 13)])
     payment_for_year = models.IntegerField(_("دفعة عن سنة"), default=timezone.now().year)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
+    
     class Meta:
         verbose_name = _("دفعة")
         verbose_name_plural = _("الدفعات")
         ordering = ['-payment_date']
-        unique_together = ('lease', 'payment_for_month', 'payment_for_year')
+        
     def __str__(self):
         return f"{self.amount} for {self.lease.contract_number} ({self.payment_for_month}/{self.payment_for_year})"
+
+    def get_receipt_url(self):
+        return reverse('report_payment_receipt', kwargs={'pk': self.pk})
 
 class MaintenanceRequest(models.Model):
     STATUS_CHOICES = [('submitted', _('تم الإرسال')), ('in_progress', _('قيد التنفيذ')), ('completed', _('مكتمل')), ('cancelled', _('ملغي'))]
@@ -153,10 +201,12 @@ class MaintenanceRequest(models.Model):
     image = models.ImageField(_("صورة مرفقة (اختياري)"), upload_to='maintenance_requests/', blank=True, null=True)
     reported_date = models.DateTimeField(_("تاريخ الإبلاغ"), auto_now_add=True)
     staff_notes = models.TextField(_("ملاحظات الموظف"), blank=True, null=True)
+    
     class Meta:
         verbose_name = _("طلب صيانة")
         verbose_name_plural = _("طلبات الصيانة")
         ordering = ['-reported_date']
+        
     def __str__(self):
         return self.title
 
@@ -165,10 +215,12 @@ class Document(models.Model):
     title = models.CharField(_("عنوان المستند"), max_length=200)
     file = models.FileField(_("الملف"), upload_to='lease_documents/')
     uploaded_at = models.DateTimeField(_("تاريخ الرفع"), auto_now_add=True)
+    
     class Meta:
         verbose_name = _("مستند")
         verbose_name_plural = _("المستندات")
         ordering = ['-uploaded_at']
+        
     def __str__(self):
         return self.title
 
@@ -181,10 +233,12 @@ class Expense(models.Model):
     expense_date = models.DateField(_("تاريخ المصروف"))
     receipt = models.FileField(_("إيصال/فاتورة (اختياري)"), upload_to='expense_receipts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
     class Meta:
         verbose_name = _("مصروف")
         verbose_name_plural = _("المصاريف")
         ordering = ['-expense_date']
+        
     def __str__(self):
         return f"{self.get_category_display()} - {self.amount}"
 
