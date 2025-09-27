@@ -1,4 +1,3 @@
-from django import template
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
@@ -7,12 +6,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, Avg, F
 from dateutil.relativedelta import relativedelta
-from django.template import Context, Template, context
+from django.template import Context, Template
 from num2words import num2words
+from datetime import datetime
+from django.views.generic import TemplateView
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Building, Notification
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Tenant, Building
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, SendMessageForm, LeaseCancellationForm
 from .utils import render_to_pdf
 
@@ -482,3 +483,112 @@ class GenerateBuildingStatementPDF(LoginRequiredMixin, PermissionRequiredMixin, 
             'net_profit': total_income - total_expenses,
         }
         return render_to_pdf('dashboard/reports/building_statement.html', context)
+
+class AnalyticsHubView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'dashboard.view_lease' # Or a general reporting permission
+    template_name = 'dashboard/analytics_hub.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.now().date()
+        current_year = today.year
+
+        # --- 1. إحصائيات رئيسية ---
+        total_income_ytd = Payment.objects.filter(payment_date__year=current_year).aggregate(Sum('amount'))['amount__sum'] or 0
+        total_expenses_ytd = Expense.objects.filter(expense_date__year=current_year).aggregate(Sum('amount'))['amount__sum'] or 0
+        context['kpis'] = {
+            'total_income_ytd': total_income_ytd,
+            'total_expenses_ytd': total_expenses_ytd,
+            'net_profit_ytd': total_income_ytd - total_expenses_ytd,
+            'occupancy_rate': (Unit.objects.filter(is_available=False).count() / Unit.objects.count() * 100) if Unit.objects.count() > 0 else 0
+        }
+
+        # --- 2. بيانات الرسم البياني: الإيرادات والمصروفات الشهرية (آخر 12 شهر) ---
+        chart_data = {'labels': [], 'income': [], 'expenses': []}
+        for i in range(11, -1, -1):
+            month_date = today - relativedelta(months=i)
+            chart_data['labels'].append(month_date.strftime('%b %Y'))
+            income = Payment.objects.filter(payment_date__year=month_date.year, payment_date__month=month_date.month).aggregate(Sum('amount'))['amount__sum'] or 0
+            expenses = Expense.objects.filter(expense_date__year=month_date.year, expense_date__month=month_date.month).aggregate(Sum('amount'))['amount__sum'] or 0
+            chart_data['income'].append(float(income))
+            chart_data['expenses'].append(float(expenses))
+        context['monthly_trend_chart'] = chart_data
+
+        # --- 3. بيانات الرسم البياني: المصروفات حسب الفئة (هذا العام) ---
+        expense_breakdown = Expense.objects.filter(expense_date__year=current_year).values('category').annotate(total=Sum('amount')).order_by('-total')
+        context['expense_chart'] = {
+            'labels': [item['get_category_display'] for item in Expense.objects.filter(pk__in=[e['pk'] for e in expense_breakdown])] if expense_breakdown else [],
+             'data': [float(item['total']) for item in expense_breakdown]
+        }
+
+        # --- 4. بيانات الرسم البياني: ربحية العقارات (هذا العام) ---
+        properties_profit = Building.objects.annotate(
+            income=Sum('unit__lease__payments__amount', filter=Q(unit__lease__payments__payment_date__year=current_year)),
+            costs=Sum('expenses__amount', filter=Q(expenses__expense_date__year=current_year))
+        ).annotate(
+            net=F('income') - F('costs')
+        ).order_by('-net')
+
+        context['profit_chart'] = {
+            'labels': [p.name for p in properties_profit],
+            'data': [float(p.net or 0) for p in properties_profit]
+        }
+
+        context['available_years'] = range(2023, today.year + 1)
+        return context
+
+class GenerateAnnualReportPDF(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        year = request.GET.get('year')
+        monthly_data = []
+        for month in range(1, 13):
+            income = Payment.objects.filter(payment_date__year=year, payment_date__month=month).aggregate(total=Sum('amount'))['amount__sum'] or 0
+            expenses = Expense.objects.filter(expense_date__year=year, expense_date__month=month).aggregate(total=Sum('amount'))['amount__sum'] or 0
+            monthly_data.append({
+                'month': month,
+                'income': income,
+                'expenses': expenses,
+                'net': income - expenses,
+            })
+            totals = {
+                'total_income': sum(m['income'] for m in monthly_data),
+                'total_expenses': sum(m['expenses'] for m in monthly_data),
+                'total_net': sum(m['net'] for m in monthly_data),
+            }
+            context = {
+                'year': year,
+                'monthly_data': monthly_data,
+                'totals': totals,
+            }
+            return render_to_pdf('dashboard/reports/annual_report.html', context)
+
+class OccupancyReportView(LoginRequiredMixin, ListView):
+    model = Building
+    template_name = 'dashboard/occupancy_report.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['available_units'] = Unit.objects.filter(is_available=True).order_by('building', 'unit_number')
+        context['today'] = timezone.now().date()
+
+class TopClientsReportView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/top_clients_report.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['top_by_rating'] = Tenant.objects.all().order_by('-rating', 'name')[:10]
+        context['top_by_value'] = Tenant.objects.annotate(total_paid=Sum('lease__payments__amount')).filter(total_paid__isnull=False).order_by('-total_paid', 'name')[:10]
+        return context
+
+class TopPropertiesReportView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/top_properties_report.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_year = timezone.now().year
+        context['top_by_profit'] = Building.objects.annotate(
+            income=Sum('unit__lease__payments__amount', filter=Q(unit__lease__payments__payment_date__year=current_year)),
+            costs=Sum('expenses__amount', filter=Q(expenses__expense_date__year=current_year))
+        ).annotate(
+            net_profit=F('income') - F('costs')
+        ).filter(net_profit__isnull=False).order_by('-net_profit')
+        return context

@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تقرير الإشغال" %}{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "تقرير الإشغال والوحدات الشاغرة" %}</h2>
+
+<div class="card p-6 mb-8">
+    <h3 class="text-xl font-bold mb-4">{% trans "نسب الإشغال حسب المبنى" %}</h3>
+    <table class="w-full">
+        <thead><tr class="border-b"><th class="text-start">{% trans "المبنى" %}</th><th>{% trans "الوحدات" %}</th><th>{% trans "المشغولة" %}</th><th>{% trans "الشاغرة" %}</th><th>{% trans "نسبة الإشغال" %}</th></tr></thead>
+        <tbody>
+            {% for building in buildings %}
+            <tr class="border-b">
+                <td class="py-2">{{ building.name }}</td>
+                <td class="text-center">{{ building.unit_set.count }}</td>
+                <td class="text-center">{{ building.unit_set.filter(is_available=False).count }}</td>
+                <td class="text-center">{{ building.unit_set.filter(is_available=True).count }}</td>
+                <td class="text-center font-bold">{{ building.occupancy_rate|default:0|floatformat:1 }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card p-6">
+    <h3 class="text-xl font-bold mb-4">{% trans "قائمة الوحدات الشاغرة حالياً" %}</h3>
+    <table class="w-full">
+        <thead><tr class="border-b"><th class="text-start">{% trans "الوحدة" %}</th><th class="text-start">{% trans "المبنى" %}</th><th>{% trans "شاغرة منذ" %}</th><th>{% trans "أيام الشغور" %}</th></tr></thead>
+        <tbody>
+            {% for unit in available_units %}
+            <tr class="border-b">
+                <td class="py-2">{{ unit.unit_number }}</td>
+                <td>{{ unit.building.name }}</td>
+                <td class="text-center">{{ unit.vacant_since|date:"d M Y" }}</td>
+                <td class="text-center">{% if unit.vacant_since %}{{ today|subtract:unit.vacant_since }}{% else %}-{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center py-4">{% trans "لا توجد وحدات شاغرة حالياً." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

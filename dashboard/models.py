@@ -67,6 +67,7 @@ class Unit(models.Model):
     unit_type = models.CharField(_("نوع الوحدة"), max_length=20, choices=UNIT_TYPE_CHOICES)
     floor = models.IntegerField(_("الطابق"))
     is_available = models.BooleanField(_("متاحة للإيجار"), default=True)
+    vacant_since = models.DateField(_("شاغرة منذ تاريخ"), null=True, blank=True)
     
     class Meta:
         verbose_name = _("وحدة")
@@ -126,7 +127,23 @@ class Lease(models.Model):
         
     def save(self, *args, **kwargs):
         self.registration_fee = (self.monthly_rent * 12) * Decimal('0.03')
+        is_new = self._state.addin
+        old_status = None
+        if not is_new:
+            old_lease = Lease.objects.get(pk=self.pk)
+            old_status = old_lease.status
         self.update_status()
+        super().save(*args, **kwargs)
+        if is_new and self.status in ['active', 'expiring_soon']:
+            self.unit.is_available = False
+            self.unit.vacant_since = None
+            self.unit.save()
+        elif not is_new and old_status != self.status:
+            is_active = self.status in ['active', 'expiring_soon']
+            was_active_before = old_status in ['active', 'expiring_soon']
+            if is_active and not was_active_before:
+                self.unit.is_available = False
+                self.unit.vacant_since = timezone.now().date()
         if self.pk:
             old_lease = Lease.objects.get(pk=self.pk)
             if old_lease.unit != self.unit:

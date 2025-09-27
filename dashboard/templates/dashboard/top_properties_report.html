@@ -1,0 +1,22 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تقرير أفضل العقارات" %}{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "تقرير أداء العقارات (حسب صافي الربح للعام الحالي)" %}</h2>
+<div class="card p-6">
+    <table class="w-full">
+        <thead><tr class="border-b"><th class="text-start">#</th><th class="text-start">{% trans "المبنى" %}</th><th class="text-end">{% trans "إجمالي الإيرادات" %}</th><th class="text-end">{% trans "إجمالي المصروفات" %}</th><th class="text-end">{% trans "صافي الربح" %}</th></tr></thead>
+        <tbody>
+            {% for building in top_by_profit %}
+            <tr class="border-b">
+                <td class="py-2">{{ forloop.counter }}</td>
+                <td class="font-bold">{{ building.name }}</td>
+                <td class="text-end text-green-600">{{ building.income|default:0|floatformat:2 }}</td>
+                <td class="text-end text-red-600">{{ building.costs|default:0|floatformat:2 }}</td>
+                <td class="text-end font-bold">{{ building.net_profit|default:0|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

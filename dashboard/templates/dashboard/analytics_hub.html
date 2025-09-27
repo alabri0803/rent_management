@@ -1,0 +1,75 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "مركز التحليلات والتقارير" %}{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "مركز التحليلات" %}</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="card p-5"><h3 class="text-gray-500">{% trans "إجمالي الإيرادات (العام الحالي)" %}</h3><p class="text-3xl font-bold mt-2">{{ kpis.total_income_ytd|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
+    <div class="card p-5"><h3 class="text-gray-500">{% trans "إجمالي المصروفات (العام الحالي)" %}</h3><p class="text-3xl font-bold mt-2">{{ kpis.total_expenses_ytd|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
+    <div class="card p-5 bg-green-50"><h3 class="text-green-800">{% trans "صافي الربح (العام الحالي)" %}</h3><p class="text-3xl font-bold text-green-600 mt-2">{{ kpis.net_profit_ytd|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
+    <div class="card p-5"><h3 class="text-gray-500">{% trans "نسبة الإشغال الحالية" %}</h3><p class="text-3xl font-bold mt-2">{{ kpis.occupancy_rate|floatformat:1 }}%</p></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="card p-6"><h3 class="text-xl font-bold mb-4">{% trans "الإيرادات والمصروفات (آخر 12 شهر)" %}</h3><canvas id="monthlyTrendChart"></canvas></div>
+    <div class="card p-6"><h3 class="text-xl font-bold mb-4">{% trans "صافي الربح حسب العقار (هذا العام)" %}</h3><canvas id="profitByPropertyChart"></canvas></div>
+</div>
+
+<div class="card p-8">
+    <h3 class="text-2xl font-bold mb-6">{% trans "تقارير مفصلة" %}</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="border p-4 rounded-lg">
+            <h4 class="font-bold mb-2">{% trans "التقرير المالي السنوي" %}</h4>
+            <form action="{% url 'report_annual' %}" method="get" target="_blank" class="flex items-end space-x-2 rtl:space-x-reverse">
+                <select name="year" class="p-2 border rounded-md w-full">
+                    {% for year in available_years %}<option value="{{ year }}">{{ year }}</option>{% endfor %}
+                </select>
+                <button type="submit" class="btn-primary py-2 px-4 rounded-lg">{% trans "إنشاء" %}</button>
+            </form>
+        </div>
+        <a href="{% url 'report_occupancy' %}" class="block border p-4 rounded-lg hover:bg-gray-50">
+            <h4 class="font-bold mb-2">{% trans "تقرير الإشغال والوحدات الشاغرة" %}</h4>
+            <p class="text-sm text-gray-600">{% trans "عرض تفصيلي لنسب الإشغال وقائمة بالوحدات المتاحة." %}</p>
+        </a>
+        <a href="{% url 'report_top_clients' %}" class="block border p-4 rounded-lg hover:bg-gray-50">
+            <h4 class="font-bold mb-2">{% trans "تقرير أفضل العملاء" %}</h4>
+            <p class="text-sm text-gray-600">{% trans "تصنيف العملاء بناءً على التقييم وقيمة الدفعات." %}</p>
+        </a>
+        <a href="{% url 'report_top_properties' %}" class="block border p-4 rounded-lg hover:bg-gray-50">
+            <h4 class="font-bold mb-2">{% trans "تقرير أفضل العقارات" %}</h4>
+            <p class="text-sm text-gray-600">{% trans "تصنيف العقارات (المباني) بناءً على صافي الربح." %}</p>
+        </a>
+    </div>
+</div>
+
+<script>
+    // Monthly Trend Chart
+    new Chart(document.getElementById('monthlyTrendChart'), {
+        type: 'line',
+        data: {
+            labels: {{ monthly_trend_chart.labels|safe }},
+            datasets: [
+                { label: '{% trans "الإيرادات" %}', data: {{ monthly_trend_chart.income|safe }}, borderColor: '#3b82f6', backgroundColor: '#bfdbfe', fill: false },
+                { label: '{% trans "المصاريف" %}', data: {{ monthly_trend_chart.expenses|safe }}, borderColor: '#ef4444', backgroundColor: '#fee2e2', fill: false }
+            ]
+        }
+    });
+    // Profit by Property Chart
+    new Chart(document.getElementById('profitByPropertyChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ profit_chart.labels|safe }},
+            datasets: [{
+                label: '{% trans "صافي الربح" %}',
+                data: {{ profit_chart.data|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { indexAxis: 'y' }
+    });
+</script>
+{% endblock %}

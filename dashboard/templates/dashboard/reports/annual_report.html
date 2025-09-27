@@ -1,0 +1,19 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><style>@font-face {font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');} body {font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right;} table{width:100%; border-collapse: collapse; margin-top: 20px;} th, td{padding: 8px; border: 1px solid #ccc;} th{background-color:#f2f2f2;} tfoot{font-weight: bold;}</style></head>
+<body>
+    <div style="text-align:center;"><h1>{% trans "التقرير المالي السنوي" %}</h1><h3>{% trans "لعام" %} {{ year }}</h3></div>
+    <table>
+        <thead><tr><th>{% trans "الشهر" %}</th><th>{% trans "إجمالي الإيرادات" %}</th><th>{% trans "إجمالي المصروفات" %}</th><th>{% trans "صافي الربح" %}</th></tr></thead>
+        <tbody>
+        {% for data in monthly_data %}
+        <tr><td>{{ data.month }}</td><td>{{ data.income|floatformat:2 }}</td><td>{{ data.expenses|floatformat:2 }}</td><td>{{ data.net|floatformat:2 }}</td></tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr><td>{% trans "الإجمالي السنوي" %}</td><td>{{ totals.total_income|floatformat:2 }}</td><td>{{ totals.total_expenses|floatformat:2 }}</td><td>{{ totals.total_net|floatformat:2 }}</td></tr>
+        </tfoot>
+    </table>
+</body>
+</html>

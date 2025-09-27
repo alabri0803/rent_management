@@ -1,0 +1,28 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تقرير أفضل العملاء" %}{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "تقرير أفضل العملاء" %}</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="card p-6">
+        <h3 class="text-xl font-bold mb-4">{% trans "أفضل 10 عملاء حسب التقييم الداخلي" %}</h3>
+        <ol class="list-decimal list-inside">
+            {% for tenant in top_by_rating %}
+            <li class="py-1">
+                <a href="{{ tenant.get_absolute_url }}" class="text-blue-600">{{ tenant.name }}</a> - {% trans "التقييم" %}: {{ tenant.rating }}/5
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div class="card p-6">
+        <h3 class="text-xl font-bold mb-4">{% trans "أفضل 10 عملاء حسب إجمالي الدفعات" %}</h3>
+        <ol class="list-decimal list-inside">
+            {% for tenant in top_by_value %}
+            <li class="py-1">
+                <a href="{{ tenant.get_absolute_url }}" class="text-blue-600">{{ tenant.name }}</a> - {% trans "الإجمالي" %}: {{ tenant.total_paid|floatformat:2 }} {% trans "ر.ع" %}
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+{% endblock %}
