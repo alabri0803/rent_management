@@ -58,16 +58,16 @@ class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             'total_overdue_rent': total_overdue,
             'maintenance_requests_open': MaintenanceRequest.objects.filter(status__in=['submitted', 'in_progress']).count(),
         }
-        lease_avents = []
+        lease_events = []
         leases_for_calendar = Lease.objects.filter(status__in=['active', 'expiring_soon'])
         for lease in leases_for_calendar:
-            lease_avents.append({
-                'title': f"{lease.tenant.name} - {lease.unit.unit_number}",
+            lease_events.append({
+                'title': _("انتهاء عقد")+ f" ({lease.unit.unit_number})",
                 'start': lease.end_date,
                 'url': lease.get_absolute_url(),
                 'color': '#ef4444' if lease.status == 'expiring_soon' else '#3b82f6',
             })
-            context['lease_avents_json'] = json.dumps(lease_avents, cls=DjangoJSONEncoder)
+            context['lease_events_json'] = json.dumps(lease_avents, cls=DjangoJSONEncoder)
             context['notifications'] = Notification.objects.filter(user=self.request.user, read=False).order_by('-timestamp')[:5]
             latest_payments = Payment.objects.all().order_by('-payment_date')[:5]
             latest_expenses = Expense.objects.all().order_by('-expense_date')[:5]
@@ -75,7 +75,11 @@ class DashboardHomeView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             for e in latest_expenses: e.type = 'expense'; e.date = e.expense_date
 
         # Financial Trend Chart (Last 12 months)
-        financial_feed = sorted(chain(latest_payments, latest_expenses), key=attrgetter('date'), reverse=True)
+        financial_feed = sorted(
+            chain(latest_payments, latest_expenses), 
+            key=attrgetter('date'), 
+            reverse=True
+        )
         context['financial_feed'] = financial_feed[:7]
         context['occupancy_chart_data'] = {
             'occupied': Unit.objects.filter(is_available=False).count(),
