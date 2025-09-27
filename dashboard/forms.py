@@ -1,16 +1,13 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Tenant, Notification, ContractTemplate
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 class LeaseForm(forms.ModelForm):
     class Meta:
         model = Lease
-        fields = ['unit', 'tenant', 'template', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
-        widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}), 
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-        }
+        fields = ['unit', 'tenant', 'contract_number', 'contract_form_number', 'monthly_rent', 'start_date', 'end_date', 'electricity_meter', 'water_meter', 'office_fee', 'admin_fee']
+        widgets = {'start_date': forms.DateInput(attrs={'type': 'date'}), 'end_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Show only available units, or the currently selected one if editing
@@ -53,7 +50,7 @@ class DocumentForm(forms.ModelForm):
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
-        fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt', 'paid_to']
+        fields = ['building', 'category', 'description', 'amount', 'expense_date', 'receipt']
         widgets = {'expense_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,45 +64,10 @@ class ExpenseForm(forms.ModelForm):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'cheque_details', 'payment_method', 'notes', 'payment_for_year']
+        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'notes']
         widgets = {'payment_date': forms.DateInput(attrs={'type': 'date'})}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['payment_for_year'].initial = timezone.now().year
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
-
-class TenantForm(forms.ModelForm):
-    class Meta:
-        model = Tenant
-        fields = ['rating', 'internal_notes']
-        widgets = {'internal_notes': forms.Textarea(attrs={'rows': 4})}
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
-
-class SendMessageForm(forms.Form):
-    class Meta:
-        model = Notification
-        fields = ['message']
-        widgets = {'message': forms.Textarea(attrs={'rows': 3, 'placeholder': _('اكتب رسالتك هنا...')})}
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['message'].label = _("رسالة جديدة")
-        self.fields['message'].widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
-
-class LeaseCancellationForm(forms.ModelForm):
-    class Meta:
-        model = Lease
-        fields = ['cancellation_date', 'cancellation_reason']
-        widgets = {
-            'cancellation_date': forms.DateInput(attrs={'type': 'date', 'required': True}),
-            'cancellation_reason': forms.Textarea(attrs={'rows': 4, 'required': True}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['cancellation_date'].initial = timezone.now().date()
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})

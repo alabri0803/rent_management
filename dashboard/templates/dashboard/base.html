@@ -3,106 +3,29 @@
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {{ company_name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@material-tailwind/html@latest/index.global.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap');
-        :root {
-            --fc-border-color: #e2e8f0;
-            --fc-daygrid-event-dot-width: 8px;
-            --fc-list-event-dot-hover-bg-color: #f1f5f9;
-            --fc-today-bg-color: rgba(153, 51, 51, 0.1);
-            --primary-color: #993333; 
-            --secondary-color: #D4AF37; 
-        }
-        .fc .fc-toolbar-title {
-            font-size: 1.25rem;
-        }
-        .fc .fc-button-primary {
-            background-color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
-        }
-        .fc-direction-rtl .fc-list-day-text, .fc-direction-rtl .fc-list-day-side-text {
-            float: right;
-        }
-        body { 
-            font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; 
-            background-color: #f7fafc; 
-        } 
-        .sidebar { 
-            background-color: #1a202c; 
-        } 
-        .sidebar nav a { 
-            color: #a0aec0; 
-            transition: all 0.2s; 
-        } 
-        .sidebar nav a:hover, .sidebar nav a.active { 
-            background-color: var(--primary-color); 
-            color: white; 
-        } 
-        .card { 
-            background-color: white; 
-            border-radius: 0.75rem; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
-        } 
-        .btn-primary { 
-            background-color: var(--primary-color); 
-            color: white; 
-            transition: background-color 0.2s; 
-        } 
-        .btn-primary:hover { 
-            background-color: #7c2a2a; 
-        } 
-        .status-badge { 
-            padding: 0.25rem 0.75rem; 
-            border-radius: 9999px; 
-            font-size: 0.75rem; 
-            font-weight: 600; 
-            text-transform: uppercase; 
-        } 
-        .status-active { 
-            background-color: #dcfce7; 
-            color: #166534; 
-        } 
-        .status-expiring { 
-            background-color: #fef9c3;
-            color: #854d0e; 
-        } 
-        .status-expired { 
-            background-color: #fee2e2; 
-            color: #991b1b; 
-        } 
-        .status-cancelled {
-            background-color: #e5e7eb; 
-            color: #374151; 
-        }
-    </style>
+    <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {% trans "نظام إدارة الإيجارات" %}</title>
+    <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
+    body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
+    :root { --primary-color: #993333; --secondary-color: #D4AF37; } .sidebar { background-color: #1a202c; } 
+    .sidebar nav a { color: #a0aec0; transition: all 0.2s; } .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
+    .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
+    .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; } .btn-primary:hover { background-color: #7c2a2a; } 
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; } 
+    .status-active { background-color: #dcfce7; color: #166534; } .status-expiring { background-color: #fef9c3; color: #854d0e; } 
+    .status-expired { background-color: #fee2e2; color: #991b1b; } .status-cancelled { background-color: #e5e7eb; color: #374151; }</style>
 </head>
 <body class="text-gray-700">
 <div class="flex h-screen">
 <aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col">
-    <div class="text-center mb-10">
-        {% if company_logo %}
-        <img src="{{ company_logo.url }}" alt="{{ company_name }} Logo" class="mx-auto h-16 w-auto mb-3">
-        {% endif %}
-        <h1 class="text-2xl font-bold">{{ company_name }}</h1>
-    </div>
+    <div class="text-center mb-10"><h1 class="text-2xl font-bold">{% trans "إدارة الإيجارات" %}</h1><p class="text-sm text-gray-400">{% trans "نسخة" %} 1.1</p></div>
     <nav>
         <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
-        {% if perms.dashboard.view_lease %}
         <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
-        {% endif %}
-        {% if perms.dashboard.view_payment %}
         <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
-        {% endif %}
-        {% if perms.dashboard.view_expense %}
         <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>
-        {% endif %}
-        {% if perms.dashboard.vview_maintenancerequest %}
         <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "الصيانة" %}</a>
-        {% endif %}
+
         <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
     </nav>
     <div class="mt-auto">

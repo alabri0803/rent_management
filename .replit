@@ -1,17 +1,17 @@
-run = ["python", "manage.py", "runserver", "0.0.0.0:3000"]
-entrypoint = "manage.py"
-modules = ["python-3.10:v18-20230807-322e88b", "python-3.12"]
+run = "python manage.py runserver 0.0.0.0:3000"
+modules = ["python-3.11"]
 
 hidden = [".pythonlibs"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
+packages = ["cacert", "cargo", "fontconfig", "freetype", "gettext", "ghostscript", "glib", "glibcLocales", "harfbuzz", "lcms2", "libffi", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssl", "pango", "pgadmin4", "pkg-config", "rustc", "tcl", "tk", "xcodebuild", "zlib"]
 
 [unitTest]
 language = "python3"
 
 [deployment]
-run = ["python", "manage.py", "runserver", "0.0.0.0:3000"]
+run = ["sh", "-c", "python manage.py runserver 0.0.0.0:3000"]
 deploymentTarget = "gce"
 
 [[ports]]

@@ -3,32 +3,22 @@
 {% block title %}{% trans "التقارير" %}{% endblock %}
 {% block content %}
 <h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "إنشاء التقارير" %}</h2>
-<div class="space-y-8">
-    <div class="card p-8">
-        <h3 class="text-xl font-bold mb-4">{% trans "تقرير الأرباح والخسائر الشهري (لكل العقارات)" %}</h3>
-        <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse">
-            ... </form>
-    </div>
-
-    <div class="card p-8">
-        <h3 class="text-xl font-bold mb-4">{% trans "كشف حساب عقار مفصّل" %}</h3>
-        <form action="{% url 'report_building_statement' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse">
-            <div>
-                <label for="building" class="block mb-1">{% trans "اختر المبنى" %}</label>
-                <select name="building" id="building" class="p-2 border rounded-md" required>
-                    {% for b in buildings %}<option value="{{ b.pk }}">{{ b.name }}</option>{% endfor %}
-                </select>
-            </div>
-            <div>
-                <label for="start_date" class="block mb-1">{% trans "من تاريخ" %}</label>
-                <input type="date" name="start_date" id="start_date" class="p-2 border rounded-md" required>
-            </div>
-            <div>
-                <label for="end_date" class="block mb-1">{% trans "إلى تاريخ" %}</label>
-                <input type="date" name="end_date" id="end_date" class="p-2 border rounded-md" required>
-            </div>
-            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "إنشاء" %}</button>
-        </form>
-    </div>
+<div class="card p-8">
+    <h3 class="text-xl font-bold mb-4">{% trans "تقرير الأرباح والخسائر الشهري" %}</h3>
+    <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse">
+        <div>
+            <label for="year" class="block mb-1">{% trans "السنة" %}</label>
+            <input type="number" name="year" id="year" value="{% now 'Y' %}" class="p-2 border rounded-md" required>
+        </div>
+        <div>
+            <label for="month" class="block mb-1">{% trans "الشهر" %}</label>
+            <select name="month" id="month" class="p-2 border rounded-md" required>
+                {% for i in "123456789012"|make_list %}
+                <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "إنشاء" %}</button>
+    </form>
 </div>
 {% endblock %}

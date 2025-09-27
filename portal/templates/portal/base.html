@@ -15,12 +15,6 @@
                 {% if user.is_authenticated %}
                 <a href="{% url 'portal_dashboard' %}" class="mx-2 hover:text-[#993333]">{% trans "لوحة المعلومات" %}</a>
                 <a href="{% url 'maintenance_list' %}" class="mx-2 hover:text-[#993333]">{% trans "طلبات الصيانة" %}</a>
-                <a href="{% url 'notification_list' %}" class="mx-2 hover:text-[#993333] relative inline-block">
-                    {% trans "الإشعارات" %}
-                    {% if unread_notifications > 0 %}
-                    <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{ unread_notifications }}</span>
-                    {% endif %}
-                </a>
                 <form method="post" action="{% url 'logout' %}" class="inline-block mx-2">{% csrf_token %}<button type="submit">{% trans "تسجيل الخروج" %}</button></form>
                 {% endif %}
             </div>

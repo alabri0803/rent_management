@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face {
+            font-family: 'Amiri';
+            src: url(data:font/truetype;charset=utf-8;base64,{{ amiri_font_base64 }}) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'Traditional Arabic', 'Arial', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        .en {
+            font-family: Arial, sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        .container {
+            padding: 20px;
+            border: 1px solid #333;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        td { padding: 10px; vertical-align: top; }
+        .ar { text-align: right; }
+        .en { text-align: left; direction: ltr; }
+        .signatures { margin-top: 80px; }
+        .sig-col { width: 50%; display: inline-block; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>إشعار إلغاء عقد إيجار / Lease Cancellation Notice</h1>
+        </div>
+
+        <table>
+            <tr>
+                <td class="ar"><strong>التاريخ:</strong> {{ today|date:"d/m/Y" }}</td>
+                <td class="en"><strong>Date:</strong> {{ today|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <td class="ar"><strong>اسم المؤجر:</strong> {{ landlord_name }}</td>
+                <td class="en"><strong>Landlord's Name:</strong> {{ landlord_name }}</td>
+            </tr>
+            <tr>
+                <td class="ar"><strong>اسم المستأجر:</strong> {{ lease.tenant.name }}</td>
+                <td class="en"><strong>Tenant's Name:</strong> {{ lease.tenant.name }}</td>
+            </tr>
+            <tr>
+                <td class="ar"><strong>بخصوص العقد رقم:</strong> {{ lease.contract_number }}</td>
+                <td class="en"><strong>Regarding Lease Contract No:</strong> {{ lease.contract_number }}</td>
+            </tr>
+             <tr>
+                <td class="ar"><strong>للوحدة رقم:</strong> {{ lease.unit.unit_number }} في مبنى {{ lease.unit.building.name }}</td>
+                <td class="en"><strong>For Unit No:</strong> {{ lease.unit.unit_number }} in building {{ lease.unit.building.name }}</td>
+            </tr>
+        </table>
+
+        <p class="ar">
+            بموجب هذا الإشعار، يتم الاتفاق بين الطرفين على إلغاء عقد الإيجار المذكور أعلاه اعتبارًا من تاريخه. يقر الطرفان بتسوية كافة الالتزامات المالية المتعلقة بالعقد.
+        </p>
+        <p class="en" style="margin-top: 20px;">
+            By this notice, both parties agree to cancel the aforementioned lease contract effective from this date. Both parties acknowledge that all financial obligations related to the contract have been settled.
+        </p>
+
+        <div class="signatures">
+             <table>
+                <tr>
+                    <td class="ar" style="text-align:center;">
+                        <p><strong>توقيع المؤجر</strong></p>
+                        <p style="margin-top: 40px;">.........................................</p>
+                    </td>
+                    <td class="en" style="text-align:center;">
+                        <p><strong>Landlord's Signature</strong></p>
+                         <p style="margin-top: 40px;">.........................................</p>
+                    </td>
+                </tr>
+                 <tr>
+                    <td class="ar" style="text-align:center;">
+                        <p><strong>توقيع المستأجر</strong></p>
+                        <p style="margin-top: 40px;">.........................................</p>
+                    </td>
+                    <td class="en" style="text-align:center;">
+                        <p><strong>Tenant's Signature</strong></p>
+                         <p style="margin-top: 40px;">.........................................</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
