@@ -82,18 +82,24 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+    #}
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'q51hnrv8xdz5hf5x',
+        'USER': 'letzn5s3o5vqlvte',
+        'PASSWORD': 'rme7ieccesl6q4ck',
+        'HOST': 'b8rg15mwxwynuk9q.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'ssl': {'ssl-mode': 'require'}
+        }
     }
-}
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('mysql://letzn5s3o5vqlvte:rme7ieccesl6q4ck@b8rg15mwxwynuk9q.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q51hnrv8xdz5hf5x'),
-        conn_max_age=600,
-        ssl_require=True
-    )
 }
 
 
