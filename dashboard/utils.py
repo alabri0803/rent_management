@@ -1,15 +1,62 @@
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 from django.utils.translation import gettext as _
+from django.conf import settings
 
+# الدالة الرئيسية لتوليد PDF
+def generate_pdf_receipt(template_path: str, context: dict) -> HttpResponse:
+    """
+    دالة ذكية تحاول استخدام WeasyPrint أولاً ثم xhtml2pdf كبديل
+    """
+    try:
+        # حاول استخدام WeasyPrint أولاً (أفضل للعربية)
+        return render_to_pdf_weasyprint(template_path, context)
+    except ImportError:
+        # إذا لم يكن WeasyPrint متاحاً، استخدم xhtml2pdf
+        return render_to_pdf(template_path, context)
+
+# باستخدام WeasyPrint (موصى به للعربية)
+def render_to_pdf_weasyprint(template_path: str, context: dict) -> HttpResponse:
+    try:
+        from weasyprint import HTML
+        import tempfile
+
+        template = get_template(template_path)
+        html = template.render(context)
+
+        # إنشاء ملف PDF
+        pdf_file = HTML(string=html, base_url=settings.BASE_DIR).write_pdf()
+
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="receipt_{context.get("payment").id}.pdf"'
+        return response
+
+    except Exception as e:
+        # في حالة الخطأ، نرجع HTML للتصحيح
+        template = get_template(template_path)
+        html = template.render(context)
+        return HttpResponse(f"Error generating PDF with WeasyPrint: {str(e)}<hr>{html}")
+
+# باستخدام xhtml2pdf (بديل)
 def render_to_pdf(template_path: str, context: dict) -> HttpResponse:
-    template = get_template(template_path)
-    html = template.render(context)
-    result = BytesIO()
-    # Ensure you have a font that supports Arabic installed on your system or provide a path to a .ttf file.
-    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return HttpResponse(_("We had some errors") + f"<pre>{html}</pre>")
+    try:
+        from xhtml2pdf import pisa
+
+        template = get_template(template_path)
+        html = template.render(context)
+
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = f'inline; filename="receipt_{context.get("payment").id}.pdf"'
+            return response
+        else:
+            return HttpResponse(f"PDF generation error: {pdf.err}")
+
+    except Exception as e:
+        template = get_template(template_path)
+        html = template.render(context)
+        return HttpResponse(f"Error generating PDF: {str(e)}<hr>{html}")

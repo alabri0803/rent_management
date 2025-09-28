@@ -6,9 +6,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.db.models import Sum, Count, Q, F
+from django.db.models import Sum, Count, Q
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.utils.translation import gettext as _
+from django.conf import settings
 import json
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building # MODIFIED
@@ -281,6 +285,77 @@ class PaymentDeleteView(StaffRequiredMixin, DeleteView):
     success_url = reverse_lazy('payment_list')
     def form_valid(self, form):
         messages.success(self.request, _("تم حذف الدفعة بنجاح.")); return super().form_valid(form)
+
+class PaymentReceiptPDFView(View):
+    def get(self, request, pk):
+        try:
+            payment = Payment.objects.get(pk=pk)
+            lease = payment.lease
+
+            context = {
+                'payment': payment,
+                'lease': lease,
+                'company': {
+                    'name': 'شركة الإدارة العقارية',
+                    'logo': None
+                },
+                'today': timezone.now().date(),
+            }
+
+            # استخدام الدالة المباشرة بدلاً من generate_pdf_receipt
+            return self.render_pdf_receipt('dashboard/reports/payment_receipt.html', context)
+
+        except Payment.DoesNotExist:
+            return HttpResponse("Payment not found", status=404)
+
+    def render_pdf_receipt(self, template_path, context):
+        """دالة مساعدة لتوليد PDF"""
+        try:
+            # حاول استخدام WeasyPrint أولاً
+            from weasyprint import HTML
+
+            template = get_template(template_path)
+            html = template.render(context)
+
+            pdf_file = HTML(string=html, base_url=settings.BASE_DIR).write_pdf()
+
+            response = HttpResponse(pdf_file, content_type='application/pdf')
+            filename = f"receipt_{context['payment'].id}.pdf"
+            response['Content-Disposition'] = f'inline; filename="{filename}"'
+            return response
+
+        except ImportError:
+            # إذا لم يكن WeasyPrint مثبتاً، استخدم xhtml2pdf
+            return self.render_pdf_with_xhtml2pdf(template_path, context)
+        except Exception as e:
+            # في حالة الخطأ، ارجع HTML للتصحيح
+            template = get_template(template_path)
+            html = template.render(context)
+            return HttpResponse(f"Error: {str(e)}<hr>{html}")
+
+    def render_pdf_with_xhtml2pdf(self, template_path, context):
+        """استخدام xhtml2pdf كبديل"""
+        try:
+            from xhtml2pdf import pisa
+
+            template = get_template(template_path)
+            html = template.render(context)
+
+            result = BytesIO()
+            pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+
+            if not pdf.err:
+                response = HttpResponse(result.getvalue(), content_type='application/pdf')
+                filename = f"receipt_{context['payment'].id}.pdf"
+                response['Content-Disposition'] = f'inline; filename="{filename}"'
+                return response
+            else:
+                return HttpResponse("PDF generation failed")
+
+        except Exception as e:
+            template = get_template(template_path)
+            html = template.render(context)
+            return HttpResponse(f"PDF Error: {str(e)}<hr>{html}")
 
 # --- Reports ---
 class ReportSelectionView(StaffRequiredMixin, View):

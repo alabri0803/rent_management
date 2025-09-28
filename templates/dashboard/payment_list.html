@@ -28,7 +28,7 @@
                 <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
                 <td class="p-4 space-x-4 rtl:space-x-reverse">
                     <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{{ payment.get_receipt_url }}" target="_blank" class="text-green-600 hover:underline">{% trans "سند قبض" %}</a>
+                    <a href="{% url 'payment_receipt' payment.pk %}" target="_blank" class="text-green-600 hover:underline">{% trans "سند قبض" %}</a>
                     <a href="{% url 'payment_delete' payment.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
                 </td>
             </tr>
