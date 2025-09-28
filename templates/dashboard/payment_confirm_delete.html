@@ -1,0 +1,20 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تأكيد حذف الدفعة" %}{% endblock %}
+{% block content %}
+<div class="card max-w-lg mx-auto p-8 text-center">
+    <h2 class="text-2xl font-bold mb-4">{% trans "تأكيد الحذف" %}</h2>
+    <p class="mb-6">
+        {% blocktrans with amount=object.amount tenant=object.lease.tenant.name %}
+        هل أنت متأكد من حذف دفعة بمبلغ <strong>{{ amount }}</strong> للمستأجر <strong>{{ tenant }}</strong>؟
+        {% endblocktrans %}
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-center space-x-4 rtl:space-x-reverse">
+            <a href="{% url 'payment_list' %}" class="bg-gray-200 py-2 px-6 rounded-lg">{% trans "إلغاء" %}</a>
+            <button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-lg">{% trans "نعم، قم بالحذف" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

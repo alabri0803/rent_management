@@ -1,0 +1,39 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
+        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }
+        h1, h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: right;}
+        th { background-color: #f2f2f2; }
+        tfoot td { font-weight: bold; background-color: #f9f9f9; }
+        .summary { background-color: #e2e8f0; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <h1>{% trans "تقرير الأرباح والخسائر السنوي" %}</h1>
+    <h2>{% trans "عن سنة" %} {{ report_year }}</h2>
+
+    <h3>{% trans "الإيرادات" %}</h3>
+    <table>
+        <thead><tr><th>{% trans "التاريخ" %}</th><th>{% trans "المستأجر" %}</th><th>{% trans "المبلغ" %}</th></tr></thead>
+        <tbody>{% for item in income_list %}<tr><td>{{ item.payment_date|date:"d M Y" }}</td><td>{{ item.lease.tenant.name }}</td><td>{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}</tbody>
+        <tfoot><tr><td colspan="2">{% trans "إجمالي الإيرادات" %}</td><td>{{ total_income|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
+    </table>
+
+    <h3>{% trans "المصاريف" %}</h3>
+    <table>
+        <thead><tr><th>{% trans "التاريخ" %}</th><th>{% trans "الوصف" %}</th><th>{% trans "المبلغ" %}</th></tr></thead>
+        <tbody>{% for item in expenses_list %}<tr><td>{{ item.expense_date|date:"d M Y" }}</td><td>{{ item.description }}</td><td>{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}</tbody>
+        <tfoot><tr><td colspan="2">{% trans "إجمالي المصاريف" %}</td><td>{{ total_expenses|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
+    </table>
+
+    <div class="summary">
+        {% trans "صافي الربح السنوي" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
+        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }
+        h1, h2 { text-align: center; }
+        .summary-table, .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .summary-table td, .details-table td, .details-table th { border: 1px solid #ccc; padding: 8px; text-align: right; }
+        .details-table th { background-color: #f2f2f2; }
+        .building-header { font-size: 1.2em; font-weight: bold; margin-top: 20px; background-color: #e2e8f0; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>{% trans "تقرير إشغال الوحدات" %}</h1>
+    <h2>{% trans "بتاريخ" %}: {{ today|date:"d / m / Y" }}</h2>
+
+    <h3>{% trans "ملخص الإشغال" %}</h3>
+    <table class="summary-table">
+        <tr>
+            <td><strong>{% trans "إجمالي الوحدات" %}:</strong></td>
+            <td>{{ total_units }}</td>
+            <td><strong>{% trans "الوحدات المشغولة" %}:</strong></td>
+            <td>{{ occupied_units }}</td>
+        </tr>
+        <tr>
+            <td><strong>{% trans "الوحدات المتاحة" %}:</strong></td>
+            <td>{{ available_units }}</td>
+            <td><strong>{% trans "نسبة الإشغال" %}:</strong></td>
+            <td>{{ occupancy_rate|floatformat:2 }}%</td>
+        </tr>
+    </table>
+
+    <h3>{% trans "تفاصيل الوحدات حسب المبنى" %}</h3>
+    {% for building in buildings %}
+        <div class="building-header">{{ building.name }}</div>
+        <table class="details-table">
+            <thead><tr><th>{% trans "رقم الوحدة" %}</th><th>{% trans "النوع" %}</th><th>{% trans "الحالة" %}</th><th>{% trans "المستأجر" %}</th></tr></thead>
+            <tbody>
+                {% for unit in building.unit_set.all %}
+                <tr>
+                    <td>{{ unit.unit_number }}</td>
+                    <td>{{ unit.get_unit_type_display }}</td>
+                    <td>{% if unit.is_available %}{% trans "متاحة" %}{% else %}{% trans "مشغولة" %}{% endif %}</td>
+                    <td>{% if not unit.is_available %}{{ unit.lease_set.first.tenant.name|default:"-" }}{% else %}-{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">{% trans "لا توجد وحدات في هذا المبنى." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</body>
+</html>

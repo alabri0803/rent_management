@@ -1,0 +1,56 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
+        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; font-size: 14px; }
+        .receipt-container { border: 2px solid #333; padding: 20px; margin: 20px; }
+        .header { text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 15px; margin-bottom: 20px; }
+        .header img { max-height: 80px; margin-bottom: 10px; }
+        .details-table { width: 100%; border-collapse: collapse; }
+        .details-table td { padding: 10px; border: 1px solid #eee; }
+        .footer { text-align: center; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="header">
+            {% if company.logo %}<img src="{{ company.logo.path }}">{% endif %}
+            <h1>{{ company.name|default:_("شركتنا") }}</h1>
+            <h2>{% trans "سند قبض" %}</h2>
+        </div>
+        <table class="details-table">
+            <tr>
+                <td><strong>{% trans "تاريخ السند" %}:</strong></td>
+                <td>{{ payment.payment_date|date:"d / m / Y" }}</td>
+                <td><strong>{% trans "رقم العقد" %}:</strong></td>
+                <td>{{ lease.contract_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>{% trans "استلمنا من السيد/السادة" %}:</strong></td>
+                <td colspan="3">{{ lease.tenant.name }}</td>
+            </tr>
+            <tr>
+                <td><strong>{% trans "مبلغ وقدره" %}:</strong></td>
+                <td colspan="3"><strong>{{ payment.amount|floatformat:2 }} {% trans "ريال عماني" %}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>{% trans "وذلك عن" %}:</strong></td>
+                <td colspan="3">{% trans "دفعة إيجار عن شهر" %} {{ payment.payment_for_month }} / {{ payment.payment_for_year }}</td>
+            </tr>
+            {% if payment.notes %}
+            <tr>
+                <td><strong>{% trans "ملاحظات" %}:</strong></td>
+                <td colspan="3">{{ payment.notes }}</td>
+            </tr>
+            {% endif %}
+        </table>
+        <div class="footer">
+            <p><strong>{% trans "المستلم" %}</strong></p>
+            <p>___________________</p>
+        </div>
+    </div>
+</body>
+</html>
