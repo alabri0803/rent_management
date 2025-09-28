@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,6 +88,14 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('mysql://letzn5s3o5vqlvte:rme7ieccesl6q4ck@b8rg15mwxwynuk9q.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q51hnrv8xdz5hf5x'),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
+
 
 
 # Password validation
