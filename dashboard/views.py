@@ -163,6 +163,20 @@ class LeaseDeleteView(StaffRequiredMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, _("تم حذف العقد بنجاح.")); return super().form_valid(form)
 
+class LeaseCancelView(StaffRequiredMixin, UpdateView):
+    model = Lease; form_class = LeaseCancelForm; template_name = 'dashboard/lease_cancel.html'
+    def get_success_url(self): return reverse('lease_detail', kwargs={'pk': self.object.pk})
+
+    def form_valid(self, form):
+        lease = form.save(commit=False)
+        lease.status = 'cancelled'
+        lease.cancelation_date = timezone.now().date()
+        lease.unit.is_available = True
+        lease.unit.save()
+        lease.save()
+        messages.success(self.request, _("تم إلغاء العقد بنجاح."))
+        return super().form_valid(form)
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def renew_lease(request, pk):

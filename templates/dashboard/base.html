@@ -1,11 +1,15 @@
 {% load i18n %}
+{% load dashboard_extras %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {% trans "نظام إدارة الإيجارات" %}</title>
-    <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {% get_company_name %}{</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
     body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
     :root { --primary-color: #993333; --secondary-color: #D4AF37; } .sidebar { background-color: #1a202c; } 
     .sidebar nav a { color: #a0aec0; transition: all 0.2s; } .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
@@ -18,7 +22,14 @@
 <body class="text-gray-700">
 <div class="flex h-screen">
 <aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col">
-    <div class="text-center mb-10"><h1 class="text-2xl font-bold">{% trans "إدارة الإيجارات" %}</h1><p class="text-sm text-gray-400">{% trans "نسخة" %} 1.1</p></div>
+    <div class="text-center mb-10">
+        {% get_company_logo as logo %}
+        {% if logo %}
+        <img src="{{ logo.url }}" alt="logo" class="w-20 h-20 mx-auto mb-4 rounded-full mb-2">
+        {% endif %}
+        <h1 class="text-2xl font-bold">{% get_company_name %}</h1>
+        <p class="text-sm text-gray-400">{% trans "ادارة الايجارات" %}</p>
+    </div>
     <nav>
         <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
         <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
@@ -29,11 +40,17 @@
         <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
     </nav>
     <div class="mt-auto">
-        <form action="{% url 'set_language' %}" method="post" class="mb-4">{% csrf_token %}<input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
+        <a href="{% url 'company_update' %}" class="block py-2 px-4 rounded-lg mb-2 text-gray-300 hover:bg-gray-700 hover:bg-gray-600">{% trans "الاعدادات" %}</a>
+        <form action="{% url 'set_language' %}" method="post" class="mb-4">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
         <select name="language" onchange="this.form.submit()" class="w-full bg-gray-700 text-white p-2 rounded-md">
             {% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}
-            {% for lang_code, lang_name in LANGUAGES %}<option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>{% endfor %}
-        </select></form>
+            {% for lang_code, lang_name in LANGUAGES %}
+            <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>
+            {% endfor %}
+        </select>
+        </form>
         <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-gray-400 hover:bg-red-800 hover:text-white">{% trans "تسجيل الخروج" %}</button></form>
     </div>
 </aside>
