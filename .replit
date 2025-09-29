@@ -1,5 +1,5 @@
 run = "python manage.py runserver 0.0.0.0:3000"
-modules = ["python-3.11"]
+modules = ["nodejs-20", "python-3.12", "web"]
 
 hidden = [".pythonlibs"]
 
