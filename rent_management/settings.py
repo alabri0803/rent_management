@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rent_management',
+        'NAME': 'lmfwi0qscg1na140',
         'USER': 'qamnzg4dddh2m7ig',
         'PASSWORD': 'gh075aljqcw7anie',
         'HOST': 'wyqk6x041tfxg39e.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
