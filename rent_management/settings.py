@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from django.utils.translation import gettext_lazy as _
 from pathlib import Path
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,23 +82,20 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-#DATABASES = {
-    #'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-    #}
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'q51hnrv8xdz5hf5x',
-        'USER': 'letzn5s3o5vqlvte',
-        'PASSWORD': 'rme7ieccesl6q4ck',
-        'HOST': 'b8rg15mwxwynuk9q.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+        'NAME': 'rent_management',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
-            'ssl': {'ssl-mode': 'require'}
-        }
     }
 }
 
