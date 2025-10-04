@@ -1,0 +1,45 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة المباني" %}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "المباني" %}</h2>
+    <a href="{% url 'building_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مبنى جديد" %}</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for building in buildings %}
+    <div class="card p-6">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-bold text-gray-800">{{ building.name }}</h3>
+            <div>
+                <a href="{% url 'building_update' building.pk %}" class="text-blue-600 hover:underline text-sm mr-2">{% trans "تعديل" %}</a>
+                <a href="{% url 'building_delete' building.pk %}" class="text-red-600 hover:underline text-sm">{% trans "حذف" %}</a>
+            </div>
+        </div>
+        <p class="text-gray-600 text-sm mb-4">{{ building.address }}</p>
+        <div class="border-t pt-4">
+            <div class="flex justify-between mb-2">
+                <span class="text-sm text-gray-600">{% trans "إجمالي الوحدات" %}</span>
+                <span class="font-bold">{{ building.total_units }}</span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <span class="text-sm text-gray-600">{% trans "الوحدات المشغولة" %}</span>
+                <span class="font-bold text-blue-600">{{ building.occupied_units }}</span>
+            </div>
+            <div class="flex justify-between mb-4">
+                <span class="text-sm text-gray-600">{% trans "نسبة الإشغال" %}</span>
+                <span class="font-bold text-green-600">{{ building.occupancy_rate|floatformat:1 }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" style="width: {{ building.occupancy_rate }}%"></div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-3 card p-6 text-center text-gray-500">
+        {% trans "لم يتم العثور على مباني." %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

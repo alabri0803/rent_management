@@ -15,8 +15,8 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 import json
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building # MODIFIED
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm # MODIFIED
+from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm, UnitForm, BuildingForm
 from .utils import render_to_pdf
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -86,8 +86,143 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
 
         return context
 
-# ... Other views remain the same ...
+# --- Units Management ---
+class UnitListView(StaffRequiredMixin, ListView):
+    model = Unit
+    template_name = 'dashboard/unit_list.html'
+    context_object_name = 'units'
+    paginate_by = 20
 
+    def get_queryset(self):
+        queryset = Unit.objects.all().select_related('building').order_by('building', 'unit_number')
+        search_query = self.request.GET.get('q', '')
+        building_filter = self.request.GET.get('building', '')
+        status_filter = self.request.GET.get('status', '')
+        
+        if search_query:
+            queryset = queryset.filter(Q(unit_number__icontains=search_query) | Q(building__name__icontains=search_query))
+        if building_filter:
+            queryset = queryset.filter(building_id=building_filter)
+        if status_filter == 'available':
+            queryset = queryset.filter(is_available=True)
+        elif status_filter == 'occupied':
+            queryset = queryset.filter(is_available=False)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['buildings'] = Building.objects.all()
+        context['total_units'] = Unit.objects.count()
+        context['available_units'] = Unit.objects.filter(is_available=True).count()
+        context['occupied_units'] = Unit.objects.filter(is_available=False).count()
+        return context
+
+class UnitDetailView(StaffRequiredMixin, DetailView):
+    model = Unit
+    template_name = 'dashboard/unit_detail.html'
+    context_object_name = 'unit'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_lease'] = Lease.objects.filter(unit=self.object, status__in=['active', 'expiring_soon']).first()
+        context['lease_history'] = Lease.objects.filter(unit=self.object).order_by('-start_date')
+        return context
+
+class UnitCreateView(StaffRequiredMixin, CreateView):
+    model = Unit
+    form_class = UnitForm
+    template_name = 'dashboard/unit_form.html'
+    success_url = reverse_lazy('unit_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة وحدة جديدة")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تمت إضافة الوحدة بنجاح!"))
+        return super().form_valid(form)
+
+class UnitUpdateView(StaffRequiredMixin, UpdateView):
+    model = Unit
+    form_class = UnitForm
+    template_name = 'dashboard/unit_form.html'
+    success_url = reverse_lazy('unit_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل الوحدة")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث الوحدة بنجاح!"))
+        return super().form_valid(form)
+
+class UnitDeleteView(StaffRequiredMixin, DeleteView):
+    model = Unit
+    template_name = 'dashboard/unit_confirm_delete.html'
+    success_url = reverse_lazy('unit_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف الوحدة بنجاح."))
+        return super().form_valid(form)
+
+# --- Buildings Management ---
+class BuildingListView(StaffRequiredMixin, ListView):
+    model = Building
+    template_name = 'dashboard/building_list.html'
+    context_object_name = 'buildings'
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for building in context['buildings']:
+            building.total_units = building.unit_set.count()
+            building.occupied_units = building.unit_set.filter(is_available=False).count()
+            building.occupancy_rate = (building.occupied_units / building.total_units * 100) if building.total_units > 0 else 0
+        return context
+
+class BuildingCreateView(StaffRequiredMixin, CreateView):
+    model = Building
+    form_class = BuildingForm
+    template_name = 'dashboard/building_form.html'
+    success_url = reverse_lazy('building_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة مبنى جديد")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تمت إضافة المبنى بنجاح!"))
+        return super().form_valid(form)
+
+class BuildingUpdateView(StaffRequiredMixin, UpdateView):
+    model = Building
+    form_class = BuildingForm
+    template_name = 'dashboard/building_form.html'
+    success_url = reverse_lazy('building_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل المبنى")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث المبنى بنجاح!"))
+        return super().form_valid(form)
+
+class BuildingDeleteView(StaffRequiredMixin, DeleteView):
+    model = Building
+    template_name = 'dashboard/building_confirm_delete.html'
+    success_url = reverse_lazy('building_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف المبنى بنجاح."))
+        return super().form_valid(form)
+
+# --- Leases ---
 class LeaseListView(StaffRequiredMixin, ListView):
     model = Lease
     template_name = 'dashboard/lease_list.html'

@@ -1,0 +1,100 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تفاصيل الوحدة" %} - {{ unit.unit_number }}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "تفاصيل الوحدة" %}: {{ unit.unit_number }}</h2>
+    <div>
+        <a href="{% url 'unit_update' unit.pk %}" class="btn-primary py-2 px-4 rounded-lg font-semibold mr-2">{% trans "تعديل" %}</a>
+        <a href="{% url 'unit_list' %}" class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400">{% trans "العودة" %}</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "معلومات الوحدة" %}</h3>
+        <div class="space-y-3">
+            <div>
+                <span class="text-sm text-gray-600">{% trans "رقم الوحدة" %}:</span>
+                <span class="font-bold">{{ unit.unit_number }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "المبنى" %}:</span>
+                <span class="font-bold">{{ unit.building.name }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "النوع" %}:</span>
+                <span class="font-bold">{{ unit.get_unit_type_display }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "الطابق" %}:</span>
+                <span class="font-bold">{{ unit.floor }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "الحالة" %}:</span>
+                {% if unit.is_available %}
+                <span class="status-badge status-active">{% trans "متاحة" %}</span>
+                {% else %}
+                <span class="status-badge status-expired">{% trans "مشغولة" %}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if current_lease %}
+    <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "العقد الحالي" %}</h3>
+        <div class="space-y-3">
+            <div>
+                <span class="text-sm text-gray-600">{% trans "رقم العقد" %}:</span>
+                <a href="{% url 'lease_detail' current_lease.pk %}" class="font-bold text-blue-600">{{ current_lease.contract_number }}</a>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "المستأجر" %}:</span>
+                <span class="font-bold">{{ current_lease.tenant.name }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "الإيجار الشهري" %}:</span>
+                <span class="font-bold">{{ current_lease.monthly_rent|floatformat:2 }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "تاريخ البداية" %}:</span>
+                <span class="font-bold">{{ current_lease.start_date|date:"d/m/Y" }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "تاريخ الانتهاء" %}:</span>
+                <span class="font-bold">{{ current_lease.end_date|date:"d/m/Y" }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card p-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "سجل العقود" %}</h3>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "رقم العقد" %}</th>
+                <th class="p-4">{% trans "المستأجر" %}</th>
+                <th class="p-4">{% trans "الفترة" %}</th>
+                <th class="p-4">{% trans "الحالة" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lease in lease_history %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="font-bold text-blue-600">{{ lease.contract_number }}</a></td>
+                <td class="p-4">{{ lease.tenant.name }}</td>
+                <td class="p-4">{{ lease.start_date|date:"d/m/Y" }} - {{ lease.end_date|date:"d/m/Y" }}</td>
+                <td class="p-4"><span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></td>
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="text-blue-600 hover:underline">{% trans "تفاصيل" %}</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-6 text-center text-gray-500">{% trans "لا يوجد سجل للعقود." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Company, Tenant # MODIFIED
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Company, Tenant, Building
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -8,6 +8,26 @@ class CompanyForm(forms.ModelForm):
     class Meta:
         model = Company
         fields = ['name', 'logo', 'contact_email', 'contact_phone', 'address']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+
+class UnitForm(forms.ModelForm):
+    class Meta:
+        model = Unit
+        fields = ['building', 'unit_number', 'unit_type', 'floor', 'is_available']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+
+class BuildingForm(forms.ModelForm):
+    class Meta:
+        model = Building
+        fields = ['name', 'address']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

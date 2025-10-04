@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة الوحدات" %}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "الوحدات" %}</h2>
+    <a href="{% url 'unit_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة وحدة جديدة" %}</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "إجمالي الوحدات" %}</p>
+        <p class="text-3xl font-bold text-gray-800">{{ total_units }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "الوحدات المتاحة" %}</p>
+        <p class="text-3xl font-bold text-green-600">{{ available_units }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "الوحدات المشغولة" %}</p>
+        <p class="text-3xl font-bold text-blue-600">{{ occupied_units }}</p>
+    </div>
+</div>
+
+<div class="card overflow-hidden">
+    <div class="p-4 border-b bg-gray-50">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="{% trans 'ابحث عن وحدة...' %}" class="w-full p-2 border rounded-md">
+            <select name="building" class="w-full p-2 border rounded-md">
+                <option value="">{% trans "كل المباني" %}</option>
+                {% for building in buildings %}
+                <option value="{{ building.id }}" {% if request.GET.building == building.id|stringformat:"s" %}selected{% endif %}>{{ building.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="status" class="w-full p-2 border rounded-md">
+                <option value="">{% trans "كل الحالات" %}</option>
+                <option value="available" {% if request.GET.status == 'available' %}selected{% endif %}>{% trans "متاحة" %}</option>
+                <option value="occupied" {% if request.GET.status == 'occupied' %}selected{% endif %}>{% trans "مشغولة" %}</option>
+            </select>
+            <button type="submit" class="btn-primary p-2 rounded-lg">{% trans "بحث" %}</button>
+        </form>
+    </div>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "رقم الوحدة" %}</th>
+                <th class="p-4">{% trans "المبنى" %}</th>
+                <th class="p-4">{% trans "النوع" %}</th>
+                <th class="p-4">{% trans "الطابق" %}</th>
+                <th class="p-4">{% trans "الحالة" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in units %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{% url 'unit_detail' unit.pk %}" class="font-bold text-blue-600">{{ unit.unit_number }}</a></td>
+                <td class="p-4">{{ unit.building.name }}</td>
+                <td class="p-4">{{ unit.get_unit_type_display }}</td>
+                <td class="p-4">{{ unit.floor }}</td>
+                <td class="p-4">
+                    {% if unit.is_available %}
+                    <span class="status-badge status-active">{% trans "متاحة" %}</span>
+                    {% else %}
+                    <span class="status-badge status-expired">{% trans "مشغولة" %}</span>
+                    {% endif %}
+                </td>
+                <td class="p-4">
+                    <a href="{% url 'unit_detail' unit.pk %}" class="text-blue-600 hover:underline mr-2">{% trans "تفاصيل" %}</a>
+                    <a href="{% url 'unit_update' unit.pk %}" class="text-green-600 hover:underline mr-2">{% trans "تعديل" %}</a>
+                    <a href="{% url 'unit_delete' unit.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لم يتم العثور على وحدات." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if is_paginated %}
+    <div class="p-4 flex justify-center">
+        <span class="text-sm text-gray-700">
+            {% blocktrans with page_obj.number as page and page_obj.paginator.num_pages as num_pages %}
+            الصفحة {{ page }} من {{ num_pages }}
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

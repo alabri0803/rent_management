@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import (
     DashboardHomeView,
+    UnitListView, UnitDetailView, UnitCreateView, UnitUpdateView, UnitDeleteView,
+    BuildingListView, BuildingCreateView, BuildingUpdateView, BuildingDeleteView,
     LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, LeaseCancelView,
     DocumentUploadView, DocumentDeleteView,
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
@@ -13,8 +15,21 @@ from .views import (
 urlpatterns = [
     path('', DashboardHomeView.as_view(), name='dashboard_home'),
 
-    # Company Settings - ADDED
+    # Company Settings
     path('settings/company/', CompanyUpdateView.as_view(), name='company_update'),
+
+    # Units
+    path('units/', UnitListView.as_view(), name='unit_list'),
+    path('units/<int:pk>/', UnitDetailView.as_view(), name='unit_detail'),
+    path('units/new/', UnitCreateView.as_view(), name='unit_create'),
+    path('units/<int:pk>/edit/', UnitUpdateView.as_view(), name='unit_update'),
+    path('units/<int:pk>/delete/', UnitDeleteView.as_view(), name='unit_delete'),
+
+    # Buildings
+    path('buildings/', BuildingListView.as_view(), name='building_list'),
+    path('buildings/new/', BuildingCreateView.as_view(), name='building_create'),
+    path('buildings/<int:pk>/edit/', BuildingUpdateView.as_view(), name='building_update'),
+    path('buildings/<int:pk>/delete/', BuildingDeleteView.as_view(), name='building_delete'),
 
     # Leases
     path('lease/', LeaseListView.as_view(), name='lease_list'),
