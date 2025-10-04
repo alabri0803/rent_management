@@ -91,10 +91,10 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lmfwi0qscg1na140',
-        'USER': 'qamnzg4dddh2m7ig',
-        'PASSWORD': 'gh075aljqcw7anie',
-        'HOST': 'wyqk6x041tfxg39e.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+        'NAME': 'ox3h62lb0h2hwudt',
+        'USER': 'oilpoycpc2s9fv9d',
+        'PASSWORD': 'n6wwd3n0pw6kckir',
+        'HOST': 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
