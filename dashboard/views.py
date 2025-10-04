@@ -16,7 +16,7 @@ from django.conf import settings
 import json
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm, UnitForm, BuildingForm
+from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm, UnitForm, BuildingForm, TenantForm
 from .utils import render_to_pdf
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -166,6 +166,83 @@ class UnitDeleteView(StaffRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         messages.success(self.request, _("تم حذف الوحدة بنجاح."))
+        return super().form_valid(form)
+
+# --- Tenants Management ---
+class TenantListView(StaffRequiredMixin, ListView):
+    model = Tenant
+    template_name = 'dashboard/tenant_list.html'
+    context_object_name = 'tenants'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Tenant.objects.all().order_by('name')
+        search_query = self.request.GET.get('q', '')
+        tenant_type = self.request.GET.get('type', '')
+        
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(phone__icontains=search_query) | Q(email__icontains=search_query))
+        if tenant_type:
+            queryset = queryset.filter(tenant_type=tenant_type)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_tenants'] = Tenant.objects.count()
+        context['individual_tenants'] = Tenant.objects.filter(tenant_type='individual').count()
+        context['company_tenants'] = Tenant.objects.filter(tenant_type='company').count()
+        return context
+
+class TenantDetailView(StaffRequiredMixin, DetailView):
+    model = Tenant
+    template_name = 'dashboard/tenant_detail.html'
+    context_object_name = 'tenant'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_leases'] = Lease.objects.filter(tenant=self.object, status__in=['active', 'expiring_soon'])
+        context['lease_history'] = Lease.objects.filter(tenant=self.object).order_by('-start_date')
+        context['total_payments'] = Payment.objects.filter(lease__tenant=self.object).aggregate(total=Sum('amount'))['total'] or 0
+        return context
+
+class TenantCreateView(StaffRequiredMixin, CreateView):
+    model = Tenant
+    form_class = TenantForm
+    template_name = 'dashboard/tenant_form.html'
+    success_url = reverse_lazy('tenant_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة مستأجر جديد")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تمت إضافة المستأجر بنجاح!"))
+        return super().form_valid(form)
+
+class TenantUpdateView(StaffRequiredMixin, UpdateView):
+    model = Tenant
+    form_class = TenantForm
+    template_name = 'dashboard/tenant_form.html'
+    success_url = reverse_lazy('tenant_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل بيانات المستأجر")
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث بيانات المستأجر بنجاح!"))
+        return super().form_valid(form)
+
+class TenantDeleteView(StaffRequiredMixin, DeleteView):
+    model = Tenant
+    template_name = 'dashboard/tenant_confirm_delete.html'
+    success_url = reverse_lazy('tenant_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف المستأجر بنجاح."))
         return super().form_valid(form)
 
 # --- Buildings Management ---

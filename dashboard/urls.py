@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     DashboardHomeView,
+    TenantListView, TenantDetailView, TenantCreateView, TenantUpdateView, TenantDeleteView,
     UnitListView, UnitDetailView, UnitCreateView, UnitUpdateView, UnitDeleteView,
     BuildingListView, BuildingCreateView, BuildingUpdateView, BuildingDeleteView,
     LeaseListView, LeaseDetailView, LeaseCreateView, LeaseUpdateView, LeaseDeleteView, renew_lease, LeaseCancelView,
@@ -17,6 +18,13 @@ urlpatterns = [
 
     # Company Settings
     path('settings/company/', CompanyUpdateView.as_view(), name='company_update'),
+
+    # Tenants
+    path('tenants/', TenantListView.as_view(), name='tenant_list'),
+    path('tenants/<int:pk>/', TenantDetailView.as_view(), name='tenant_detail'),
+    path('tenants/new/', TenantCreateView.as_view(), name='tenant_create'),
+    path('tenants/<int:pk>/edit/', TenantUpdateView.as_view(), name='tenant_update'),
+    path('tenants/<int:pk>/delete/', TenantDeleteView.as_view(), name='tenant_delete'),
 
     # Units
     path('units/', UnitListView.as_view(), name='unit_list'),

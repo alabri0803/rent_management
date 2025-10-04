@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة المستأجرين" %}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "المستأجرين" %}</h2>
+    <a href="{% url 'tenant_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مستأجر جديد" %}</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "إجمالي المستأجرين" %}</p>
+        <p class="text-3xl font-bold text-gray-800">{{ total_tenants }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "أفراد" %}</p>
+        <p class="text-3xl font-bold text-blue-600">{{ individual_tenants }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-sm text-gray-600">{% trans "شركات" %}</p>
+        <p class="text-3xl font-bold text-green-600">{{ company_tenants }}</p>
+    </div>
+</div>
+
+<div class="card overflow-hidden">
+    <div class="p-4 border-b bg-gray-50">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="{% trans 'ابحث عن مستأجر...' %}" class="w-full p-2 border rounded-md">
+            <select name="type" class="w-full p-2 border rounded-md">
+                <option value="">{% trans "كل الأنواع" %}</option>
+                <option value="individual" {% if request.GET.type == 'individual' %}selected{% endif %}>{% trans "فرد" %}</option>
+                <option value="company" {% if request.GET.type == 'company' %}selected{% endif %}>{% trans "شركة" %}</option>
+            </select>
+            <button type="submit" class="btn-primary p-2 rounded-lg">{% trans "بحث" %}</button>
+        </form>
+    </div>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "الاسم" %}</th>
+                <th class="p-4">{% trans "النوع" %}</th>
+                <th class="p-4">{% trans "الهاتف" %}</th>
+                <th class="p-4">{% trans "البريد الإلكتروني" %}</th>
+                <th class="p-4">{% trans "التقييم" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tenant in tenants %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{% url 'tenant_detail' tenant.pk %}" class="font-bold text-blue-600">{{ tenant.name }}</a></td>
+                <td class="p-4">{{ tenant.get_tenant_type_display }}</td>
+                <td class="p-4">{{ tenant.phone }}</td>
+                <td class="p-4">{{ tenant.email|default:"-" }}</td>
+                <td class="p-4">
+                    <span class="text-yellow-500">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= tenant.rating %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </span>
+                </td>
+                <td class="p-4">
+                    <a href="{% url 'tenant_detail' tenant.pk %}" class="text-blue-600 hover:underline mr-2">{% trans "تفاصيل" %}</a>
+                    <a href="{% url 'tenant_update' tenant.pk %}" class="text-green-600 hover:underline mr-2">{% trans "تعديل" %}</a>
+                    <a href="{% url 'tenant_delete' tenant.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لم يتم العثور على مستأجرين." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if is_paginated %}
+    <div class="p-4 flex justify-center">
+        <span class="text-sm text-gray-700">
+            {% blocktrans with page_obj.number as page and page_obj.paginator.num_pages as num_pages %}
+            الصفحة {{ page }} من {{ num_pages }}
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

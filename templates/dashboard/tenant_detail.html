@@ -1,0 +1,126 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "تفاصيل المستأجر" %} - {{ tenant.name }}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "تفاصيل المستأجر" %}: {{ tenant.name }}</h2>
+    <div>
+        <a href="{% url 'tenant_update' tenant.pk %}" class="btn-primary py-2 px-4 rounded-lg font-semibold mr-2">{% trans "تعديل" %}</a>
+        <a href="{% url 'tenant_list' %}" class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400">{% trans "العودة" %}</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "المعلومات الأساسية" %}</h3>
+        <div class="space-y-3">
+            <div>
+                <span class="text-sm text-gray-600">{% trans "الاسم" %}:</span>
+                <span class="font-bold">{{ tenant.name }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "النوع" %}:</span>
+                <span class="font-bold">{{ tenant.get_tenant_type_display }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "الهاتف" %}:</span>
+                <span class="font-bold">{{ tenant.phone }}</span>
+            </div>
+            <div>
+                <span class="text-sm text-gray-600">{% trans "البريد الإلكتروني" %}:</span>
+                <span class="font-bold">{{ tenant.email|default:"-" }}</span>
+            </div>
+            {% if tenant.tenant_type == 'company' and tenant.authorized_signatory %}
+            <div>
+                <span class="text-sm text-gray-600">{% trans "المفوض بالتوقيع" %}:</span>
+                <span class="font-bold">{{ tenant.authorized_signatory }}</span>
+            </div>
+            {% endif %}
+            <div>
+                <span class="text-sm text-gray-600">{% trans "التقييم" %}:</span>
+                <span class="text-yellow-500 text-xl">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= tenant.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "الإحصائيات" %}</h3>
+        <div class="space-y-3">
+            <div class="flex justify-between">
+                <span class="text-sm text-gray-600">{% trans "العقود النشطة" %}:</span>
+                <span class="font-bold text-green-600">{{ current_leases.count }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-sm text-gray-600">{% trans "إجمالي العقود" %}:</span>
+                <span class="font-bold">{{ lease_history.count }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-sm text-gray-600">{% trans "إجمالي المدفوعات" %}:</span>
+                <span class="font-bold text-blue-600">{{ total_payments|floatformat:2 }} ر.س</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_leases %}
+<div class="card p-6 mb-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "العقود النشطة" %}</h3>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "رقم العقد" %}</th>
+                <th class="p-4">{% trans "الوحدة" %}</th>
+                <th class="p-4">{% trans "الإيجار الشهري" %}</th>
+                <th class="p-4">{% trans "تاريخ الانتهاء" %}</th>
+                <th class="p-4">{% trans "الحالة" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lease in current_leases %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="font-bold text-blue-600">{{ lease.contract_number }}</a></td>
+                <td class="p-4">{{ lease.unit }}</td>
+                <td class="p-4 font-mono">{{ lease.monthly_rent|floatformat:2 }}</td>
+                <td class="p-4">{{ lease.end_date|date:"d/m/Y" }}</td>
+                <td class="p-4"><span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></td>
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="text-blue-600 hover:underline">{% trans "تفاصيل" %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="card p-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "سجل العقود" %}</h3>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "رقم العقد" %}</th>
+                <th class="p-4">{% trans "الوحدة" %}</th>
+                <th class="p-4">{% trans "الفترة" %}</th>
+                <th class="p-4">{% trans "الحالة" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lease in lease_history %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="font-bold text-blue-600">{{ lease.contract_number }}</a></td>
+                <td class="p-4">{{ lease.unit }}</td>
+                <td class="p-4">{{ lease.start_date|date:"d/m/Y" }} - {{ lease.end_date|date:"d/m/Y" }}</td>
+                <td class="p-4"><span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></td>
+                <td class="p-4"><a href="{% url 'lease_detail' lease.pk %}" class="text-blue-600 hover:underline">{% trans "تفاصيل" %}</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-6 text-center text-gray-500">{% trans "لا يوجد سجل للعقود." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
