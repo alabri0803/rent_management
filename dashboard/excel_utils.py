@@ -235,14 +235,23 @@ class ExcelExporter:
             self.ws.column_dimensions[col_letter].width = width
         return self
     
-    def add_title(self, title=None):
-        """إضافة عنوان كبير في الأعلى"""
+    def add_title(self, title=None, num_columns=None):
+        """إضافة عنوان كبير في الأعلى
+        
+        Args:
+            title: نص العنوان
+            num_columns: عدد الأعمدة للدمج (إذا لم يحدد، سيتم استخدام max_column أو 7)
+        """
         if title:
             self.title = title
+        
+        # تحديد عدد الأعمدة للدمج
+        if num_columns is None:
+            num_columns = self.ws.max_column or 7
             
         # دمج الخلايا للعنوان
         self.ws.merge_cells(start_row=1, start_column=1, 
-                           end_row=1, end_column=self.ws.max_column or 5)
+                           end_row=1, end_column=num_columns)
         
         title_cell = self.ws.cell(row=1, column=1)
         title_cell.value = self.title

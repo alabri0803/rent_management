@@ -17,12 +17,13 @@ def export_tenants_excel(request):
     """تصدير قائمة المستأجرين إلى Excel"""
     exporter = ExcelExporter("قائمة المستأجرين")
     
-    # العنوان
-    exporter.add_title("قائمة المستأجرين")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "الاسم", "النوع", "رقم الهاتف", "البريد الإلكتروني", "المفوض بالتوقيع", "التقييم"]
+    
+    # العنوان
+    exporter.add_title("قائمة المستأجرين", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -57,12 +58,13 @@ def export_leases_excel(request):
     """تصدير قائمة العقود إلى Excel"""
     exporter = ExcelExporter("قائمة العقود")
     
-    # العنوان
-    exporter.add_title("قائمة العقود")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "رقم العقد", "المستأجر", "الوحدة", "الإيجار الشهري", "تاريخ البدء", "تاريخ الانتهاء", "الحالة"]
+    
+    # العنوان
+    exporter.add_title("قائمة العقود", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -123,12 +125,13 @@ def export_payments_excel(request):
     """تصدير قائمة المدفوعات إلى Excel"""
     exporter = ExcelExporter("قائمة المدفوعات")
     
-    # العنوان
-    exporter.add_title("قائمة المدفوعات")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "رقم العقد", "المستأجر", "المبلغ", "تاريخ الدفع", "الشهر", "طريقة الدفع", "حالة الشيك"]
+    
+    # العنوان
+    exporter.add_title("قائمة المدفوعات", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -196,12 +199,13 @@ def export_expenses_excel(request):
     """تصدير قائمة المصروفات إلى Excel"""
     exporter = ExcelExporter("قائمة المصروفات")
     
-    # العنوان
-    exporter.add_title("قائمة المصروفات")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "المبنى", "الفئة", "الوصف", "المبلغ", "تاريخ المصروف"]
+    
+    # العنوان
+    exporter.add_title("قائمة المصروفات", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -263,12 +267,13 @@ def export_buildings_excel(request):
     """تصدير قائمة المباني إلى Excel"""
     exporter = ExcelExporter("قائمة المباني")
     
-    # العنوان
-    exporter.add_title("قائمة المباني والوحدات")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "اسم المبنى", "العنوان", "عدد الوحدات", "الوحدات المشغولة", "الوحدات المتاحة", "نسبة الإشغال"]
+    
+    # العنوان
+    exporter.add_title("قائمة المباني والوحدات", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -331,12 +336,13 @@ def export_units_excel(request):
     """تصدير قائمة الوحدات إلى Excel"""
     exporter = ExcelExporter("قائمة الوحدات")
     
-    # العنوان
-    exporter.add_title("قائمة الوحدات")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "المبنى", "رقم الوحدة", "النوع", "الطابق", "الحالة", "المستأجر الحالي", "الإيجار الشهري"]
+    
+    # العنوان
+    exporter.add_title("قائمة الوحدات", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
@@ -409,12 +415,13 @@ def export_maintenance_excel(request):
     """تصدير قائمة طلبات الصيانة إلى Excel"""
     exporter = ExcelExporter("طلبات الصيانة")
     
-    # العنوان
-    exporter.add_title("قائمة طلبات الصيانة")
-    exporter.add_empty_row()
-    
     # العناوين
     headers = ["#", "العنوان", "المستأجر", "الوحدة", "الأولوية", "الحالة", "تاريخ الإبلاغ"]
+    
+    # العنوان
+    exporter.add_title("قائمة طلبات الصيانة", num_columns=len(headers))
+    exporter.add_empty_row()
+    
     exporter.create_header(headers)
     
     # البيانات
