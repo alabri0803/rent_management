@@ -36,7 +36,22 @@ Signals handle automatic tenant user creation, maintenance request notifications
 
 ## Frontend Architecture
 
-**Tailwind CSS** provides styling with a custom color scheme. **Chart.js** is used for financial and occupancy charts. **FullCalendar** is referenced for lease calendars. The design is responsive, supports RTL for Arabic, and uses Django's template inheritance.
+**Tailwind CSS** provides styling with a custom color scheme. **Chart.js** is used for financial and occupancy charts. **FullCalendar** is referenced for lease calendars. The design is fully responsive with comprehensive mobile support, supports RTL for Arabic, and uses Django's template inheritance.
+
+### Mobile-First Responsive Design (October 2025)
+
+The system has been fully optimized for all devices including iPhone 8, mobile phones, tablets, and desktop computers:
+
+*   **Breakpoint Strategy**: Mobile-first approach using Tailwind's responsive utilities (sm:, md:, lg:, xl:)
+*   **Touch Targets**: All interactive elements meet Apple's accessibility standard with minimum 44px height
+*   **Navigation**: Mobile hamburger menu with overlay for small screens, standard navigation for desktop
+*   **Typography**: Responsive text sizes (text-xs/sm on mobile, text-base/lg on desktop)
+*   **Tables**: Horizontal scrolling containers with min-width to prevent content overflow on mobile
+*   **Forms**: Flexible layouts that stack vertically on mobile and arrange horizontally on larger screens
+*   **Buttons**: Full-width on mobile, auto-width on desktop
+*   **Spacing**: Adaptive padding and margins (p-4 on mobile, p-6/p-8 on desktop)
+*   **Cards & Grids**: Single column on mobile, multi-column on tablets/desktop
+*   **RTL Support**: Maintained across all responsive breakpoints for Arabic language
 
 ## PDF Generation
 
