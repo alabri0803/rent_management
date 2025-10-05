@@ -3,6 +3,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from datetime import datetime
+from decimal import Decimal
 
 
 class ExcelExporter:
@@ -45,11 +46,33 @@ class ExcelExporter:
         self.current_row += 1
         return self
     
-    def add_row(self, values, style='normal'):
-        """إضافة صف بيانات"""
-        for col_num, value in enumerate(values, 1):
+    def add_row(self, values, style='normal', number_formats=None):
+        """إضافة صف بيانات
+        
+        Args:
+            values: قائمة القيم
+            style: نمط الصف (normal, total, percentage, warning, success)
+            number_formats: قائمة من التنسيقات الرقمية لكل عمود (مثل 'currency' أو 'percentage' أو None)
+        """
+        if number_formats is None:
+            number_formats = [None] * len(values)
+            
+        for col_num, (value, num_format) in enumerate(zip(values, number_formats), 1):
             cell = self.ws.cell(row=self.current_row, column=col_num)
-            cell.value = value
+            
+            # تحويل القيم المالية من Decimal إلى float
+            if isinstance(value, Decimal):
+                cell.value = float(value)
+            else:
+                cell.value = value
+            
+            # تطبيق التنسيق الرقمي
+            if num_format == 'currency':
+                cell.number_format = '#,##0.00 "ر.ع"'
+            elif num_format == 'percentage':
+                cell.number_format = '0.00"%"'
+            elif num_format == 'number':
+                cell.number_format = '#,##0'
             
             # تنسيق حسب النوع
             if style == 'total':
@@ -81,8 +104,15 @@ class ExcelExporter:
         self.current_row += 1
         return self
     
-    def add_total_row(self, label, value, col_span=None):
-        """إضافة صف المجموع"""
+    def add_total_row(self, label, value, col_span=None, value_type='number'):
+        """إضافة صف المجموع
+        
+        Args:
+            label: نص التسمية
+            value: القيمة (رقم أو نص)
+            col_span: عدد الأعمدة للدمج
+            value_type: نوع القيمة ('number', 'currency', 'percentage')
+        """
         if col_span:
             # دمج الخلايا للتسمية
             self.ws.merge_cells(start_row=self.current_row, start_column=1,
@@ -98,7 +128,23 @@ class ExcelExporter:
             
             # خلية القيمة
             value_cell = self.ws.cell(row=self.current_row, column=col_span)
-            value_cell.value = value
+            
+            # تحويل Decimal إلى float إذا كانت القيمة رقمية
+            if isinstance(value, Decimal):
+                value_cell.value = float(value)
+            elif isinstance(value, (int, float)):
+                value_cell.value = value
+            else:
+                value_cell.value = value
+            
+            # تطبيق التنسيق الرقمي
+            if value_type == 'currency':
+                value_cell.number_format = '#,##0.00 "ر.ع"'
+            elif value_type == 'percentage':
+                value_cell.number_format = '0.00"%"'
+            elif value_type == 'number':
+                value_cell.number_format = '#,##0'
+                
             value_cell.font = Font(name='Arial', size=12, bold=True, color=self.COLORS['total_text'])
             value_cell.fill = PatternFill(start_color=self.COLORS['total_bg'], 
                                          end_color=self.COLORS['total_bg'], 
@@ -110,7 +156,13 @@ class ExcelExporter:
         return self
     
     def add_percentage_row(self, label, percentage, col_span=None):
-        """إضافة صف النسبة المئوية"""
+        """إضافة صف النسبة المئوية
+        
+        Args:
+            label: نص التسمية
+            percentage: القيمة الرقمية للنسبة المئوية (مثل 75.5 لـ 75.5%)
+            col_span: عدد الأعمدة للدمج
+        """
         if col_span:
             # دمج الخلايا للتسمية
             self.ws.merge_cells(start_row=self.current_row, start_column=1,
@@ -126,7 +178,8 @@ class ExcelExporter:
             
             # خلية النسبة
             percentage_cell = self.ws.cell(row=self.current_row, column=col_span)
-            percentage_cell.value = f"{percentage}%"
+            percentage_cell.value = float(percentage) if isinstance(percentage, Decimal) else percentage
+            percentage_cell.number_format = '0.00"%"'
             percentage_cell.font = Font(name='Arial', size=11, bold=True, color=self.COLORS['percentage_text'])
             percentage_cell.fill = PatternFill(start_color=self.COLORS['percentage_bg'], 
                                               end_color=self.COLORS['percentage_bg'], 

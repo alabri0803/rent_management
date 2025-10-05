@@ -94,17 +94,17 @@ def export_leases_excel(request):
             lease.contract_number,
             lease.tenant.name,
             f"{lease.unit.building.name} - {lease.unit.unit_number}",
-            f"{lease.monthly_rent} ر.ع",
+            lease.monthly_rent,
             lease.start_date.strftime('%Y-%m-%d'),
             lease.end_date.strftime('%Y-%m-%d'),
             status_display
-        ], style=style)
+        ], style=style, number_formats=[None, None, None, None, 'currency', None, None, None])
     
     # الإحصائيات
     exporter.add_empty_row()
-    exporter.add_total_row("إجمالي العقود", total_leases, col_span=len(headers))
-    exporter.add_total_row("العقود النشطة", active_leases, col_span=len(headers))
-    exporter.add_total_row("إجمالي الإيجار الشهري", f"{total_monthly_rent} ر.ع", col_span=len(headers))
+    exporter.add_total_row("إجمالي العقود", total_leases, col_span=len(headers), value_type='number')
+    exporter.add_total_row("العقود النشطة", active_leases, col_span=len(headers), value_type='number')
+    exporter.add_total_row("إجمالي الإيجار الشهري", total_monthly_rent, col_span=len(headers), value_type='currency')
     
     # النسب المئوية
     if total_leases > 0:
@@ -163,19 +163,19 @@ def export_payments_excel(request):
             idx,
             payment.lease.contract_number,
             payment.lease.tenant.name,
-            f"{payment.amount} ر.ع",
+            payment.amount,
             payment.payment_date.strftime('%Y-%m-%d'),
             f"{payment.payment_for_month}/{payment.payment_for_year}",
             payment_method_display,
             check_status_display
-        ])
+        ], number_formats=[None, None, None, 'currency', None, None, None, None])
     
     # الإحصائيات
     exporter.add_empty_row()
-    exporter.add_total_row("إجمالي المدفوعات", total_payments, col_span=len(headers))
-    exporter.add_total_row("إجمالي المبالغ", f"{total_amount} ر.ع", col_span=len(headers))
-    exporter.add_total_row("المدفوعات النقدية", f"{cash_amount} ر.ع", col_span=len(headers))
-    exporter.add_total_row("مدفوعات الشيكات", f"{check_amount} ر.ع", col_span=len(headers))
+    exporter.add_total_row("إجمالي المدفوعات", total_payments, col_span=len(headers), value_type='number')
+    exporter.add_total_row("إجمالي المبالغ", total_amount, col_span=len(headers), value_type='currency')
+    exporter.add_total_row("المدفوعات النقدية", cash_amount, col_span=len(headers), value_type='currency')
+    exporter.add_total_row("مدفوعات الشيكات", check_amount, col_span=len(headers), value_type='currency')
     
     # النسب المئوية
     if total_amount > 0:
@@ -231,18 +231,18 @@ def export_expenses_excel(request):
             expense.building.name if expense.building else "-",
             category_display,
             expense.description,
-            f"{expense.amount} ر.ع",
+            expense.amount,
             expense.expense_date.strftime('%Y-%m-%d')
-        ])
+        ], number_formats=[None, None, None, None, 'currency', None])
     
     # الإحصائيات
     exporter.add_empty_row()
-    exporter.add_total_row("إجمالي المصروفات", total_expenses, col_span=len(headers))
-    exporter.add_total_row("إجمالي المبالغ", f"{total_amount} ر.ع", col_span=len(headers))
+    exporter.add_total_row("إجمالي المصروفات", total_expenses, col_span=len(headers), value_type='number')
+    exporter.add_total_row("إجمالي المبالغ", total_amount, col_span=len(headers), value_type='currency')
     
     # مجموع كل فئة
     for category, amount in category_totals.items():
-        exporter.add_total_row(f"مجموع {category}", f"{amount} ر.ع", col_span=len(headers))
+        exporter.add_total_row(f"مجموع {category}", amount, col_span=len(headers), value_type='currency')
     
     # النسب المئوية
     if total_amount > 0:
@@ -304,8 +304,8 @@ def export_buildings_excel(request):
             units_count,
             occupied,
             available,
-            f"{occupancy_rate}%"
-        ], style=style)
+            occupancy_rate
+        ], style=style, number_formats=[None, None, None, None, None, None, 'percentage'])
     
     # الإحصائيات
     exporter.add_empty_row()
@@ -362,11 +362,11 @@ def export_units_excel(request):
         ).first()
         
         tenant_name = "-"
-        monthly_rent = "-"
+        monthly_rent = None
         
         if current_lease:
             tenant_name = current_lease.tenant.name
-            monthly_rent = f"{current_lease.monthly_rent} ر.ع"
+            monthly_rent = current_lease.monthly_rent
             total_rent += current_lease.monthly_rent
             occupied_units += 1
             style = 'success'
@@ -382,15 +382,15 @@ def export_units_excel(request):
             unit.floor,
             status_display,
             tenant_name,
-            monthly_rent
-        ], style=style)
+            monthly_rent if monthly_rent else "-"
+        ], style=style, number_formats=[None, None, None, None, None, None, None, 'currency'])
     
     # الإحصائيات
     exporter.add_empty_row()
-    exporter.add_total_row("إجمالي الوحدات", total_units, col_span=len(headers))
-    exporter.add_total_row("الوحدات المشغولة", occupied_units, col_span=len(headers))
-    exporter.add_total_row("الوحدات المتاحة", available_units, col_span=len(headers))
-    exporter.add_total_row("إجمالي الإيجار الشهري", f"{total_rent} ر.ع", col_span=len(headers))
+    exporter.add_total_row("إجمالي الوحدات", total_units, col_span=len(headers), value_type='number')
+    exporter.add_total_row("الوحدات المشغولة", occupied_units, col_span=len(headers), value_type='number')
+    exporter.add_total_row("الوحدات المتاحة", available_units, col_span=len(headers), value_type='number')
+    exporter.add_total_row("إجمالي الإيجار الشهري", total_rent, col_span=len(headers), value_type='currency')
     
     # النسب المئوية
     if total_units > 0:
