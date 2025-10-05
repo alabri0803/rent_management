@@ -231,6 +231,20 @@
                         <span class="detail-label">{% trans "اسم البنك" %}:</span>
                         <span class="detail-value">{{ payment.bank_name|default:"________________" }}</span>
                     </div>
+                    
+                    {% if payment.check_status %}
+                    <div class="detail-line">
+                        <span class="detail-label">{% trans "حالة الشيك" %}:</span>
+                        <span class="detail-value">{{ payment.get_check_status_display }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if payment.check_status == 'returned' and payment.return_reason %}
+                    <div class="detail-line">
+                        <span class="detail-label">{% trans "سبب الإرجاع" %}:</span>
+                        <span class="detail-value">{{ payment.return_reason }}</span>
+                    </div>
+                    {% endif %}
                     {% endif %}
                     
                     <div class="detail-line">
@@ -299,6 +313,20 @@
                         <span class="english-label">Bank Name:</span>
                         <span class="english-value">{{ payment.bank_name|default:"________________" }}</span>
                     </div>
+                    
+                    {% if payment.check_status %}
+                    <div class="english-detail">
+                        <span class="english-label">Check Status:</span>
+                        <span class="english-value">{{ payment.get_check_status_display }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if payment.check_status == 'returned' and payment.return_reason %}
+                    <div class="english-detail">
+                        <span class="english-label">Return Reason:</span>
+                        <span class="english-value">{{ payment.return_reason }}</span>
+                    </div>
+                    {% endif %}
                     {% endif %}
                     
                     <div class="english-detail">

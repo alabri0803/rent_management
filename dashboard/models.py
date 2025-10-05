@@ -232,7 +232,7 @@ class Payment(models.Model):
     check_number = models.CharField(_("رقم الشيك"), max_length=50, blank=True, null=True)
     check_date = models.DateField(_("تاريخ الشيك"), blank=True, null=True)
     bank_name = models.CharField(_("اسم البنك"), max_length=100, blank=True, null=True)
-    check_status = models.CharField(_("حالة الشيك"), max_length=20, choices=CHECK_STATUS_CHOICES, blank=True, null=True)
+    check_status = models.CharField(_("حالة الشيك"), max_length=20, choices=CHECK_STATUS_CHOICES, default='pending', blank=True, null=True)
     return_reason = models.TextField(_("سبب إرجاع الشيك"), blank=True, null=True)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
     
@@ -241,6 +241,20 @@ class Payment(models.Model):
         verbose_name_plural = _("الدفعات")
         ordering = ['-payment_date']
         
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        
+        if self.payment_method == 'check':
+            if not self.check_status:
+                raise ValidationError({'check_status': _('حالة الشيك مطلوبة عند اختيار طريقة الدفع بالشيك')})
+            
+            if self.check_status == 'returned' and not self.return_reason:
+                raise ValidationError({'return_reason': _('سبب إرجاع الشيك مطلوب عند اختيار حالة "مرتجع"')})
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.amount} for {self.lease.contract_number} ({self.payment_for_month}/{self.payment_for_year})"
 

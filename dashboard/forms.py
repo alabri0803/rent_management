@@ -128,7 +128,7 @@ class ExpenseForm(forms.ModelForm):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'payment_method', 'check_number', 'check_date', 'bank_name', 'notes']
+        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'payment_method', 'check_number', 'check_date', 'bank_name', 'check_status', 'return_reason', 'notes']
         widgets = {
             'payment_date': forms.DateInput(attrs={'type': 'date'}),
             'check_date': forms.DateInput(attrs={'type': 'date'})
@@ -138,3 +138,18 @@ class PaymentForm(forms.ModelForm):
         self.fields['payment_for_year'].initial = timezone.now().year
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        payment_method = cleaned_data.get('payment_method')
+        check_status = cleaned_data.get('check_status')
+        return_reason = cleaned_data.get('return_reason')
+        
+        if payment_method == 'check':
+            if not check_status:
+                self.add_error('check_status', _('حالة الشيك مطلوبة عند اختيار طريقة الدفع بالشيك'))
+            
+            if check_status == 'returned' and not return_reason:
+                self.add_error('return_reason', _('سبب إرجاع الشيك مطلوب عند اختيار حالة "مرتجع"'))
+        
+        return cleaned_data

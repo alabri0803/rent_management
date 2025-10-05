@@ -19,6 +19,11 @@
                 {{ form.check_number.as_field_group }}
                 {{ form.check_date.as_field_group }}
                 {{ form.bank_name.as_field_group }}
+                {{ form.check_status.as_field_group }}
+                
+                <div id="return-reason-field" style="display: none;">
+                    {{ form.return_reason.as_field_group }}
+                </div>
             </div>
             
             {{ form.notes.as_field_group }}
@@ -31,16 +36,31 @@
 document.addEventListener('DOMContentLoaded', function() {
     const paymentMethodField = document.getElementById('id_payment_method');
     const checkFields = document.getElementById('check-fields');
+    const checkStatusField = document.getElementById('id_check_status');
+    const returnReasonField = document.getElementById('return-reason-field');
     
     function toggleCheckFields() {
         if (paymentMethodField.value === 'check') {
             checkFields.style.display = 'block';
+            toggleReturnReasonField();
         } else {
             checkFields.style.display = 'none';
         }
     }
     
+    function toggleReturnReasonField() {
+        if (checkStatusField && checkStatusField.value === 'returned') {
+            returnReasonField.style.display = 'block';
+        } else {
+            returnReasonField.style.display = 'none';
+        }
+    }
+    
     paymentMethodField.addEventListener('change', toggleCheckFields);
+    if (checkStatusField) {
+        checkStatusField.addEventListener('change', toggleReturnReasonField);
+    }
+    
     toggleCheckFields();
 });
 </script>

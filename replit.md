@@ -67,6 +67,21 @@ The system manages the complete lifecycle of rental properties: from adding buil
   - Updated payment receipt template to show complete check information when applicable
   - Created migration (0014) for new payment fields
 
+- **Check Status Tracking System**: Enhanced check payment workflow with status tracking
+  - Added check_status field with three states: pending (معلق), cashed (تم الصرف), returned (مرتجع)
+  - Added return_reason field to capture reason when check is returned
+  - Updated Payment model with CHECK_STATUS_CHOICES for Arabic status labels
+  - Enhanced payment form template with conditional display:
+    - Check fields only show when payment method is 'check'
+    - Return reason field only appears when check status is 'returned'
+  - Updated payment list with color-coded status badges:
+    - Yellow badge for pending checks
+    - Green badge for cashed checks
+    - Red badge for returned checks
+  - Enhanced payment receipt (PDF) to display check status and return reason
+  - Created migration (0016) for check_status and return_reason fields
+  - Workflow: Receive check → Pending status → When cashed → Cashed status (receipt issued) → If returned → Returned status (with reason)
+
 ## October 4, 2025
 - **Currency Update**: Changed all currency references from Saudi Riyal (ر.س) to Omani Rial (ر.ع) in tenant_detail.html
 - **Database Configuration**: Updated settings.py to use SQLite for local development instead of external MySQL database
