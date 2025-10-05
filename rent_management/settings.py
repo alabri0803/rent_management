@@ -85,8 +85,12 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ox3h62lb0h2hwudt',
+        'USER': 'oilpoycpc2s9fv9d',
+        'PASSWORD': 'n6wwd3n0pw6kckir',
+        'PORT': '3306',
+        'HOST': 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     }
 }
 
