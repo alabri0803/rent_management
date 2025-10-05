@@ -2,27 +2,75 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% trans "بوابة المستأجر" %}{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; }</style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; }
+        .mobile-menu { display: none; }
+        .mobile-menu.active { display: block; }
+    </style>
 </head>
 <body class="text-gray-800">
     <header class="bg-white shadow-md">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-[#993333]">{% trans "بوابة المستأجر" %}</h1>
-            <div>
+        <nav class="container mx-auto px-4 md:px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-lg md:text-xl font-bold text-[#993333]">{% trans "بوابة المستأجر" %}</h1>
+                
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                
+                <div class="hidden md:flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'portal_dashboard' %}" class="hover:text-[#993333] text-sm md:text-base">{% trans "لوحة المعلومات" %}</a>
+                    <a href="{% url 'maintenance_list' %}" class="hover:text-[#993333] text-sm md:text-base">{% trans "طلبات الصيانة" %}</a>
+                    <form method="post" action="{% url 'logout' %}" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm md:text-base">{% trans "تسجيل الخروج" %}</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div id="mobile-menu" class="mobile-menu mt-4 md:hidden">
                 {% if user.is_authenticated %}
-                <a href="{% url 'portal_dashboard' %}" class="mx-2 hover:text-[#993333]">{% trans "لوحة المعلومات" %}</a>
-                <a href="{% url 'maintenance_list' %}" class="mx-2 hover:text-[#993333]">{% trans "طلبات الصيانة" %}</a>
-                <form method="post" action="{% url 'logout' %}" class="inline-block mx-2">{% csrf_token %}<button type="submit">{% trans "تسجيل الخروج" %}</button></form>
+                <div class="flex flex-col gap-3">
+                    <a href="{% url 'portal_dashboard' %}" class="block py-3 px-4 rounded-lg hover:bg-gray-100 text-base">{% trans "لوحة المعلومات" %}</a>
+                    <a href="{% url 'maintenance_list' %}" class="block py-3 px-4 rounded-lg hover:bg-gray-100 text-base">{% trans "طلبات الصيانة" %}</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 text-base">{% trans "تسجيل الخروج" %}</button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
         </nav>
     </header>
-    <main class="container mx-auto px-6 py-8">
-        {% if messages %}{% for message in messages %}<div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>{% endfor %}{% endif %}
+    
+    <main class="container mx-auto px-4 md:px-6 py-6 md:py-8">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
+    
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+        }
+    </script>
 </body>
 </html>

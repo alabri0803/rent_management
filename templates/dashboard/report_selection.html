@@ -2,36 +2,40 @@
 {% load i18n %}
 {% block title %}{% trans "التقارير" %}{% endblock %}
 {% block content %}
-<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "إنشاء التقارير" %}</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="card p-8">
-        <h3 class="text-xl font-bold mb-4">{% trans "تقارير الأرباح والخسائر" %}</h3>
-        <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse border-b pb-4 mb-4">
-            <div>
-                <label for="year" class="block mb-1">{% trans "تقرير شهري" %}</label>
-                <input type="number" name="year" id="year" value="{% now 'Y' %}" class="p-2 border rounded-md" required placeholder="{% trans 'السنة' %}">
+<h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-6">{% trans "إنشاء التقارير" %}</h2>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+    <div class="card p-4 md:p-8">
+        <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "تقارير الأرباح والخسائر" %}</h3>
+        
+        <form action="{% url 'report_monthly_pl' %}" method="get" target="_blank" class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4 border-b pb-4 mb-4">
+            <div class="flex-1">
+                <label for="year" class="block mb-1 text-sm md:text-base">{% trans "تقرير شهري" %}</label>
+                <input type="number" name="year" id="year" value="{% now 'Y' %}" class="w-full p-2 md:p-3 border rounded-md text-base" required placeholder="{% trans 'السنة' %}">
             </div>
-            <div>
-                <label for="month" class="block mb-1">&nbsp;</label>
-                <select name="month" id="month" class="p-2 border rounded-md" required>
+            <div class="flex-1">
+                <label for="month" class="block mb-1 text-sm md:text-base">&nbsp;</label>
+                <select name="month" id="month" class="w-full p-2 md:p-3 border rounded-md text-base" required>
                     {% for i in "123456789012"|make_list %}<option value="{{ forloop.counter }}">{{ forloop.counter }}</option>{% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "إنشاء" %}</button>
+            <button type="submit" class="btn-primary py-2 md:py-3 px-6 rounded-lg text-sm md:text-base whitespace-nowrap">{% trans "إنشاء" %}</button>
         </form>
-        <form action="{% url 'report_annual_pl' %}" method="get" target="_blank" class="flex items-end space-x-4 rtl:space-x-reverse">
-            <div>
-                <label for="year_annual" class="block mb-1">{% trans "تقرير سنوي" %}</label>
-                <input type="number" name="year" id="year_annual" value="{% now 'Y' %}" class="p-2 border rounded-md" required placeholder="{% trans 'السنة' %}">
+        
+        <form action="{% url 'report_annual_pl' %}" method="get" target="_blank" class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4">
+            <div class="flex-1">
+                <label for="year_annual" class="block mb-1 text-sm md:text-base">{% trans "تقرير سنوي" %}</label>
+                <input type="number" name="year" id="year_annual" value="{% now 'Y' %}" class="w-full p-2 md:p-3 border rounded-md text-base" required placeholder="{% trans 'السنة' %}">
             </div>
-            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "إنشاء" %}</button>
+            <button type="submit" class="btn-primary py-2 md:py-3 px-6 rounded-lg text-sm md:text-base whitespace-nowrap">{% trans "إنشاء" %}</button>
         </form>
     </div>
-    <div class="card p-8">
-        <h3 class="text-xl font-bold mb-4">{% trans "تقارير أخرى" %}</h3>
+    
+    <div class="card p-4 md:p-8">
+        <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "تقارير أخرى" %}</h3>
         <div class="space-y-4">
-            <a href="{% url 'report_occupancy' %}" target="_blank" class="block w-full text-center bg-gray-100 hover:bg-gray-200 p-4 rounded-lg">{% trans "تقرير إشغال الوحدات" %}</a>
-            </div>
+            <a href="{% url 'report_occupancy' %}" target="_blank" class="block w-full text-center bg-gray-100 hover:bg-gray-200 p-3 md:p-4 rounded-lg text-sm md:text-base">{% trans "تقرير إشغال الوحدات" %}</a>
+        </div>
     </div>
 </div>
 {% endblock %}
