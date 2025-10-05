@@ -112,7 +112,7 @@ def export_leases_excel(request):
         exporter.add_percentage_row("نسبة العقود النشطة", active_percentage, col_span=len(headers))
     
     # عرض الأعمدة
-    exporter.set_column_widths([8, 15, 25, 30, 18, 15, 15, 18])
+    exporter.set_column_widths([8, 15, 30.8, 12, 18, 15, 15, 18])
     
     return exporter.get_response("قائمة_العقود.xlsx")
 
