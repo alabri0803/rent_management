@@ -3,6 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -18,6 +19,13 @@ import json
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
 from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm, UnitForm, BuildingForm, TenantForm
 from .utils import render_to_pdf
+
+class CustomLoginView(LoginView):
+    def get_success_url(self):
+        if self.request.user.is_staff:
+            return reverse('dashboard_home')
+        else:
+            return reverse('portal_dashboard')
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):

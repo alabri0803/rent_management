@@ -9,6 +9,11 @@ The system manages the complete lifecycle of rental properties: from adding buil
 # Recent Changes
 
 ## October 5, 2025
+- **Custom Login Redirect**: Implemented custom login view that redirects users based on their role
+  - Staff users (admin/employees) are redirected to dashboard home page
+  - Tenant users are redirected to tenant portal dashboard
+  - Created CustomLoginView that overrides Django's default login behavior
+
 - **Check Payment Feature**: Added comprehensive check payment support to the payment system
   - Added payment_method field with choices: cash, check, bank_transfer, other
   - Added check-specific fields: check_number, check_date, bank_name
