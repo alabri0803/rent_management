@@ -2,101 +2,153 @@
 {% load i18n %}
 {% block title %}{% trans "تفاصيل العقد" %} {{ lease.contract_number }}{% endblock %}
 {% block content %}
-<div class="mb-6"><a href="{% url 'lease_list' %}" class="text-blue-600 hover:underline">&larr; {% trans "العودة إلى قائمة العقود" %}</a></div>
-<div class="card p-8 mb-8">
-    <div class="flex justify-between items-start">
-        <div>
-            <h2 class="text-3xl font-bold text-gray-800">{{ lease.tenant.name }}</h2>
-            <p class="text-gray-500">{% trans "رقم العقد" %}: {{ lease.contract_number }}</p>
+<div class="mb-6">
+    <a href="{% url 'lease_list' %}" class="text-blue-600 hover:underline text-sm md:text-base">&larr; {% trans "العودة إلى قائمة العقود" %}</a>
+</div>
+
+<div class="card p-4 md:p-8 mb-8">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+        <div class="flex-1">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{{ lease.tenant.name }}</h2>
+            <p class="text-gray-500 text-sm md:text-base">{% trans "رقم العقد" %}: {{ lease.contract_number }}</p>
             <span class="status-badge status-{{ lease.get_status_color }} mt-2 inline-block">{{ lease.get_status_display }}</span>
         </div>
-        <div class="flex space-x-2 rtl:space-x-reverse">
+        <div class="flex flex-wrap gap-2">
             {% if lease.status != 'cancelled' %}
-            <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">{% trans "تجديد" %}</a>
-            <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg">{% trans "تعديل" %}</a>
-            <a href="{% url 'lease_cancel' lease.pk %}" class="bg-gray-500 text-white py-2 px-4 rounded-lg">{% trans "إلغاء العقد" %}</a>
+            <a href="{% url 'lease_renew' lease.pk %}" class="bg-blue-500 text-white py-2 px-4 rounded-lg text-sm md:text-base">{% trans "تجديد" %}</a>
+            <a href="{% url 'lease_update' lease.pk %}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg text-sm md:text-base">{% trans "تعديل" %}</a>
+            <a href="{% url 'lease_cancel' lease.pk %}" class="bg-gray-500 text-white py-2 px-4 rounded-lg text-sm md:text-base">{% trans "إلغاء العقد" %}</a>
             {% endif %}
-            <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-600 text-white py-2 px-4 rounded-lg">{% trans "حذف" %}</a>
+            <a href="{% url 'lease_delete' lease.pk %}" class="bg-red-600 text-white py-2 px-4 rounded-lg text-sm md:text-base">{% trans "حذف" %}</a>
         </div>
     </div>
+    
     <div class="border-t my-6"></div>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div><h4 class="font-bold">{% trans "الوحدة" %}</h4><p>{{ lease.unit }}</p></div>
-        <div><h4 class="font-bold">{% trans "الإيجار الشهري" %}</h4><p>{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><h4 class="font-bold">{% trans "فترة العقد" %}</h4><p>{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</p></div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div>
-            <h4 class="font-bold">{% trans "تقييم العميل" %}</h4>
-            <form action="{% url 'tenant_rate' lease.tenant.pk %}" method="post" class="flex items-center">
+            <h4 class="font-bold text-sm md:text-base">{% trans "الوحدة" %}</h4>
+            <p class="text-sm md:text-base">{{ lease.unit }}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "الإيجار الشهري" %}</h4>
+            <p class="text-sm md:text-base">{{ lease.monthly_rent|floatformat:2 }} {% trans "ر.ع" %}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "فترة العقد" %}</h4>
+            <p class="text-sm md:text-base">{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "تقييم العميل" %}</h4>
+            <form action="{% url 'tenant_rate' lease.tenant.pk %}" method="post" class="flex items-center flex-wrap gap-2">
                 {% csrf_token %}
                 {{ rating_form.rating }}
-                <button type="submit" class="bg-green-500 text-white py-1 px-3 rounded-lg ms-2">{% trans "حفظ" %}</button>
+                <button type="submit" class="bg-green-500 text-white py-1 px-3 rounded-lg text-sm">{% trans "حفظ" %}</button>
             </form>
         </div>
-        <div><h4 class="font-bold">{% trans "إجمالي الإيجار السنوي" %}</h4><p class="text-blue-600 font-bold">{{ lease.annual_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><h4 class="font-bold">{% trans "رسوم تسجيل العقد (بدون رسوم مكتب)" %}</h4><p class="text-purple-600 font-bold">{{ lease.registration_fee_without_office|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><h4 class="font-bold">{% trans "رسوم تسجيل العقد (مع رسوم مكتب)" %}</h4><p class="text-green-600 font-bold">{{ lease.registration_fee_with_office|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
-        <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
-        <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "إجمالي الإيجار السنوي" %}</h4>
+            <p class="text-blue-600 font-bold text-sm md:text-base">{{ lease.annual_rent|floatformat:2 }} {% trans "ر.ع" %}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "رسوم تسجيل العقد (بدون رسوم مكتب)" %}</h4>
+            <p class="text-purple-600 font-bold text-sm md:text-base">{{ lease.registration_fee_without_office|floatformat:2 }} {% trans "ر.ع" %}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "رسوم تسجيل العقد (مع رسوم مكتب)" %}</h4>
+            <p class="text-green-600 font-bold text-sm md:text-base">{{ lease.registration_fee_with_office|floatformat:2 }} {% trans "ر.ع" %}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "عداد الكهرباء" %}</h4>
+            <p class="text-sm md:text-base">{{ lease.electricity_meter|default:"-" }}</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm md:text-base">{% trans "عداد المياه" %}</h4>
+            <p class="text-sm md:text-base">{{ lease.water_meter|default:"-" }}</p>
+        </div>
+        <div>
+            <a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline text-sm md:text-base">{% trans "طباعة كشف الحساب" %} &rarr;</a>
+        </div>
         {% if lease.status == 'cancelled' %}
-        <div class="md:col-span-4 bg-red-50 p-4 rounded-lg">
-            <h4 class="font-bold text-red-800">{% trans "معلومات الإلغاء" %}</h4>
-            <p><strong>{% trans "تاريخ الإلغاء" %}:</strong> {{ lease.cancellation_date|date:"d M Y" }}</p>
-            <p><strong>{% trans "سبب الإلغاء" %}:</strong> {{ lease.cancellation_reason|default:_("لم يحدد سبب.") }}</p>
+        <div class="sm:col-span-2 lg:col-span-4 bg-red-50 p-4 rounded-lg">
+            <h4 class="font-bold text-red-800 text-sm md:text-base">{% trans "معلومات الإلغاء" %}</h4>
+            <p class="text-sm md:text-base"><strong>{% trans "تاريخ الإلغاء" %}:</strong> {{ lease.cancellation_date|date:"d M Y" }}</p>
+            <p class="text-sm md:text-base"><strong>{% trans "سبب الإلغاء" %}:</strong> {{ lease.cancellation_reason|default:_("لم يحدد سبب.") }}</p>
         </div>
         {% endif %}
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <div class="card p-6">
-        <h3 class="text-xl font-bold mb-4">{% trans "كشف حساب الإيجار" %}</h3>
-        <table class="w-full text-sm">
-            <thead><tr class="border-b"><th class="text-start py-2">{% trans "شهر/سنة" %}</th><th class="text-start py-2">{% trans "المستحق" %}</th><th class="text-start py-2">{% trans "المدفوع" %}</th><th class="text-start py-2">{% trans "المتبقي" %}</th><th class="text-start py-2">{% trans "طريقة الدفع" %}</th><th class="text-start py-2">{% trans "الحالة" %}</th></tr></thead>
-            <tbody>
-                {% for month in payment_summary %}
-                <tr class="border-b">
-                    <td class="py-2">{{ month.month_name }} {{ month.year }}</td>
-                    <td class="py-2 font-mono">{{ month.rent_due|floatformat:2 }}</td>
-                    <td class="py-2 font-mono text-green-700">
-                        {{ month.amount_paid|floatformat:2 }}
-                        {% if month.payment_date %}<br><span class="text-xs text-gray-500">{{ month.payment_date|date:"d/m/Y" }}</span>{% endif %}
-                    </td>
-                    <td class="py-2 font-mono {% if month.balance > 0 %}text-red-500 font-bold{% endif %}">
-                        {{ month.balance|floatformat:2 }}
-                        {% if month.balance > 0 and month.next_payment_date %}<br><span class="text-xs text-gray-500">{% trans "التالي" %}: {{ month.next_payment_date|date:"d/m" }}</span>{% endif %}
-                    </td>
-                    <td class="py-2 text-sm">
-                        {% if month.payment_method %}{{ month.payment_method }}{% else %}-{% endif %}
-                    </td>
-                    <td class="py-2">
-                        {% if month.status == 'paid' %}<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{% trans "تم الدفع" %}</span>
-                        {% elif month.status == 'partial' %}<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{% trans "دفع جزئي" %}</span>
-                        {% elif month.status == 'due' %}<span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">{% trans "لم يدفع" %}</span>
-                        {% elif month.status == 'upcoming' %}<span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{% trans "قادم" %}</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot><tr class="font-bold"><td class="py-3">{% trans "الإجمالي المدفوع" %}</td><td></td><td class="py-3 font-mono text-green-700">{{ total_paid|floatformat:2 }} {% trans "ر.ع" %}</td><td></td><td></td></tr></tfoot>
-        </table>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+    <div class="card p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "كشف حساب الإيجار" %}</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm min-w-max">
+                <thead>
+                    <tr class="border-b">
+                        <th class="text-start py-2">{% trans "شهر/سنة" %}</th>
+                        <th class="text-start py-2">{% trans "المستحق" %}</th>
+                        <th class="text-start py-2">{% trans "المدفوع" %}</th>
+                        <th class="text-start py-2">{% trans "المتبقي" %}</th>
+                        <th class="text-start py-2">{% trans "طريقة الدفع" %}</th>
+                        <th class="text-start py-2">{% trans "الحالة" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in payment_summary %}
+                    <tr class="border-b">
+                        <td class="py-2">{{ month.month_name }} {{ month.year }}</td>
+                        <td class="py-2 font-mono">{{ month.rent_due|floatformat:2 }}</td>
+                        <td class="py-2 font-mono text-green-700">
+                            {{ month.amount_paid|floatformat:2 }}
+                            {% if month.payment_date %}<br><span class="text-xs text-gray-500">{{ month.payment_date|date:"d/m/Y" }}</span>{% endif %}
+                        </td>
+                        <td class="py-2 font-mono {% if month.balance > 0 %}text-red-500 font-bold{% endif %}">
+                            {{ month.balance|floatformat:2 }}
+                            {% if month.balance > 0 and month.next_payment_date %}<br><span class="text-xs text-gray-500">{% trans "التالي" %}: {{ month.next_payment_date|date:"d/m" }}</span>{% endif %}
+                        </td>
+                        <td class="py-2">
+                            {% if month.payment_method %}{{ month.payment_method }}{% else %}-{% endif %}
+                        </td>
+                        <td class="py-2">
+                            {% if month.status == 'paid' %}<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{% trans "تم الدفع" %}</span>
+                            {% elif month.status == 'partial' %}<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{% trans "دفع جزئي" %}</span>
+                            {% elif month.status == 'due' %}<span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">{% trans "لم يدفع" %}</span>
+                            {% elif month.status == 'upcoming' %}<span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{% trans "قادم" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold">
+                        <td class="py-3">{% trans "الإجمالي المدفوع" %}</td>
+                        <td></td>
+                        <td class="py-3 font-mono text-green-700">{{ total_paid|floatformat:2 }} {% trans "ر.ع" %}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
-    <div class="card p-6">
-        <h3 class="text-xl font-bold mb-4">{% trans "المستندات" %}</h3>
+    
+    <div class="card p-4 md:p-6">
+        <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "المستندات" %}</h3>
         <form action="{% url 'document_upload' lease.pk %}" method="post" enctype="multipart/form-data" class="mb-4 space-y-3">
             {% csrf_token %}
             {{ document_form.as_p }}
-            <button type="submit" class="btn-primary w-full py-2 rounded-lg">{% trans "رفع مستند جديد" %}</button>
+            <button type="submit" class="btn-primary w-full py-2 rounded-lg text-sm md:text-base">{% trans "رفع مستند جديد" %}</button>
         </form>
         <ul class="space-y-2">
             {% for doc in lease.documents.all %}
             <li class="flex justify-between items-center bg-gray-50 p-3 rounded-md">
-                <a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline">{{ doc.title }}</a>
-                <a href="{% url 'document_delete' doc.pk %}" class="text-red-500 hover:text-red-700">{% trans "حذف" %}</a>
+                <a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:underline text-sm md:text-base flex-1 truncate">{{ doc.title }}</a>
+                <a href="{% url 'document_delete' doc.pk %}" class="text-red-500 hover:text-red-700 text-sm md:text-base whitespace-nowrap ml-2">{% trans "حذف" %}</a>
             </li>
             {% empty %}
-            <li class="text-center text-gray-500">{% trans "لا توجد مستندات مرفقة." %}</li>
+            <li class="text-center text-gray-500 text-sm">{% trans "لا توجد مستندات مرفقة." %}</li>
             {% endfor %}
         </ul>
     </div>
