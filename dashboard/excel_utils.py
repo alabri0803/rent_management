@@ -36,13 +36,20 @@ class ExcelExporter:
             cell.value = header
             
             # تنسيق العنوان
-            cell.font = Font(name='Arial', size=12, bold=True, color=self.COLORS['header_text'])
+            cell.font = Font(name='Arial', size=13, bold=True, color=self.COLORS['header_text'])
             cell.fill = PatternFill(start_color=self.COLORS['header_bg'], 
                                    end_color=self.COLORS['header_bg'], 
                                    fill_type='solid')
-            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                wrap_text=True,
+                text_rotation=0,
+                reading_order=2
+            )
             cell.border = self._create_border()
-            
+        
+        self.ws.row_dimensions[self.current_row].height = 30
         self.current_row += 1
         return self
     
@@ -98,9 +105,15 @@ class ExcelExporter:
             else:
                 cell.font = Font(name='Arial', size=10)
             
-            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                wrap_text=True,
+                reading_order=2
+            )
             cell.border = self._create_border()
-            
+        
+        self.ws.row_dimensions[self.current_row].height = 22
         self.current_row += 1
         return self
     
@@ -123,7 +136,12 @@ class ExcelExporter:
             cell.fill = PatternFill(start_color=self.COLORS['total_bg'], 
                                    end_color=self.COLORS['total_bg'], 
                                    fill_type='solid')
-            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                wrap_text=True,
+                reading_order=2
+            )
             cell.border = self._create_border()
             
             # خلية القيمة
@@ -149,9 +167,14 @@ class ExcelExporter:
             value_cell.fill = PatternFill(start_color=self.COLORS['total_bg'], 
                                          end_color=self.COLORS['total_bg'], 
                                          fill_type='solid')
-            value_cell.alignment = Alignment(horizontal='center', vertical='center')
+            value_cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                reading_order=2
+            )
             value_cell.border = self._create_border()
         
+        self.ws.row_dimensions[self.current_row].height = 25
         self.current_row += 1
         return self
     
@@ -173,7 +196,12 @@ class ExcelExporter:
             cell.fill = PatternFill(start_color=self.COLORS['percentage_bg'], 
                                    end_color=self.COLORS['percentage_bg'], 
                                    fill_type='solid')
-            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                wrap_text=True,
+                reading_order=2
+            )
             cell.border = self._create_border()
             
             # خلية النسبة
@@ -184,9 +212,14 @@ class ExcelExporter:
             percentage_cell.fill = PatternFill(start_color=self.COLORS['percentage_bg'], 
                                               end_color=self.COLORS['percentage_bg'], 
                                               fill_type='solid')
-            percentage_cell.alignment = Alignment(horizontal='center', vertical='center')
+            percentage_cell.alignment = Alignment(
+                horizontal='center', 
+                vertical='center',
+                reading_order=2
+            )
             percentage_cell.border = self._create_border()
         
+        self.ws.row_dimensions[self.current_row].height = 22
         self.current_row += 1
         return self
     
@@ -213,13 +246,18 @@ class ExcelExporter:
         
         title_cell = self.ws.cell(row=1, column=1)
         title_cell.value = self.title
-        title_cell.font = Font(name='Arial', size=16, bold=True, color=self.COLORS['header_text'])
+        title_cell.font = Font(name='Arial', size=18, bold=True, color=self.COLORS['header_text'])
         title_cell.fill = PatternFill(start_color=self.COLORS['header_bg'], 
                                       end_color=self.COLORS['header_bg'], 
                                       fill_type='solid')
-        title_cell.alignment = Alignment(horizontal='center', vertical='center')
+        title_cell.alignment = Alignment(
+            horizontal='center', 
+            vertical='center',
+            reading_order=2
+        )
         title_cell.border = self._create_border()
         
+        self.ws.row_dimensions[1].height = 40
         self.current_row = 2
         return self
     

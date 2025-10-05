@@ -123,3 +123,15 @@ xhtml2pdf
 zopfli
 deep-translator
 openpyxl
+arabic-reshaper
+deep-translator
+Django
+django-modeltranslation
+gunicorn
+openpyxl
+pillow
+python-bidi
+reportlab
+weasyprint
+whitenoise
+xhtml2pdf
