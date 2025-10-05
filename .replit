@@ -1,5 +1,5 @@
 run = "python manage.py runserver 0.0.0.0:3000"
-modules = ["nodejs-20", "web", "python-3.11"]
+modules = ["web", "nodejs-20", "python-3.11"]
 
 hidden = [".pythonlibs"]
 
@@ -22,6 +22,10 @@ externalPort = 80
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 33905
+externalPort = 3000
 
 [agent]
 expertMode = true
