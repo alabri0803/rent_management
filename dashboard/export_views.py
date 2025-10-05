@@ -900,3 +900,288 @@ def _create_maintenance_sheet(ws):
         exporter.add_percentage_row("نسبة الإنجاز | Completion Rate", completion_rate, col_span=len(headers))
     
     exporter.set_column_widths([8, 30, 25, 30, 20, 20, 15])
+
+
+@login_required
+@user_passes_test(staff_required)
+def export_comprehensive_pdf_report(request):
+    """تصدير تقرير PDF شامل يحتوي على جميع التقارير
+    Comprehensive PDF Report - All Reports in One File"""
+    
+    from .pdf_utils import PDFReportGenerator
+    from .models import Company
+    
+    # إنشاء مولد التقرير
+    pdf = PDFReportGenerator(
+        title_ar="التقرير الشامل لإدارة الإيجارات",
+        title_en="Comprehensive Rental Management Report",
+        orientation='landscape'
+    )
+    
+    # محاولة إضافة شعار الشركة
+    try:
+        company = Company.objects.first()
+        if company and company.logo:
+            pdf.set_logo(company.logo.path)
+    except:
+        pass
+    
+    # إضافة الترويسة
+    pdf.add_header(include_logo=True)
+    
+    # 1. قسم المستأجرين
+    pdf.add_section_title("قائمة المستأجرين", "Tenants List")
+    tenants = Tenant.objects.all().order_by('name')
+    tenants_data = []
+    for idx, tenant in enumerate(tenants, 1):
+        tenant_type = "فرد | Individual" if tenant.tenant_type == 'individual' else "شركة | Company"
+        tenants_data.append([
+            str(idx),
+            tenant.name,
+            tenant_type,
+            tenant.phone,
+            tenant.email or "-",
+            f"{'⭐' * tenant.rating} ({tenant.rating}/5)"
+        ])
+    
+    pdf.add_table(
+        headers=["# | No.", "الاسم | Name", "النوع | Type", "الهاتف | Phone", "البريد | Email", "التقييم | Rating"],
+        data=tenants_data,
+        col_widths=[0.5*inch, 1.8*inch, 1.3*inch, 1.2*inch, 1.8*inch, 1.2*inch]
+    )
+    
+    pdf.add_summary_table([
+        ("إجمالي المستأجرين", "Total Tenants", tenants.count())
+    ])
+    
+    # 2. قسم العقود
+    pdf.add_page_break()
+    pdf.add_section_title("قائمة العقود", "Leases List")
+    leases = Lease.objects.all().select_related('tenant', 'unit', 'unit__building').order_by('-start_date')[:50]
+    
+    leases_data = []
+    total_rent = Decimal('0')
+    active_count = 0
+    
+    for idx, lease in enumerate(leases, 1):
+        status_map = {
+            'active': 'نشط | Active',
+            'expiring_soon': 'ينتهي | Expiring',
+            'expired': 'منتهي | Expired',
+            'cancelled': 'ملغي | Cancelled'
+        }
+        status = status_map.get(lease.status, lease.status)
+        
+        total_rent += lease.monthly_rent
+        if lease.status == 'active':
+            active_count += 1
+        
+        leases_data.append([
+            str(idx),
+            lease.contract_number,
+            lease.tenant.name,
+            f"{lease.unit.building.name} - {lease.unit.unit_number}",
+            pdf.format_currency(lease.monthly_rent),
+            lease.start_date.strftime('%Y-%m-%d'),
+            status
+        ])
+    
+    pdf.add_table(
+        headers=["#", "رقم العقد | Contract", "المستأجر | Tenant", "الوحدة | Unit", 
+                "الإيجار | Rent", "البدء | Start", "الحالة | Status"],
+        data=leases_data,
+        col_widths=[0.4*inch, 1*inch, 1.5*inch, 1.8*inch, 1.2*inch, 1*inch, 1.3*inch]
+    )
+    
+    pdf.add_summary_table([
+        ("إجمالي العقود", "Total Leases", Lease.objects.count()),
+        ("العقود النشطة", "Active Leases", active_count),
+        ("إجمالي الإيجار الشهري", "Total Monthly Rent", pdf.format_currency(total_rent))
+    ])
+    
+    # 3. قسم المدفوعات
+    pdf.add_page_break()
+    pdf.add_section_title("قائمة المدفوعات", "Payments List")
+    payments = Payment.objects.all().select_related('lease', 'lease__tenant').order_by('-payment_date')[:50]
+    
+    payments_data = []
+    total_amount = Decimal('0')
+    
+    for idx, payment in enumerate(payments, 1):
+        method_map = {
+            'cash': 'نقدي | Cash',
+            'check': 'شيك | Check',
+            'bank_transfer': 'تحويل | Transfer'
+        }
+        method = method_map.get(payment.payment_method, payment.payment_method)
+        
+        total_amount += payment.amount
+        
+        payments_data.append([
+            str(idx),
+            payment.lease.contract_number,
+            payment.lease.tenant.name,
+            pdf.format_currency(payment.amount),
+            payment.payment_date.strftime('%Y-%m-%d'),
+            f"{payment.payment_for_month}/{payment.payment_for_year}",
+            method
+        ])
+    
+    pdf.add_table(
+        headers=["#", "رقم العقد | Contract", "المستأجر | Tenant", "المبلغ | Amount", 
+                "التاريخ | Date", "الشهر | Month", "الطريقة | Method"],
+        data=payments_data,
+        col_widths=[0.4*inch, 1*inch, 1.5*inch, 1.2*inch, 1*inch, 0.9*inch, 1.3*inch]
+    )
+    
+    pdf.add_summary_table([
+        ("إجمالي المدفوعات", "Total Payments", Payment.objects.count()),
+        ("إجمالي المبلغ", "Total Amount", pdf.format_currency(total_amount))
+    ])
+    
+    # 4. قسم المصروفات
+    pdf.add_page_break()
+    pdf.add_section_title("قائمة المصروفات", "Expenses List")
+    expenses = Expense.objects.all().select_related('building').order_by('-expense_date')[:50]
+    
+    expenses_data = []
+    total_expense = Decimal('0')
+    
+    for idx, expense in enumerate(expenses, 1):
+        category_map = {
+            'maintenance': 'صيانة | Maintenance',
+            'utilities': 'مرافق | Utilities',
+            'insurance': 'تأمين | Insurance',
+            'taxes': 'ضرائب | Taxes',
+            'other': 'أخرى | Other'
+        }
+        category = category_map.get(expense.category, expense.category)
+        
+        total_expense += expense.amount
+        
+        expenses_data.append([
+            str(idx),
+            expense.building.name if expense.building else "-",
+            category,
+            expense.description[:40] + "..." if len(expense.description) > 40 else expense.description,
+            pdf.format_currency(expense.amount),
+            expense.expense_date.strftime('%Y-%m-%d')
+        ])
+    
+    pdf.add_table(
+        headers=["#", "المبنى | Building", "الفئة | Category", "الوصف | Description", 
+                "المبلغ | Amount", "التاريخ | Date"],
+        data=expenses_data,
+        col_widths=[0.4*inch, 1.3*inch, 1.3*inch, 2.2*inch, 1.2*inch, 1*inch]
+    )
+    
+    pdf.add_summary_table([
+        ("إجمالي المصروفات", "Total Expenses", Expense.objects.count()),
+        ("إجمالي المبلغ", "Total Amount", pdf.format_currency(total_expense))
+    ])
+    
+    # 5. قسم المباني
+    pdf.add_page_break()
+    pdf.add_section_title("قائمة المباني", "Buildings List")
+    buildings = Building.objects.all().order_by('name')
+    
+    buildings_data = []
+    total_units = 0
+    total_occupied = 0
+    
+    for idx, building in enumerate(buildings, 1):
+        units = Unit.objects.filter(building=building)
+        units_count = units.count()
+        occupied = units.filter(is_available=False).count()
+        available = units.filter(is_available=True).count()
+        occupancy_rate = round((occupied / units_count * 100), 1) if units_count > 0 else 0
+        
+        total_units += units_count
+        total_occupied += occupied
+        
+        buildings_data.append([
+            str(idx),
+            building.name,
+            building.address[:30] + "..." if len(building.address) > 30 else building.address,
+            str(units_count),
+            str(occupied),
+            str(available),
+            f"{occupancy_rate}%"
+        ])
+    
+    pdf.add_table(
+        headers=["#", "المبنى | Building", "العنوان | Address", "الوحدات | Units", 
+                "مشغول | Occupied", "متاح | Available", "نسبة الإشغال | Occupancy"],
+        data=buildings_data,
+        col_widths=[0.4*inch, 1.5*inch, 2*inch, 0.9*inch, 0.9*inch, 0.9*inch, 1.2*inch]
+    )
+    
+    overall_occupancy = round((total_occupied / total_units * 100), 1) if total_units > 0 else 0
+    pdf.add_summary_table([
+        ("إجمالي المباني", "Total Buildings", buildings.count()),
+        ("إجمالي الوحدات", "Total Units", total_units),
+        ("نسبة الإشغال الكلية", "Overall Occupancy", f"{overall_occupancy}%")
+    ])
+    
+    # 6. قسم طلبات الصيانة
+    pdf.add_page_break()
+    pdf.add_section_title("طلبات الصيانة", "Maintenance Requests")
+    maintenance_requests = MaintenanceRequest.objects.all().select_related(
+        'lease', 'lease__tenant', 'lease__unit'
+    ).order_by('-reported_date')[:50]
+    
+    maintenance_data = []
+    pending_count = 0
+    in_progress_count = 0
+    completed_count = 0
+    
+    for idx, req in enumerate(maintenance_requests, 1):
+        priority_map = {
+            'low': 'منخفضة | Low',
+            'medium': 'متوسطة | Medium',
+            'high': 'عالية | High'
+        }
+        priority = priority_map.get(req.priority, req.priority)
+        
+        status_map = {
+            'pending': 'معلق | Pending',
+            'in_progress': 'قيد التنفيذ | In Progress',
+            'completed': 'مكتمل | Completed'
+        }
+        status = status_map.get(req.status, req.status)
+        
+        if req.status == 'pending':
+            pending_count += 1
+        elif req.status == 'in_progress':
+            in_progress_count += 1
+        else:
+            completed_count += 1
+        
+        maintenance_data.append([
+            str(idx),
+            req.title[:30] + "..." if len(req.title) > 30 else req.title,
+            req.lease.tenant.name,
+            f"{req.lease.unit.building.name} - {req.lease.unit.unit_number}",
+            priority,
+            status,
+            req.reported_date.strftime('%Y-%m-%d')
+        ])
+    
+    pdf.add_table(
+        headers=["#", "العنوان | Title", "المستأجر | Tenant", "الوحدة | Unit", 
+                "الأولوية | Priority", "الحالة | Status", "التاريخ | Date"],
+        data=maintenance_data,
+        col_widths=[0.4*inch, 1.8*inch, 1.3*inch, 1.5*inch, 1.2*inch, 1.3*inch, 1*inch]
+    )
+    
+    completion_rate = round((completed_count / MaintenanceRequest.objects.count() * 100), 1) if MaintenanceRequest.objects.count() > 0 else 0
+    pdf.add_summary_table([
+        ("إجمالي الطلبات", "Total Requests", MaintenanceRequest.objects.count()),
+        ("معلقة", "Pending", pending_count),
+        ("قيد التنفيذ", "In Progress", in_progress_count),
+        ("مكتملة", "Completed", completed_count),
+        ("نسبة الإنجاز", "Completion Rate", f"{completion_rate}%")
+    ])
+    
+    # بناء وإرجاع PDF
+    return pdf.build(f"تقرير_شامل_Comprehensive_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")

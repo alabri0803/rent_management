@@ -22,6 +22,8 @@ from .export_views import (
     export_buildings_excel,
     export_units_excel,
     export_maintenance_excel,
+    export_comprehensive_report,
+    export_comprehensive_pdf_report,
 )
 
 urlpatterns = [
@@ -109,4 +111,8 @@ urlpatterns = [
     path('export/buildings/', export_buildings_excel, name='export_buildings_excel'),
     path('export/units/', export_units_excel, name='export_units_excel'),
     path('export/maintenance/', export_maintenance_excel, name='export_maintenance_excel'),
+    
+    # Comprehensive Reports
+    path('export/comprehensive-excel/', export_comprehensive_report, name='export_comprehensive_excel'),
+    path('export/comprehensive-pdf/', export_comprehensive_pdf_report, name='export_comprehensive_pdf'),
 ]
