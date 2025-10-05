@@ -2,26 +2,36 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>{% trans "تسجيل الدخول" %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; }</style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'); 
+        body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; }
+        button, input { min-height: 44px; }
+        @media (max-width: 640px) {
+            body { font-size: 16px; }
+        }
+    </style>
 </head>
-<body class="flex items-center justify-center h-screen">
-    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold text-center text-[#993333] mb-6">{% trans "تسجيل الدخول إلى النظام" %}</h2>
-        {% if form.errors %}<p class="text-red-500 text-sm mb-4">{% trans "اسم المستخدم أو كلمة المرور غير صحيحة." %}</p>{% endif %}
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md bg-white p-6 md:p-8 rounded-lg shadow-lg">
+        <h2 class="text-xl md:text-2xl font-bold text-center text-[#993333] mb-6">{% trans "تسجيل الدخول إلى النظام" %}</h2>
+        {% if form.errors %}
+            <p class="text-red-500 text-sm mb-4 p-3 bg-red-50 rounded">{% trans "اسم المستخدم أو كلمة المرور غير صحيحة." %}</p>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             <div class="mb-4">
-                <label for="id_username" class="block mb-2">{% trans "اسم المستخدم" %}</label>
-                <input type="text" name="username" id="id_username" class="w-full p-2 border rounded-md">
+                <label for="id_username" class="block mb-2 text-sm md:text-base font-medium">{% trans "اسم المستخدم" %}</label>
+                <input type="text" name="username" id="id_username" autocomplete="username" required class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
             </div>
             <div class="mb-6">
-                <label for="id_password" class="block mb-2">{% trans "كلمة المرور" %}</label>
-                <input type="password" name="password" id="id_password" class="w-full p-2 border rounded-md">
+                <label for="id_password" class="block mb-2 text-sm md:text-base font-medium">{% trans "كلمة المرور" %}</label>
+                <input type="password" name="password" id="id_password" autocomplete="current-password" required class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
             </div>
-            <button type="submit" class="w-full bg-[#993333] text-white py-2 rounded-lg">{% trans "دخول" %}</button>
+            <button type="submit" class="w-full bg-[#993333] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#7c2a2a] transition-colors text-base md:text-lg">{% trans "دخول" %}</button>
         </form>
     </div>
 </body>

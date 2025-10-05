@@ -2,64 +2,69 @@
 {% load i18n %}
 {% block title %}{% trans "إدارة المدفوعات" %}{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold text-gray-800">{% trans "المدفوعات" %}</h2>
-    <div class="flex gap-3">
-        <a href="{% url 'export_payments_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+<div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{% trans "المدفوعات" %}</h2>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <a href="{% url 'export_payments_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold text-center text-sm md:text-base">
             📊 {% trans "تصدير Excel" %}
         </a>
-        <a href="{% url 'payment_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة دفعة جديدة" %}</a>
+        <a href="{% url 'payment_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold text-center text-sm md:text-base">{% trans "إضافة دفعة جديدة" %}</a>
     </div>
 </div>
+
 <div class="card overflow-hidden">
-    <table class="w-full text-start">
-        <thead class="bg-gray-50 border-b">
-            <tr>
-                <th class="p-4">{% trans "تاريخ الدفع" %}</th>
-                <th class="p-4">{% trans "المستأجر" %}</th>
-                <th class="p-4">{% trans "رقم العقد" %}</th>
-                <th class="p-4">{% trans "عن شهر/سنة" %}</th>
-                <th class="p-4">{% trans "المبلغ" %}</th>
-                <th class="p-4">{% trans "طريقة الدفع" %}</th>
-                <th class="p-4">{% trans "إجراءات" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payment in payments %}
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-4">{{ payment.payment_date|date:"d M Y" }}</td>
-                <td class="p-4">{{ payment.lease.tenant.name }}</td>
-                <td class="p-4">{{ payment.lease.contract_number }}</td>
-                <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
-                <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
-                <td class="p-4">
-                    {{ payment.get_payment_method_display }}
-                    {% if payment.payment_method == 'check' %}
-                        {% if payment.check_number %}
-                        <br><span class="text-sm text-gray-600">(#{{ payment.check_number }})</span>
+    <div class="overflow-x-auto">
+        <table class="w-full text-start min-w-max">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "تاريخ الدفع" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "المستأجر" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "رقم العقد" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "عن شهر/سنة" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "المبلغ" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "طريقة الدفع" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "إجراءات" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{{ payment.payment_date|date:"d M Y" }}</td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm">{{ payment.lease.tenant.name }}</td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm">{{ payment.lease.contract_number }}</td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
+                    <td class="p-3 md:p-4 font-mono text-xs md:text-sm whitespace-nowrap">{{ payment.amount|floatformat:2 }}</td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm">
+                        {{ payment.get_payment_method_display }}
+                        {% if payment.payment_method == 'check' %}
+                            {% if payment.check_number %}
+                            <br><span class="text-xs text-gray-600">(#{{ payment.check_number }})</span>
+                            {% endif %}
+                            {% if payment.check_status %}
+                            <br>
+                            {% if payment.check_status == 'pending' %}
+                                <span class="inline-block px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 mt-1">{{ payment.get_check_status_display }}</span>
+                            {% elif payment.check_status == 'cashed' %}
+                                <span class="inline-block px-2 py-1 text-xs rounded bg-green-100 text-green-800 mt-1">{{ payment.get_check_status_display }}</span>
+                            {% elif payment.check_status == 'returned' %}
+                                <span class="inline-block px-2 py-1 text-xs rounded bg-red-100 text-red-800 mt-1">{{ payment.get_check_status_display }}</span>
+                            {% endif %}
+                            {% endif %}
                         {% endif %}
-                        {% if payment.check_status %}
-                        <br>
-                        {% if payment.check_status == 'pending' %}
-                            <span class="inline-block px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">{{ payment.get_check_status_display }}</span>
-                        {% elif payment.check_status == 'cashed' %}
-                            <span class="inline-block px-2 py-1 text-xs rounded bg-green-100 text-green-800">{{ payment.get_check_status_display }}</span>
-                        {% elif payment.check_status == 'returned' %}
-                            <span class="inline-block px-2 py-1 text-xs rounded bg-red-100 text-red-800">{{ payment.get_check_status_display }}</span>
-                        {% endif %}
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td class="p-4 space-x-4 rtl:space-x-reverse">
-                    <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
-                    <a href="{% url 'payment_receipt' payment.pk %}" target="_blank" class="text-green-600 hover:underline">{% trans "سند قبض" %}</a>
-                    <a href="{% url 'payment_delete' payment.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="7" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">
+                        <div class="flex flex-col gap-1">
+                            <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
+                            <a href="{% url 'payment_receipt' payment.pk %}" target="_blank" class="text-green-600 hover:underline">{% trans "سند قبض" %}</a>
+                            <a href="{% url 'payment_delete' payment.pk %}" class="text-red-600 hover:underline">{% trans "حذف" %}</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="p-6 text-center text-gray-500 text-sm">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
