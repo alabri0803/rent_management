@@ -9,6 +9,12 @@ The system manages the complete lifecycle of rental properties: from adding buil
 # Recent Changes
 
 ## October 5, 2025
+- **Enhanced Lease Financial Display**: Updated lease detail page to show clearer registration fee breakdown
+  - Added "إجمالي الإيجار السنوي" (Annual Rent Total) - shows monthly rent × 12
+  - Added "رسوم تسجيل العقد (بدون رسوم مكتب)" (Registration Fee without Office Fees) - shows registration fee only (3% of annual rent)
+  - Added "رسوم تسجيل العقد (مع رسوم مكتب)" (Registration Fee with Office Fees) - shows registration fee + office fees
+  - Created three new model methods: `annual_rent()`, `registration_fee_without_office()`, `registration_fee_with_office()`
+
 - **Lease Expiry Tracking**: Added days until expiry display in lease list
   - Shows remaining days until contract expiration with color coding
   - Red for expired, orange for < 30 days, green for > 30 days

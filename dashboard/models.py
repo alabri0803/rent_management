@@ -146,6 +146,15 @@ class Lease(models.Model):
     def total_rent_with_fees(self):
         return self.total_rent_without_fees() + self.office_fee + self.admin_fee + (self.registration_fee or 0)
     
+    def annual_rent(self):
+        return self.monthly_rent * 12
+    
+    def registration_fee_without_office(self):
+        return self.registration_fee or 0
+    
+    def registration_fee_with_office(self):
+        return (self.registration_fee or 0) + self.office_fee
+    
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
 

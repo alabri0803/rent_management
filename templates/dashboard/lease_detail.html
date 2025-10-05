@@ -32,8 +32,9 @@
                 <button type="submit" class="bg-green-500 text-white py-1 px-3 rounded-lg ms-2">{% trans "حفظ" %}</button>
             </form>
         </div>
-        <div><h4 class="font-bold">{% trans "إجمالي الإيجار (بدون رسوم)" %}</h4><p class="text-blue-600 font-bold">{{ lease.total_rent_without_fees|floatformat:2 }} {% trans "ر.ع" %}</p></div>
-        <div><h4 class="font-bold">{% trans "إجمالي الإيجار (مع الرسوم)" %}</h4><p class="text-green-600 font-bold">{{ lease.total_rent_with_fees|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><h4 class="font-bold">{% trans "إجمالي الإيجار السنوي" %}</h4><p class="text-blue-600 font-bold">{{ lease.annual_rent|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><h4 class="font-bold">{% trans "رسوم تسجيل العقد (بدون رسوم مكتب)" %}</h4><p class="text-purple-600 font-bold">{{ lease.registration_fee_without_office|floatformat:2 }} {% trans "ر.ع" %}</p></div>
+        <div><h4 class="font-bold">{% trans "رسوم تسجيل العقد (مع رسوم مكتب)" %}</h4><p class="text-green-600 font-bold">{{ lease.registration_fee_with_office|floatformat:2 }} {% trans "ر.ع" %}</p></div>
         <div><h4 class="font-bold">{% trans "عداد الكهرباء" %}</h4><p>{{ lease.electricity_meter|default:"-" }}</p></div>
         <div><h4 class="font-bold">{% trans "عداد المياه" %}</h4><p>{{ lease.water_meter|default:"-" }}</p></div>
         <div><a href="{% url 'report_tenant_statement' lease.pk %}" target="_blank" class="text-blue-600 hover:underline">{% trans "طباعة كشف الحساب" %} &rarr;</a></div>
