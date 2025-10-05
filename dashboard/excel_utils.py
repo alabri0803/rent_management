@@ -45,7 +45,7 @@ class ExcelExporter:
                 vertical='center',
                 wrap_text=True,
                 text_rotation=0,
-                reading_order=2
+                readingOrder=2
             )
             cell.border = self._create_border()
         
@@ -109,7 +109,7 @@ class ExcelExporter:
                 horizontal='center', 
                 vertical='center',
                 wrap_text=True,
-                reading_order=2
+                readingOrder=2
             )
             cell.border = self._create_border()
         
@@ -140,7 +140,7 @@ class ExcelExporter:
                 horizontal='center', 
                 vertical='center',
                 wrap_text=True,
-                reading_order=2
+                readingOrder=2
             )
             cell.border = self._create_border()
             
@@ -170,7 +170,7 @@ class ExcelExporter:
             value_cell.alignment = Alignment(
                 horizontal='center', 
                 vertical='center',
-                reading_order=2
+                readingOrder=2
             )
             value_cell.border = self._create_border()
         
@@ -200,7 +200,7 @@ class ExcelExporter:
                 horizontal='center', 
                 vertical='center',
                 wrap_text=True,
-                reading_order=2
+                readingOrder=2
             )
             cell.border = self._create_border()
             
@@ -215,7 +215,7 @@ class ExcelExporter:
             percentage_cell.alignment = Alignment(
                 horizontal='center', 
                 vertical='center',
-                reading_order=2
+                readingOrder=2
             )
             percentage_cell.border = self._create_border()
         
@@ -253,7 +253,7 @@ class ExcelExporter:
         title_cell.alignment = Alignment(
             horizontal='center', 
             vertical='center',
-            reading_order=2
+            readingOrder=2
         )
         title_cell.border = self._create_border()
         
