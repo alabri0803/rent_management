@@ -128,8 +128,11 @@ class ExpenseForm(forms.ModelForm):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'notes']
-        widgets = {'payment_date': forms.DateInput(attrs={'type': 'date'})}
+        fields = ['lease', 'payment_date', 'amount', 'payment_for_month', 'payment_for_year', 'payment_method', 'check_number', 'check_date', 'bank_name', 'notes']
+        widgets = {
+            'payment_date': forms.DateInput(attrs={'type': 'date'}),
+            'check_date': forms.DateInput(attrs={'type': 'date'})
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['payment_for_year'].initial = timezone.now().year

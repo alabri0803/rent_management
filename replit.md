@@ -8,6 +8,15 @@ The system manages the complete lifecycle of rental properties: from adding buil
 
 # Recent Changes
 
+## October 5, 2025
+- **Check Payment Feature**: Added comprehensive check payment support to the payment system
+  - Added payment_method field with choices: cash, check, bank_transfer, other
+  - Added check-specific fields: check_number, check_date, bank_name
+  - Updated payment form with dynamic showing/hiding of check fields based on payment method
+  - Enhanced payment list to display payment method and check number
+  - Updated payment receipt template to show complete check information when applicable
+  - Created migration (0014) for new payment fields
+
 ## October 4, 2025
 - **Currency Update**: Changed all currency references from Saudi Riyal (ر.س) to Omani Rial (ر.ع) in tenant_detail.html
 - **Database Configuration**: Updated settings.py to use SQLite for local development instead of external MySQL database

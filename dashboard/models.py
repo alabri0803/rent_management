@@ -172,11 +172,22 @@ class Lease(models.Model):
         return f"{self.contract_number} - {self.tenant.name}"
 
 class Payment(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ('cash', _('نقداً')),
+        ('check', _('شيك')),
+        ('bank_transfer', _('تحويل بنكي')),
+        ('other', _('أخرى'))
+    ]
+    
     lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments', verbose_name=_("العقد"))
     payment_date = models.DateField(_("تاريخ الدفع"))
     amount = models.DecimalField(_("المبلغ المدفوع"), max_digits=10, decimal_places=2)
     payment_for_month = models.IntegerField(_("دفعة عن شهر"), choices=[(i, _(str(i))) for i in range(1, 13)])
     payment_for_year = models.IntegerField(_("دفعة عن سنة"), default=timezone.now().year)
+    payment_method = models.CharField(_("طريقة الدفع"), max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cash')
+    check_number = models.CharField(_("رقم الشيك"), max_length=50, blank=True, null=True)
+    check_date = models.DateField(_("تاريخ الشيك"), blank=True, null=True)
+    bank_name = models.CharField(_("اسم البنك"), max_length=100, blank=True, null=True)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
     
     class Meta:

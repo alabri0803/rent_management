@@ -15,6 +15,7 @@
                 <th class="p-4">{% trans "رقم العقد" %}</th>
                 <th class="p-4">{% trans "عن شهر/سنة" %}</th>
                 <th class="p-4">{% trans "المبلغ" %}</th>
+                <th class="p-4">{% trans "طريقة الدفع" %}</th>
                 <th class="p-4">{% trans "إجراءات" %}</th>
             </tr>
         </thead>
@@ -26,6 +27,12 @@
                 <td class="p-4">{{ payment.lease.contract_number }}</td>
                 <td class="p-4">{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td>
                 <td class="p-4 font-mono">{{ payment.amount|floatformat:2 }}</td>
+                <td class="p-4">
+                    {{ payment.get_payment_method_display }}
+                    {% if payment.payment_method == 'check' and payment.check_number %}
+                    <br><span class="text-sm text-gray-600">(#{{ payment.check_number }})</span>
+                    {% endif %}
+                </td>
                 <td class="p-4 space-x-4 rtl:space-x-reverse">
                     <a href="{% url 'payment_update' payment.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a>
                     <a href="{% url 'payment_receipt' payment.pk %}" target="_blank" class="text-green-600 hover:underline">{% trans "سند قبض" %}</a>
@@ -33,7 +40,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
+            <tr><td colspan="7" class="p-6 text-center text-gray-500">{% trans "لا توجد دفعات مسجلة." %}</td></tr>
             {% endfor %}
         </tbody>
     </table>

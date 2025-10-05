@@ -53,3 +53,16 @@ webencodings
 whitenoise
 xhtml2pdf
 zopfli
+arabic-reshaper
+dj-database-url
+Django
+django-modeltranslation
+gunicorn
+Pillow
+PyMySQL
+python-bidi
+python-dateutil
+reportlab
+weasyprint
+whitenoise
+xhtml2pdf

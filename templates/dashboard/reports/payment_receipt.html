@@ -212,9 +212,26 @@
                     </div>
                     
                     <div class="detail-line">
-                        <span class="detail-label">{% trans "نقداً / شبك رقم" %}:</span>
-                        <span class="detail-value">{{ payment.payment_method|default:"________________" }}</span>
+                        <span class="detail-label">{% trans "طريقة الدفع" %}:</span>
+                        <span class="detail-value">{{ payment.get_payment_method_display|default:"________________" }}</span>
                     </div>
+                    
+                    {% if payment.payment_method == 'check' %}
+                    <div class="detail-line">
+                        <span class="detail-label">{% trans "رقم الشيك" %}:</span>
+                        <span class="detail-value">{{ payment.check_number|default:"________________" }}</span>
+                    </div>
+                    
+                    <div class="detail-line">
+                        <span class="detail-label">{% trans "تاريخ الشيك" %}:</span>
+                        <span class="detail-value">{{ payment.check_date|date:"d / m / Y"|default:"________________" }}</span>
+                    </div>
+                    
+                    <div class="detail-line">
+                        <span class="detail-label">{% trans "اسم البنك" %}:</span>
+                        <span class="detail-value">{{ payment.bank_name|default:"________________" }}</span>
+                    </div>
+                    {% endif %}
                     
                     <div class="detail-line">
                         <span class="detail-label">{% trans "على بناء" %}:</span>
@@ -263,9 +280,26 @@
                     </div>
                     
                     <div class="english-detail">
-                        <span class="english-label">Cash / Check No:</span>
-                        <span class="english-value">{{ payment.payment_method|default:"________________" }}</span>
+                        <span class="english-label">Payment Method:</span>
+                        <span class="english-value">{{ payment.get_payment_method_display|default:"________________" }}</span>
                     </div>
+                    
+                    {% if payment.payment_method == 'check' %}
+                    <div class="english-detail">
+                        <span class="english-label">Check Number:</span>
+                        <span class="english-value">{{ payment.check_number|default:"________________" }}</span>
+                    </div>
+                    
+                    <div class="english-detail">
+                        <span class="english-label">Check Date:</span>
+                        <span class="english-value">{{ payment.check_date|date:"m/d/Y"|default:"________________" }}</span>
+                    </div>
+                    
+                    <div class="english-detail">
+                        <span class="english-label">Bank Name:</span>
+                        <span class="english-value">{{ payment.bank_name|default:"________________" }}</span>
+                    </div>
+                    {% endif %}
                     
                     <div class="english-detail">
                         <span class="english-label">For Building:</span>
