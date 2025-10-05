@@ -4,7 +4,12 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-gray-800">{% trans "المباني" %}</h2>
-    <a href="{% url 'building_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مبنى جديد" %}</a>
+    <div class="flex gap-3">
+        <a href="{% url 'export_buildings_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+            📊 {% trans "تصدير Excel" %}
+        </a>
+        <a href="{% url 'building_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مبنى جديد" %}</a>
+    </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

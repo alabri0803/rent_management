@@ -2,7 +2,12 @@
 {% load i18n %}
 {% block title %}{% trans "إدارة الصيانة" %}{% endblock %}
 {% block content %}
-<h2 class="text-3xl font-bold text-gray-800 mb-6">{% trans "طلبات الصيانة" %}</h2>
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "طلبات الصيانة" %}</h2>
+    <a href="{% url 'export_maintenance_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+        📊 {% trans "تصدير Excel" %}
+    </a>
+</div>
 <div class="card overflow-hidden">
     <table class="w-full text-start">
         <thead class="bg-gray-50 border-b">

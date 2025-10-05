@@ -4,7 +4,12 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-gray-800">{% trans "العقود" %}</h2>
-    <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة عقد جديد" %}</a>
+    <div class="flex gap-3">
+        <a href="{% url 'export_leases_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+            📊 {% trans "تصدير Excel" %}
+        </a>
+        <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة عقد جديد" %}</a>
+    </div>
 </div>
 <div class="card overflow-hidden">
     <div class="p-4"><form method="get"><input type="text" name="q" placeholder="{% trans 'ابحث عن عقد...' %}" class="w-full p-2 border rounded-md"></form></div>
