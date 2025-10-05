@@ -9,6 +9,8 @@ from .views import (
     MaintenanceRequestAdminListView, MaintenanceRequestAdminUpdateView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
     PaymentListView, PaymentCreateView, PaymentUpdateView, PaymentDeleteView, PaymentReceiptPDFView,
+    CheckManagementView, CheckStatusUpdateView,
+    UserManagementView, UserCreateView, UserUpdateView, UserDeleteView,
     ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GenerateAnnualPLReportPDF, GenerateOccupancyReportPDF, GeneratePaymentReceiptPDF,
     CompanyUpdateView, UpdateTenantRatingView,
 )
@@ -71,6 +73,16 @@ urlpatterns = [
     path('payments/<int:pk>/edit/', PaymentUpdateView.as_view(), name='payment_update'),
     path('payments/<int:pk>/delete/', PaymentDeleteView.as_view(), name='payment_delete'), # ADDED
     path('payments/<int:pk>/receipt/', PaymentReceiptPDFView.as_view(), name='payment_receipt'),
+    
+    # Check Management
+    path('checks/', CheckManagementView.as_view(), name='check_management'),
+    path('checks/<int:pk>/update-status/', CheckStatusUpdateView.as_view(), name='check_status_update'),
+    
+    # User Management
+    path('users/', UserManagementView.as_view(), name='user_management'),
+    path('users/new/', UserCreateView.as_view(), name='user_create'),
+    path('users/<int:pk>/edit/', UserUpdateView.as_view(), name='user_update'),
+    path('users/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
 
     # Reports
     path('reports/', ReportSelectionView.as_view(), name='report_selection'),

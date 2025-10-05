@@ -1,0 +1,68 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card max-w-2xl mx-auto p-8">
+    <h2 class="text-2xl font-bold mb-6">{{ title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="space-y-4">
+            <div>
+                <label for="id_username" class="block text-gray-700 font-medium mb-2">{{ form.username.label }}</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="id_first_name" class="block text-gray-700 font-medium mb-2">{{ form.first_name.label }}</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.first_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="id_last_name" class="block text-gray-700 font-medium mb-2">{{ form.last_name.label }}</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.last_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="id_email" class="block text-gray-700 font-medium mb-2">{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="id_password" class="block text-gray-700 font-medium mb-2">{{ form.password.label }}</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex gap-6">
+                <div class="flex items-center">
+                    {{ form.is_staff }}
+                    <label for="id_is_staff" class="mr-2 text-gray-700">{{ form.is_staff.label }}</label>
+                </div>
+                
+                <div class="flex items-center">
+                    {{ form.is_active }}
+                    <label for="id_is_active" class="mr-2 text-gray-700">{{ form.is_active.label }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4 mt-6">
+            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "حفظ" %}</button>
+            <a href="{% url 'user_management' %}" class="btn-secondary py-2 px-6 rounded-lg">{% trans "إلغاء" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

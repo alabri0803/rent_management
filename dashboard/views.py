@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -14,6 +16,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from django.utils.translation import gettext as _
 from django.conf import settings
+from django import forms
 import json
 
 from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
@@ -583,6 +586,128 @@ class PaymentReceiptPDFView(View):
             template = get_template(template_path)
             html = template.render(context)
             return HttpResponse(f"PDF Error: {str(e)}<hr>{html}")
+
+# --- Check Management ---
+class CheckManagementView(StaffRequiredMixin, ListView):
+    model = Payment
+    template_name = 'dashboard/check_management.html'
+    context_object_name = 'checks'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        queryset = Payment.objects.filter(payment_method='check').select_related('lease__tenant', 'lease__unit')
+        
+        status_filter = self.request.GET.get('status')
+        if status_filter:
+            queryset = queryset.filter(check_status=status_filter)
+        
+        return queryset.order_by('-payment_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_filter'] = self.request.GET.get('status', '')
+        
+        context['pending_count'] = Payment.objects.filter(payment_method='check', check_status='pending').count()
+        context['cashed_count'] = Payment.objects.filter(payment_method='check', check_status='cashed').count()
+        context['returned_count'] = Payment.objects.filter(payment_method='check', check_status='returned').count()
+        context['total_count'] = Payment.objects.filter(payment_method='check').count()
+        
+        return context
+
+class CheckStatusUpdateView(StaffRequiredMixin, UpdateView):
+    model = Payment
+    fields = ['check_status', 'return_reason']
+    template_name = 'dashboard/check_status_form.html'
+    success_url = reverse_lazy('check_management')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تحديث حالة الشيك")
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث حالة الشيك بنجاح."))
+        return super().form_valid(form)
+
+# --- User Management ---
+class UserManagementForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(), required=False, label=_("كلمة المرور"))
+    is_staff = forms.BooleanField(required=False, label=_("موظف"))
+    is_active = forms.BooleanField(required=False, initial=True, label=_("نشط"))
+    
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active']
+        labels = {
+            'username': _('اسم المستخدم'),
+            'first_name': _('الاسم الأول'),
+            'last_name': _('اسم العائلة'),
+            'email': _('البريد الإلكتروني'),
+        }
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data.get('password')
+        if password:
+            user.set_password(password)
+        if commit:
+            user.save()
+        return user
+
+class UserManagementView(StaffRequiredMixin, ListView):
+    model = User
+    template_name = 'dashboard/user_management.html'
+    context_object_name = 'users'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        return User.objects.all().order_by('-date_joined')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_users'] = User.objects.count()
+        context['staff_users'] = User.objects.filter(is_staff=True).count()
+        context['active_users'] = User.objects.filter(is_active=True).count()
+        return context
+
+class UserCreateView(StaffRequiredMixin, CreateView):
+    model = User
+    form_class = UserManagementForm
+    template_name = 'dashboard/user_form.html'
+    success_url = reverse_lazy('user_management')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("إضافة مستخدم جديد")
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, _("تم إنشاء المستخدم بنجاح."))
+        return super().form_valid(form)
+
+class UserUpdateView(StaffRequiredMixin, UpdateView):
+    model = User
+    form_class = UserManagementForm
+    template_name = 'dashboard/user_form.html'
+    success_url = reverse_lazy('user_management')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _("تعديل المستخدم")
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, _("تم تحديث المستخدم بنجاح."))
+        return super().form_valid(form)
+
+class UserDeleteView(StaffRequiredMixin, DeleteView):
+    model = User
+    template_name = 'dashboard/user_confirm_delete.html'
+    success_url = reverse_lazy('user_management')
+    
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف المستخدم بنجاح."))
+        return super().form_valid(form)
 
 # --- Reports ---
 class ReportSelectionView(StaffRequiredMixin, View):

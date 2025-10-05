@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card max-w-2xl mx-auto p-8">
+    <h2 class="text-2xl font-bold mb-6">{{ title }}</h2>
+    
+    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <h3 class="font-semibold text-blue-900 mb-2">{% trans "معلومات الشيك" %}</h3>
+        <div class="text-sm text-blue-800 space-y-1">
+            <p><strong>{% trans "رقم الشيك" %}:</strong> #{{ object.check_number }}</p>
+            <p><strong>{% trans "المستأجر" %}:</strong> {{ object.lease.tenant.name }}</p>
+            <p><strong>{% trans "المبلغ" %}:</strong> {{ object.amount|floatformat:2 }} ر.ع</p>
+            <p><strong>{% trans "البنك" %}:</strong> {{ object.bank_name }}</p>
+            <p><strong>{% trans "تاريخ الشيك" %}:</strong> {{ object.check_date|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="space-y-4">
+            <div>
+                <label for="id_check_status" class="block text-gray-700 font-medium mb-2">{{ form.check_status.label }}</label>
+                {{ form.check_status }}
+                {% if form.check_status.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.check_status.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div id="return-reason-field" {% if object.check_status != 'returned' %}style="display: none;"{% endif %}>
+                <label for="id_return_reason" class="block text-gray-700 font-medium mb-2">{{ form.return_reason.label }}</label>
+                {{ form.return_reason }}
+                {% if form.return_reason.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.return_reason.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="flex gap-4 mt-6">
+            <button type="submit" class="btn-primary py-2 px-6 rounded-lg">{% trans "حفظ التغييرات" %}</button>
+            <a href="{% url 'check_management' %}" class="btn-secondary py-2 px-6 rounded-lg">{% trans "إلغاء" %}</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkStatusField = document.getElementById('id_check_status');
+    const returnReasonField = document.getElementById('return-reason-field');
+    
+    function toggleReturnReasonField() {
+        if (checkStatusField && checkStatusField.value === 'returned') {
+            returnReasonField.style.display = 'block';
+        } else {
+            returnReasonField.style.display = 'none';
+        }
+    }
+    
+    if (checkStatusField) {
+        checkStatusField.addEventListener('change', toggleReturnReasonField);
+    }
+});
+</script>
+{% endblock %}

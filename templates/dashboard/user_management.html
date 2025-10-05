@@ -1,0 +1,112 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "إدارة المستخدمين" %}{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "إدارة المستخدمين" %}</h2>
+    <a href="{% url 'user_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مستخدم جديد" %}</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="card text-center p-4">
+        <div class="text-3xl font-bold text-blue-600">{{ total_users }}</div>
+        <div class="text-gray-600 mt-2">{% trans "إجمالي المستخدمين" %}</div>
+    </div>
+    
+    <div class="card text-center p-4">
+        <div class="text-3xl font-bold text-green-600">{{ staff_users }}</div>
+        <div class="text-gray-600 mt-2">{% trans "الموظفين" %}</div>
+    </div>
+    
+    <div class="card text-center p-4">
+        <div class="text-3xl font-bold text-purple-600">{{ active_users }}</div>
+        <div class="text-gray-600 mt-2">{% trans "المستخدمين النشطين" %}</div>
+    </div>
+</div>
+
+<div class="card overflow-hidden">
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="p-4">{% trans "اسم المستخدم" %}</th>
+                <th class="p-4">{% trans "الاسم الكامل" %}</th>
+                <th class="p-4">{% trans "البريد الإلكتروني" %}</th>
+                <th class="p-4">{% trans "النوع" %}</th>
+                <th class="p-4">{% trans "الحالة" %}</th>
+                <th class="p-4">{% trans "تاريخ الانضمام" %}</th>
+                <th class="p-4">{% trans "إجراءات" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4 font-semibold">{{ user.username }}</td>
+                <td class="p-4">{{ user.get_full_name|default:"-" }}</td>
+                <td class="p-4">{{ user.email|default:"-" }}</td>
+                <td class="p-4">
+                    {% if user.is_superuser %}
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-red-100 text-red-800">
+                            {% trans "مدير النظام" %}
+                        </span>
+                    {% elif user.is_staff %}
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
+                            {% trans "موظف" %}
+                        </span>
+                    {% else %}
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">
+                            {% trans "مستأجر" %}
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="p-4">
+                    {% if user.is_active %}
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
+                            {% trans "نشط" %}
+                        </span>
+                    {% else %}
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-800">
+                            {% trans "معطل" %}
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="p-4">{{ user.date_joined|date:"d/m/Y" }}</td>
+                <td class="p-4 space-x-2 rtl:space-x-reverse">
+                    <a href="{% url 'user_update' user.pk %}" class="text-blue-600 hover:underline">
+                        {% trans "تعديل" %}
+                    </a>
+                    {% if not user.is_superuser %}
+                    <a href="{% url 'user_delete' user.pk %}" class="text-red-600 hover:underline">
+                        {% trans "حذف" %}
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="p-6 text-center text-gray-500">
+                    {% trans "لا يوجد مستخدمين" %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<div class="flex justify-center mt-6">
+    <nav class="flex gap-2">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="px-3 py-2 border rounded hover:bg-gray-50">{% trans "الأولى" %}</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 border rounded hover:bg-gray-50">{% trans "السابقة" %}</a>
+        {% endif %}
+        
+        <span class="px-3 py-2">{% trans "صفحة" %} {{ page_obj.number }} {% trans "من" %} {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 border rounded hover:bg-gray-50">{% trans "التالية" %}</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-2 border rounded hover:bg-gray-50">{% trans "الأخيرة" %}</a>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+{% endblock %}
