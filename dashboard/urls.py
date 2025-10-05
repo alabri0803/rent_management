@@ -14,6 +14,15 @@ from .views import (
     ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GenerateAnnualPLReportPDF, GenerateOccupancyReportPDF, GeneratePaymentReceiptPDF,
     CompanyUpdateView, UpdateTenantRatingView,
 )
+from .export_views import (
+    export_tenants_excel,
+    export_leases_excel,
+    export_payments_excel,
+    export_expenses_excel,
+    export_buildings_excel,
+    export_units_excel,
+    export_maintenance_excel,
+)
 
 urlpatterns = [
     path('', DashboardHomeView.as_view(), name='dashboard_home'),
@@ -91,4 +100,13 @@ urlpatterns = [
     path('reports/monthly-pl/', GenerateMonthlyPLReportPDF.as_view(), name='report_monthly_pl'),
     path('reports/annual-pl/', GenerateAnnualPLReportPDF.as_view(), name='report_annual_pl'), # ADDED
     path('reports/occupancy/', GenerateOccupancyReportPDF.as_view(), name='report_occupancy'), # ADDED
+    
+    # Excel Exports
+    path('export/tenants/', export_tenants_excel, name='export_tenants_excel'),
+    path('export/leases/', export_leases_excel, name='export_leases_excel'),
+    path('export/payments/', export_payments_excel, name='export_payments_excel'),
+    path('export/expenses/', export_expenses_excel, name='export_expenses_excel'),
+    path('export/buildings/', export_buildings_excel, name='export_buildings_excel'),
+    path('export/units/', export_units_excel, name='export_units_excel'),
+    path('export/maintenance/', export_maintenance_excel, name='export_maintenance_excel'),
 ]
