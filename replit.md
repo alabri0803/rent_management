@@ -9,6 +9,16 @@ The system manages the complete lifecycle of rental properties: from adding buil
 # Recent Changes
 
 ## October 5, 2025
+- **Automatic Translation System**: Implemented automatic Arabic to English translation for database content
+  - When content is entered in Arabic, the system automatically translates it to English
+  - Translation applies to: Building (name, address), Tenant (name, authorized_signatory), Expense (description)
+  - Created `auto_translate_to_english()` utility function using deep-translator library
+  - Added pre_save signals to automatically translate fields when saving models
+  - Created `dashboard/translation.py` to configure django-modeltranslation
+  - Applied migration 0015 to add _ar and _en fields to models
+  - Translation is triggered only when English field is empty and Arabic field has content
+  - Users can view content in their preferred language based on browser settings
+
 - **Enhanced Lease Financial Display**: Updated lease detail page to show clearer registration fee breakdown
   - Added "إجمالي الإيجار السنوي" (Annual Rent Total) - shows monthly rent × 12
   - Added "رسوم تسجيل العقد (بدون رسوم مكتب)" (Registration Fee without Office Fees) - shows registration fee only (3% of annual rent)

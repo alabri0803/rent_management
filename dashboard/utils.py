@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from django.utils.translation import gettext as _
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 # الدالة الرئيسية لتوليد PDF
 def generate_pdf_receipt(template_path: str, context: dict) -> HttpResponse:
@@ -60,3 +63,20 @@ def render_to_pdf(template_path: str, context: dict) -> HttpResponse:
         template = get_template(template_path)
         html = template.render(context)
         return HttpResponse(f"Error generating PDF: {str(e)}<hr>{html}")
+
+
+def auto_translate_to_english(arabic_text):
+    """
+    ترجمة تلقائية من العربية إلى الإنجليزية
+    """
+    if not arabic_text or not arabic_text.strip():
+        return ""
+    
+    try:
+        from deep_translator import GoogleTranslator
+        translator = GoogleTranslator(source='ar', target='en')
+        translation = translator.translate(arabic_text)
+        return translation
+    except Exception as e:
+        logger.error(f"Translation error: {str(e)}")
+        return arabic_text

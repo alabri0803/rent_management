@@ -121,3 +121,4 @@ webencodings
 whitenoise
 xhtml2pdf
 zopfli
+deep-translator
