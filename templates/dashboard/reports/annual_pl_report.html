@@ -32,8 +32,12 @@
         <tfoot><tr><td colspan="2">{% trans "إجمالي المصاريف" %}</td><td>{{ total_expenses|floatformat:2 }} {% trans "ر.ع" %}</td></tr></tfoot>
     </table>
 
-    <div class="summary">
-        {% trans "صافي الربح السنوي" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}
+    <div class="summary" style="{% if net_profit < 0 %}background-color: #fee2e2; color: #991b1b;{% else %}background-color: #d1fae5; color: #065f46;{% endif %}">
+        {% if net_profit < 0 %}
+            {% trans "توجد لديك خسارة" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}
+        {% else %}
+            {% trans "أرباح" %}: {{ net_profit|floatformat:2 }} {% trans "ر.ع" %}
+        {% endif %}
     </div>
 </body>
 </html>

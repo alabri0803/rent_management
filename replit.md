@@ -9,6 +9,35 @@ The system manages the complete lifecycle of rental properties: from adding buil
 # Recent Changes
 
 ## October 5, 2025
+- **Lease Expiry Tracking**: Added days until expiry display in lease list
+  - Shows remaining days until contract expiration with color coding
+  - Red for expired, orange for < 30 days, green for > 30 days
+
+- **Expiring Leases Alerts**: Implemented alert system on dashboard home page
+  - Shows top 5 expiring leases with days remaining
+  - Auto-displays when leases are expiring soon
+  
+- **Contract Financial Details**: Enhanced lease detail page
+  - Added total rent without office fees calculation
+  - Added total rent with office fees calculation
+  - Both values prominently displayed
+
+- **Enhanced Payment Summary**: Improved payment status display
+  - Shows payment method for each month
+  - Displays payment date when available
+  - Shows next payment date for unpaid amounts
+  - Clear status badges: "تم الدفع" (Paid), "دفع جزئي" (Partial), "لم يدفع" (Not Paid)
+
+- **Automatic Notifications System**: Created management command for automated alerts
+  - Late payment warning: Sends notification after 3 months of non-payment
+  - Lease renewal reminder: Sends notification 1 month before expiry
+  - Command: `python manage.py send_lease_notifications`
+
+- **Profit/Loss Report Enhancement**: Updated P&L reports with clear status indication
+  - Shows "أرباح" (Profit) in green background for positive values
+  - Shows "توجد لديك خسارة" (You have a loss) in red background for negative values
+  - Applied to both monthly and annual reports
+
 - **Custom Login Redirect**: Implemented custom login view that redirects users based on their role
   - Staff users (admin/employees) are redirected to dashboard home page
   - Tenant users are redirected to tenant portal dashboard

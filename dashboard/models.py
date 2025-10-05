@@ -131,6 +131,21 @@ class Lease(models.Model):
         if self.status == 'expiring_soon': return 'expiring'
         if self.status == 'expired': return 'expired'
         return 'cancelled'
+    
+    def days_until_expiry(self):
+        today = timezone.now().date()
+        if self.status == 'cancelled':
+            return None
+        delta = self.end_date - today
+        return delta.days
+    
+    def total_rent_without_fees(self):
+        months = (self.end_date.year - self.start_date.year) * 12 + (self.end_date.month - self.start_date.month) + 1
+        return self.monthly_rent * months
+    
+    def total_rent_with_fees(self):
+        return self.total_rent_without_fees() + self.office_fee + self.admin_fee + (self.registration_fee or 0)
+    
     def get_absolute_url(self):
         return reverse('lease_detail', kwargs={'pk': self.pk})
 
@@ -140,9 +155,18 @@ class Lease(models.Model):
         current_date = self.start_date
         while current_date <= self.end_date:
             year, month = current_date.year, current_date.month
-            paid_for_month = payments.filter(payment_for_year=year, payment_for_month=month).aggregate(total=Sum('amount'))['total'] or 0
+            month_payments = payments.filter(payment_for_year=year, payment_for_month=month)
+            paid_for_month = month_payments.aggregate(total=Sum('amount'))['total'] or 0
             balance = self.monthly_rent - paid_for_month
             status = 'due'
+            payment_method = None
+            payment_date = None
+            
+            if month_payments.exists():
+                latest_payment = month_payments.first()
+                payment_method = latest_payment.get_payment_method_display()
+                payment_date = latest_payment.payment_date
+            
             if paid_for_month >= self.monthly_rent:
                 status = 'paid'
             elif paid_for_month > 0:
@@ -152,6 +176,8 @@ class Lease(models.Model):
             due_date = datetime.date(year, month, 1)
             if due_date < today and status != 'due':
                 status = 'upcoming'
+            
+            next_payment_date = datetime.date(year, month, 1) + relativedelta(months=1)
 
             summary.append({
                 'month': month,
@@ -160,7 +186,10 @@ class Lease(models.Model):
                 'rent_due': self.monthly_rent,
                 'amount_paid': paid_for_month,
                 'balance': balance,
-                'status': status
+                'status': status,
+                'payment_method': payment_method,
+                'payment_date': payment_date,
+                'next_payment_date': next_payment_date
             })
             current_date += relativedelta(months=1)
         return summary

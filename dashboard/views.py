@@ -92,6 +92,13 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
             })
         context['calendar_events'] = json.dumps(calendar_events)
 
+        # Alerts for expiring leases
+        expiring_soon = Lease.objects.filter(
+            status='expiring_soon',
+            end_date__gte=today.date()
+        ).order_by('end_date')[:5]
+        context['expiring_leases'] = expiring_soon
+
         return context
 
 # --- Units Management ---
