@@ -919,12 +919,32 @@ def export_comprehensive_pdf_report(request):
     )
     
     # محاولة إضافة شعار الشركة
+    logo_found = False
     try:
+        # محاولة 1: من نموذج Company
         company = Company.objects.first()
         if company and company.logo:
             pdf.set_logo(company.logo.path)
+            logo_found = True
     except:
         pass
+    
+    # محاولة 2: من مسارات افتراضية
+    if not logo_found:
+        possible_paths = [
+            'static/images/logo.png',
+            'static/images/company_logo.png',
+            'media/company_logo.png',
+            'static/logo.png',
+        ]
+        import os
+        from django.conf import settings
+        
+        for path in possible_paths:
+            full_path = os.path.join(settings.BASE_DIR, path)
+            if os.path.exists(full_path):
+                pdf.set_logo(full_path)
+                break
     
     # إضافة الترويسة
     pdf.add_header(include_logo=True)
