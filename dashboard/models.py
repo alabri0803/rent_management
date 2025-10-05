@@ -217,6 +217,12 @@ class Payment(models.Model):
         ('other', _('أخرى'))
     ]
     
+    CHECK_STATUS_CHOICES = [
+        ('pending', _('معلق - في الانتظار')),
+        ('cashed', _('تم الصرف')),
+        ('returned', _('مرتجع'))
+    ]
+    
     lease = models.ForeignKey(Lease, on_delete=models.CASCADE, related_name='payments', verbose_name=_("العقد"))
     payment_date = models.DateField(_("تاريخ الدفع"))
     amount = models.DecimalField(_("المبلغ المدفوع"), max_digits=10, decimal_places=2)
@@ -226,6 +232,8 @@ class Payment(models.Model):
     check_number = models.CharField(_("رقم الشيك"), max_length=50, blank=True, null=True)
     check_date = models.DateField(_("تاريخ الشيك"), blank=True, null=True)
     bank_name = models.CharField(_("اسم البنك"), max_length=100, blank=True, null=True)
+    check_status = models.CharField(_("حالة الشيك"), max_length=20, choices=CHECK_STATUS_CHOICES, blank=True, null=True)
+    return_reason = models.TextField(_("سبب إرجاع الشيك"), blank=True, null=True)
     notes = models.TextField(_("ملاحظات"), blank=True, null=True)
     
     class Meta:
