@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load dashboard_extras %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}" class="{% if LANGUAGE_CODE == 'ar' %}lang-ar{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -12,7 +12,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
         body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
         :root { --primary-color: #993333; --secondary-color: #D4AF37; } 
-        .sidebar { background-color: #1a202c; transition: transform 0.3s ease-in-out; } 
+        .sidebar { background-color: #1a202c; transition: transform 0.3s ease-in-out; transform: translateX(-100%); left: 0; right: auto; } 
+        .lang-ar .sidebar { transform: translateX(100%); left: auto; right: 0; }
         .sidebar nav a { color: #a0aec0; transition: all 0.2s; min-height: 44px; display: flex; align-items: center; } 
         .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
         .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
@@ -28,10 +29,11 @@
             .sidebar { 
                 position: fixed; 
                 top: 0; 
-                {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %}: 0; 
+                left: 0;
+                right: auto;
                 height: 100vh; 
                 z-index: 50; 
-                transform: translate{% if LANGUAGE_CODE == 'ar' %}X(100%){% else %}X(-100%){% endif %}; 
+                /* Remove dynamic transform from CSS, will set inline below */
             }
             .sidebar.open { transform: translateX(0); }
             .overlay { 
@@ -63,8 +65,8 @@
     </svg>
 </button>
 
-<div class="flex h-screen overflow-hidden">
 <aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col overflow-y-auto" id="sidebar">
+    style="{% if LANGUAGE_CODE == 'ar' %}transform: translateX(100%); left: auto; right: 0;{% else %}transform: translateX(-100%); left: 0; right: auto;{% endif %}">
     <button onclick="toggleMenu()" class="md:hidden absolute top-4 {% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}-4 text-white">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
