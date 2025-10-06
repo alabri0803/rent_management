@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'rent_management',
         'USER': 'AdminAlabrialabr',
         'PASSWORD': 'Alabri@@@99',
-        'PORT': '3306',
+        #'PORT': '3306',
         'HOST': 'AdminAlabrialabri.mysql.pythonanywhere-services.com
 ',
     }
