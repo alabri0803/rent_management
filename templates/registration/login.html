@@ -13,6 +13,15 @@
         @media (max-width: 640px) {
             body { font-size: 16px; }
         }
+
+        /* أيقونات داخل الحقول + دعم RTL */
+        .icon-input { padding-left: 3rem; padding-right: .75rem; }
+        [dir="rtl"] .icon-input { padding-right: 3rem; padding-left: .75rem; }
+
+        .input-icon { left: .75rem; }
+        [dir="rtl"] .input-icon { right: .75rem; left: auto; }
+
+        .input-icon svg { width: 1.1rem; height: 1.1rem; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -25,12 +34,38 @@
             {% csrf_token %}
             <div class="mb-4">
                 <label for="id_username" class="block mb-2 text-sm md:text-base font-medium">{% trans "اسم المستخدم" %}</label>
-                <input type="text" name="username" id="id_username" autocomplete="username" required class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
+
+                <div class="relative">
+                    <span class="input-icon absolute inset-y-0 flex items-center pointer-events-none text-gray-400">
+                        <!-- user icon (Heroicons - outline) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.12 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </span>
+
+                    <input type="text" name="username" id="id_username" autocomplete="username" required
+                           class="icon-input w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
+                </div>
             </div>
+
             <div class="mb-6">
                 <label for="id_password" class="block mb-2 text-sm md:text-base font-medium">{% trans "كلمة المرور" %}</label>
-                <input type="password" name="password" id="id_password" autocomplete="current-password" required class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
+
+                <div class="relative">
+                    <span class="input-icon absolute inset-y-0 flex items-center pointer-events-none text-gray-400">
+                        <!-- lock icon (Heroicons - outline) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 11c.966 0 1.75.784 1.75 1.75V15a1.75 1.75 0 11-3.5 0v-2.25C10.25 11.784 11.034 11 12 11z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 11V9a5 5 0 1110 0v2" />
+                            <rect x="5" y="11" width="14" height="9" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"/>
+                        </svg>
+                    </span>
+
+                    <input type="password" name="password" id="id_password" autocomplete="current-password" required
+                           class="icon-input w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-[#993333] focus:border-transparent">
+                </div>
             </div>
+
             <button type="submit" class="w-full bg-[#993333] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#7c2a2a] transition-colors text-base md:text-lg">{% trans "دخول" %}</button>
         </form>
     </div>
