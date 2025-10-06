@@ -29,11 +29,11 @@ urlpatterns = [
 
 # Language-prefixed URLs
 urlpatterns += i18n_patterns(
-    path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('', CustomLoginView.as_view(), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('', include('portal.urls')), # Portal is the homepage
+    path('portal/', include('portal.urls')), # Portal is the homepage
     prefix_default_language=True # Don't prefix the default language (ar)
 )
 
