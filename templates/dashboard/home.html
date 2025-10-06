@@ -1,89 +1,186 @@
-    {% extends 'dashboard/base.html' %}
-    {% load i18n %}
-    {% block title %}{% trans "لوحة المعلومات الرئيسية" %}{% endblock %}
-    {% block content %}
-    
-    {% if expiring_leases %}
-    <div class="bg-orange-50 border-r-4 border-orange-500 p-4 mb-6 rounded-lg">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "لوحة المعلومات الرئيسية" %}{% endblock %}
+{% block content %}
+
+{% if expiring_leases %}
+<div class="bg-orange-50 border-r-4 border-orange-500 p-4 mb-6 rounded-lg">
+    <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <svg class="h-5 w-5 md:h-6 md:w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <div class="mr-3 flex-1">
+            <h3 class="text-base md:text-lg font-bold text-orange-800">{% trans "تنبيه: عقود قريبة من الانتهاء" %}</h3>
+            <div class="mt-2 text-xs md:text-sm text-orange-700">
+                <ul class="list-disc list-inside space-y-1">
+                    {% for lease in expiring_leases %}
+                    <li>
+                        <a href="{{ lease.get_absolute_url }}" class="font-semibold hover:underline">
+                            {% trans "عقد" %} {{ lease.contract_number }} - {{ lease.tenant.name }}
+                        </a>
+                        {% trans "ينتهي بعد" %} <span class="font-bold">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
+                        ({{ lease.end_date|date:"d/m/Y" }})
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="mr-3 flex-1">
-                <h3 class="text-lg font-bold text-orange-800">{% trans "تنبيه: عقود قريبة من الانتهاء" %}</h3>
-                <div class="mt-2 text-sm text-orange-700">
-                    <ul class="list-disc list-inside space-y-1">
-                        {% for lease in expiring_leases %}
-                        <li>
-                            <a href="{{ lease.get_absolute_url }}" class="font-semibold hover:underline">
-                                {% trans "عقد" %} {{ lease.contract_number }} - {{ lease.tenant.name }}
-                            </a>
-                            {% trans "ينتهي بعد" %} <span class="font-bold">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
-                            ({{ lease.end_date|date:"d/m/Y" }})
-                        </li>
-                        {% endfor %}
-                    </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+    <div class="card p-4 md:p-5">
+        <h3 class="text-gray-500 text-xs md:text-sm font-medium">{% trans "العقود النشطة" %}</h3>
+        <p class="text-2xl md:text-3xl font-bold text-gray-800 mt-2">{{ stats.active_count }}</p>
+    </div>
+    <div class="card p-4 md:p-5">
+        <h3 class="text-gray-500 text-xs md:text-sm font-medium">{% trans "الدخل الشهري المتوقع" %}</h3>
+        <p class="text-2xl md:text-3xl font-bold text-blue-600 mt-2">{{ stats.expected_monthly_income|floatformat:2 }} <span class="text-sm md:text-lg">{% trans "ر.ع" %}</span></p>
+    </div>
+    <div class="card p-4 md:p-5">
+        <h3 class="text-gray-500 text-xs md:text-sm font-medium">{% trans "مصاريف هذا الشهر" %}</h3>
+        <p class="text-2xl md:text-3xl font-bold text-red-500 mt-2">{{ stats.monthly_expenses|floatformat:2 }} <span class="text-sm md:text-lg">{% trans "ر.ع" %}</span></p>
+    </div>
+    <div class="card p-4 md:p-5 bg-green-50">
+        <h3 class="text-green-800 text-xs md:text-sm font-medium">{% trans "صافي الدخل الشهري" %}</h3>
+        <p class="text-2xl md:text-3xl font-bold text-green-600 mt-2">{{ stats.net_income|floatformat:2 }} <span class="text-sm md:text-lg">{% trans "ر.ع" %}</span></p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+    <div class="lg:col-span-2 space-y-6 md:space-y-8">
+        <div class="card p-4 md:p-6">
+            <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "تقويم تجديد العقود" %}</h3>
+            <div id="calendar" class="text-sm"></div>
+        </div>
+        <div class="card p-4 md:p-6">
+            <h3 class="text-lg md:text-xl font-bold mb-4">{% trans "اتجاه الإيرادات مقابل المصاريف (آخر 12 شهر)" %}</h3>
+            <div class="h-64 md:h-auto">
+                <canvas id="financialTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-1 space-y-6">
+        <div>
+            <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">{% trans "إشغال الوحدات" %}</h3>
+            <div class="card p-4 md:p-6">
+                <div class="h-64">
+                    <canvas id="occupancyChart"></canvas>
                 </div>
             </div>
         </div>
-    </div>
-    {% endif %}
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="card p-5"><h3 class="text-gray-500 text-sm font-medium">{% trans "العقود النشطة" %}</h3><p class="text-3xl font-bold text-gray-800 mt-2">{{ stats.active_count }}</p></div>
-        <div class="card p-5"><h3 class="text-gray-500 text-sm font-medium">{% trans "الدخل الشهري المتوقع" %}</h3><p class="text-3xl font-bold text-blue-600 mt-2">{{ stats.expected_monthly_income|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
-        <div class="card p-5"><h3 class="text-gray-500 text-sm font-medium">{% trans "مصاريف هذا الشهر" %}</h3><p class="text-3xl font-bold text-red-500 mt-2">{{ stats.monthly_expenses|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
-        <div class="card p-5 bg-green-50"><h3 class="text-green-800 text-sm font-medium">{% trans "صافي الدخل الشهري" %}</h3><p class="text-3xl font-bold text-green-600 mt-2">{{ stats.net_income|floatformat:2 }} <span class="text-lg">{% trans "ر.ع" %}</span></p></div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-8">
-            <div class="card p-6">
-                <h3 class="text-xl font-bold mb-4">{% trans "تقويم تجديد العقود" %}</h3>
-                <div id="calendar"></div>
-            </div>
-            <div class="card p-6"><h3 class="text-xl font-bold mb-4">{% trans "اتجاه الإيرادات مقابل المصاريف (آخر 12 شهر)" %}</h3><canvas id="financialTrendChart"></canvas></div>
-        </div>
-        <div class="lg:col-span-1 space-y-6">
-            <div>
-                <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "إشغال الوحدات" %}</h3>
-                <div class="card p-6"><canvas id="occupancyChart"></canvas></div>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold text-gray-800 mb-4">{% trans "آخر الحركات المالية" %}</h3>
-                <div class="card p-6">
-                    <h4 class="font-bold mb-3">{% trans "آخر الدفعات" %}</h4>
-                    <ul>{% for payment in recent_payments %}<li class="flex justify-between items-center py-2 border-b"><p>{{ payment.lease.tenant.name }} - <span class="font-mono text-green-600">{{ payment.amount|floatformat:2 }}</span></p><span class="text-sm text-gray-500">{{ payment.payment_date|date:"d M" }}</span></li>{% empty %}<p class="text-gray-500">{% trans "لا توجد دفعات." %}</p>{% endfor %}</ul>
-                    <h4 class="font-bold mb-3 mt-4">{% trans "آخر المصاريف" %}</h4>
-                    <ul>{% for expense in recent_expenses %}<li class="flex justify-between items-center py-2 border-b"><p>{{ expense.description }} - <span class="font-mono text-red-600">{{ expense.amount|floatformat:2 }}</span></p><span class="text-sm text-gray-500">{{ expense.expense_date|date:"d M" }}</span></li>{% empty %}<p class="text-gray-500">{% trans "لا توجد مصاريف." %}</p>{% endfor %}</ul>
-                </div>
+        
+        <div>
+            <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">{% trans "آخر الحركات المالية" %}</h3>
+            <div class="card p-4 md:p-6">
+                <h4 class="font-bold mb-3 text-sm md:text-base">{% trans "آخر الدفعات" %}</h4>
+                <ul class="space-y-2">
+                    {% for payment in recent_payments %}
+                    <li class="flex justify-between items-center py-2 border-b text-xs md:text-sm">
+                        <p class="flex-1">{{ payment.lease.tenant.name }} - <span class="font-mono text-green-600">{{ payment.amount|floatformat:2 }}</span></p>
+                        <span class="text-xs text-gray-500 whitespace-nowrap ml-2">{{ payment.payment_date|date:"d M" }}</span>
+                    </li>
+                    {% empty %}
+                    <p class="text-gray-500 text-sm">{% trans "لا توجد دفعات." %}</p>
+                    {% endfor %}
+                </ul>
+                
+                <h4 class="font-bold mb-3 mt-4 text-sm md:text-base">{% trans "آخر المصاريف" %}</h4>
+                <ul class="space-y-2">
+                    {% for expense in recent_expenses %}
+                    <li class="flex justify-between items-center py-2 border-b text-xs md:text-sm">
+                        <p class="flex-1">{{ expense.description }} - <span class="font-mono text-red-600">{{ expense.amount|floatformat:2 }}</span></p>
+                        <span class="text-xs text-gray-500 whitespace-nowrap ml-2">{{ expense.expense_date|date:"d M" }}</span>
+                    </li>
+                    {% empty %}
+                    <p class="text-gray-500 text-sm">{% trans "لا توجد مصاريف." %}</p>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
-    <script>
-        // Financial Trend Chart
-        new Chart(document.getElementById('financialTrendChart'), { type: 'line', data: { labels: {{ trend_chart.labels|safe }}, datasets: [{ label: '{% trans "الإيرادات" %}', data: {{ trend_chart.income_data|safe }}, borderColor: '#3b82f6', backgroundColor: '#bfdbfe', fill: true, tension: 0.1 }, { label: '{% trans "المصاريف" %}', data: {{ trend_chart.expense_data|safe }}, borderColor: '#ef4444', backgroundColor: '#fee2e2', fill: true, tension: 0.1 }] }, options: { responsive: true, scales: { y: { beginAtZero: true } } } });
+</div>
 
-        // Occupancy Chart
-        new Chart(document.getElementById('occupancyChart'), { type: 'doughnut', data: { labels: {{occupancy_chart.labels|safe }}, datasets: [{label: '{% trans "الوحدات" %}', data: {{ occupancy_chart.data|safe }}, backgroundColor: ['#993333', '#e5e7ab'], hoverOffset: 4 }]}, options: { responsive: true, plugins: { legend: { position: 'top' } } }});
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+    // Financial Trend Chart
+    new Chart(document.getElementById('financialTrendChart'), { 
+        type: 'line', 
+        data: { 
+            labels: {{ trend_chart.labels|safe }}, 
+            datasets: [
+                { 
+                    label: '{% trans "الإيرادات" %}', 
+                    data: {{ trend_chart.income_data|safe }}, 
+                    borderColor: '#3b82f6', 
+                    backgroundColor: '#bfdbfe', 
+                    fill: true, 
+                    tension: 0.1 
+                }, 
+                { 
+                    label: '{% trans "المصاريف" %}', 
+                    data: {{ trend_chart.expense_data|safe }}, 
+                    borderColor: '#ef4444', 
+                    backgroundColor: '#fee2e2', 
+                    fill: true, 
+                    tension: 0.1 
+                }
+            ] 
+        }, 
+        options: { 
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: { 
+                y: { 
+                    beginAtZero: true 
+                } 
+            } 
+        } 
+    });
 
-        // Calendar
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: '{{ LANGUAGE_CODE }}',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek'
-                },
-                events: {{ calendar_events|safe }},
-                eventColor: '#993333'
-            });
-            calendar.render();
+    // Occupancy Chart
+    new Chart(document.getElementById('occupancyChart'), { 
+        type: 'doughnut', 
+        data: { 
+            labels: {{ occupancy_chart.labels|safe }}, 
+            datasets: [{
+                label: '{% trans "الوحدات" %}', 
+                data: {{ occupancy_chart.data|safe }}, 
+                backgroundColor: ['#993333', '#e5e7ab'], 
+                hoverOffset: 4 
+            }]
+        }, 
+        options: { 
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { 
+                legend: { 
+                    position: 'top' 
+                } 
+            } 
+        }
+    });
+
+    // Calendar
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: '{{ LANGUAGE_CODE }}',
+            height: 'auto',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth'
+            },
+            events: {{ calendar_events|safe }},
+            eventColor: '#993333'
         });
-    </script>
-    {% endblock %}
+        calendar.render();
+    });
+</script>
+{% endblock %}

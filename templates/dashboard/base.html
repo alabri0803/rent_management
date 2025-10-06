@@ -4,64 +4,139 @@
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>{% block title %}{% trans "لوحة التحكم" %}{% endblock %} - {% get_company_name %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
-    body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
-    :root { --primary-color: #993333; --secondary-color: #D4AF37; } .sidebar { background-color: #1a202c; } 
-    .sidebar nav a { color: #a0aec0; transition: all 0.2s; } .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
-    .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
-    .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; } .btn-primary:hover { background-color: #7c2a2a; } 
-    .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; } 
-    .status-active { background-color: #dcfce7; color: #166534; } .status-expiring { background-color: #fef9c3; color: #854d0e; } 
-    .status-expired { background-color: #fee2e2; color: #991b1b; } .status-cancelled { background-color: #e5e7eb; color: #374151; }</style>
+        body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
+        :root { --primary-color: #993333; --secondary-color: #D4AF37; } 
+        .sidebar { background-color: #1a202c; transition: transform 0.3s ease-in-out; } 
+        .sidebar nav a { color: #a0aec0; transition: all 0.2s; min-height: 44px; display: flex; align-items: center; } 
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
+        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
+        .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; min-height: 44px; } 
+        .btn-primary:hover { background-color: #7c2a2a; } 
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; } 
+        .status-active { background-color: #dcfce7; color: #166534; } 
+        .status-expiring { background-color: #fef9c3; color: #854d0e; } 
+        .status-expired { background-color: #fee2e2; color: #991b1b; } 
+        .status-cancelled { background-color: #e5e7eb; color: #374151; }
+        
+        @media (max-width: 768px) {
+            .sidebar { 
+                position: fixed; 
+                top: 0; 
+                {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %}: 0; 
+                height: 100vh; 
+                z-index: 50; 
+                transform: translate{% if LANGUAGE_CODE == 'ar' %}X(100%){% else %}X(-100%){% endif %}; 
+            }
+            .sidebar.open { transform: translateX(0); }
+            .overlay { 
+                position: fixed; 
+                inset: 0; 
+                background-color: rgba(0, 0, 0, 0.5); 
+                z-index: 40; 
+                display: none; 
+            }
+            .overlay.show { display: block; }
+        }
+        
+        button, a, input, select, textarea { 
+            min-height: 44px; 
+            min-width: 44px; 
+        }
+        
+        @media (max-width: 640px) {
+            body { font-size: 16px; }
+        }
+    </style>
 </head>
 <body class="text-gray-700">
-<div class="flex h-screen">
-<aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col">
-    <div class="text-center mb-10">
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<button onclick="toggleMenu()" class="md:hidden fixed top-4 {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %}-4 z-50 bg-[#993333] text-white p-3 rounded-lg shadow-lg">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+</button>
+
+<div class="flex h-screen overflow-hidden">
+<aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col overflow-y-auto" id="sidebar">
+    <button onclick="toggleMenu()" class="md:hidden absolute top-4 {% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}-4 text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+    
+    <div class="text-center mb-6 md:mb-10">
         {% get_company_logo as logo %}
         {% if logo %}
-        <img src="{{ logo.url }}" alt="logo" class="w-20 h-20 mx-auto mb-4 rounded-full mb-2">
+        <img src="{{ logo.url }}" alt="logo" class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-2 md:mb-4 rounded-full">
         {% endif %}
-        <h1 class="text-2xl font-bold">{% get_company_name %}</h1>
-        <p class="text-sm text-gray-400">{% trans "ادارة الايجارات" %}</p>
+        <h1 class="text-xl md:text-2xl font-bold">{% get_company_name %}</h1>
+        <p class="text-xs md:text-sm text-gray-400">{% trans "ادارة الايجارات" %}</p>
     </div>
-    <nav>
-        <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
-        <a href="{% url 'building_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'building' in request.resolver_match.url_name %}active{% endif %}">{% trans "المباني" %}</a>
-        <a href="{% url 'unit_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'unit' in request.resolver_match.url_name %}active{% endif %}">{% trans "الوحدات" %}</a>
-        <a href="{% url 'tenant_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'tenant' in request.resolver_match.url_name %}active{% endif %}">{% trans "المستأجرين" %}</a>
-        <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
-        <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
-        <a href="{% url 'check_management' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'check' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة الشيكات" %}</a>
-        <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>
-        <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "الصيانة" %}</a>
-        <a href="{% url 'user_management' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'user' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة المستخدمين" %}</a>
-        <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
+    
+    <nav class="flex-1 overflow-y-auto">
+        <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
+        <a href="{% url 'building_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'building' in request.resolver_match.url_name %}active{% endif %}">{% trans "المباني" %}</a>
+        <a href="{% url 'unit_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'unit' in request.resolver_match.url_name %}active{% endif %}">{% trans "الوحدات" %}</a>
+        <a href="{% url 'tenant_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'tenant' in request.resolver_match.url_name %}active{% endif %}">{% trans "المستأجرين" %}</a>
+        <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
+        <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
+        <a href="{% url 'check_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'check' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة الشيكات" %}</a>
+        <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>
+        <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "الصيانة" %}</a>
+        <a href="{% url 'user_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'user' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة المستخدمين" %}</a>
+        <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
     </nav>
-    <div class="mt-auto">
-        <a href="{% url 'company_update' %}" class="block py-2 px-4 rounded-lg mb-2 text-gray-300 hover:bg-gray-700 hover:bg-gray-600">{% trans "الاعدادات" %}</a>
+    
+    <div class="mt-auto pt-4 border-t border-gray-700">
+        <a href="{% url 'company_update' %}" class="block py-2 px-4 rounded-lg mb-2 text-sm md:text-base text-gray-300 hover:bg-gray-700">{% trans "الاعدادات" %}</a>
         <form action="{% url 'set_language' %}" method="post" class="mb-4">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
-        <select name="language" onchange="this.form.submit()" class="w-full bg-gray-700 text-white p-2 rounded-md">
-            {% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}
-            {% for lang_code, lang_name in LANGUAGES %}
-            <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>
-            {% endfor %}
-        </select>
+            <select name="language" onchange="this.form.submit()" class="w-full bg-gray-700 text-white p-2 rounded-md text-sm md:text-base">
+                {% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}
+                {% for lang_code, lang_name in LANGUAGES %}
+                <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>{{ lang_name }}</option>
+                {% endfor %}
+            </select>
         </form>
-        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-gray-400 hover:bg-red-800 hover:text-white">{% trans "تسجيل الخروج" %}</button></form>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-sm md:text-base text-gray-400 hover:bg-red-800 hover:text-white">{% trans "تسجيل الخروج" %}</button></form>
     </div>
 </aside>
-<main class="flex-1 overflow-y-auto p-8">
-    {% if messages %}{% for message in messages %}<div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>{% endfor %}{% endif %}
-    {% block content %}{% endblock %}
+
+<main class="flex-1 overflow-y-auto p-4 md:p-8 w-full">
+    <div class="max-w-7xl mx-auto">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-3 md:p-4 mb-4 text-sm md:text-base rounded-lg {% if message.tags == 'success' %} bg-green-100 text-green-800 {% else %} bg-red-100 text-red-800 {% endif %}" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
 </main>
 </div>
+
+<script>
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+document.querySelectorAll('.sidebar nav a').forEach(link => {
+    link.addEventListener('click', function() {
+        if (window.innerWidth < 768) {
+            toggleMenu();
+        }
+    });
+});
+</script>
 </body>
 </html>
