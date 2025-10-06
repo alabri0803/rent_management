@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-05 09:11+0000\n"
+"POT-Creation-Date: 2025-10-06 21:31+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-#: dashboard/apps.py:7 templates/dashboard/base.html:8
+
+#: dashboard/apps.py:7 templates/dashboard/base.html:9
 msgid "لوحة التحكم"
 msgstr ""
 
@@ -28,6 +29,14 @@ msgstr ""
 
 #: dashboard/forms.py:111
 msgid "مثال: نسخة من العقد الموقّع"
+msgstr ""
+
+#: dashboard/forms.py:150 dashboard/models.py:249
+msgid "حالة الشيك مطلوبة عند اختيار طريقة الدفع بالشيك"
+msgstr ""
+
+#: dashboard/forms.py:153 dashboard/models.py:252
+msgid "سبب إرجاع الشيك مطلوب عند اختيار حالة \"مرتجع\""
 msgstr ""
 
 #: dashboard/management/commands/send_payment_reminders.py:13
@@ -54,6 +63,14 @@ msgstr ""
 msgid "Starting lease status update process..."
 msgstr ""
 
+#: dashboard/management/commands/update_lease_statues.py:21
+msgid "Lease"
+msgstr ""
+
+#: dashboard/management/commands/update_lease_statues.py:21
+msgid "status updated to"
+msgstr ""
+
 #: dashboard/management/commands/update_lease_statues.py:25
 #, python-format
 msgid "Process finished. Updated %(count)d leases."
@@ -76,7 +93,7 @@ msgid " الهاتف للتواصل"
 msgstr ""
 
 #: dashboard/models.py:18 dashboard/models.py:29
-#: templates/dashboard/maintenance_list.html:9
+#: templates/dashboard/maintenance_list.html:14
 msgid "العنوان"
 msgstr ""
 
@@ -92,7 +109,7 @@ msgstr ""
 msgid "مبنى"
 msgstr ""
 
-#: dashboard/models.py:33 templates/dashboard/base.html:35
+#: dashboard/models.py:33 templates/dashboard/base.html:97
 #: templates/dashboard/building_list.html:6
 msgid "المباني"
 msgstr ""
@@ -109,16 +126,16 @@ msgstr ""
 msgid "محل"
 msgstr ""
 
-#: dashboard/models.py:40 dashboard/models.py:278
-#: templates/dashboard/expense_list.html:12
+#: dashboard/models.py:40 dashboard/models.py:300
+#: templates/dashboard/expense_list.html:17
 #: templates/dashboard/unit_detail.html:22
-#: templates/dashboard/unit_list.html:47
+#: templates/dashboard/unit_list.html:52
 msgid "المبنى"
 msgstr ""
 
 #: dashboard/models.py:41 templates/dashboard/reports/occupancy_report.html:40
 #: templates/dashboard/unit_detail.html:18
-#: templates/dashboard/unit_list.html:46
+#: templates/dashboard/unit_list.html:51
 msgid "رقم الوحدة"
 msgstr ""
 
@@ -127,7 +144,7 @@ msgid "نوع الوحدة"
 msgstr ""
 
 #: dashboard/models.py:43 templates/dashboard/unit_detail.html:30
-#: templates/dashboard/unit_list.html:49
+#: templates/dashboard/unit_list.html:54
 msgid "الطابق"
 msgstr ""
 
@@ -139,16 +156,16 @@ msgstr ""
 msgid "وحدة"
 msgstr ""
 
-#: dashboard/models.py:48 templates/dashboard/base.html:36
-#: templates/dashboard/home.html:70 templates/dashboard/unit_list.html:6
+#: dashboard/models.py:48 templates/dashboard/base.html:102
+#: templates/dashboard/home.html:151 templates/dashboard/unit_list.html:6
 msgid "الوحدات"
 msgstr ""
 
-#: dashboard/models.py:54 templates/dashboard/tenant_list.html:31
+#: dashboard/models.py:54 templates/dashboard/tenant_list.html:36
 msgid "فرد"
 msgstr ""
 
-#: dashboard/models.py:54 templates/dashboard/tenant_list.html:32
+#: dashboard/models.py:54 templates/dashboard/tenant_list.html:37
 msgid "شركة"
 msgstr ""
 
@@ -172,8 +189,10 @@ msgstr ""
 msgid "رقم الهاتف"
 msgstr ""
 
-#: dashboard/models.py:59 templates/dashboard/tenant_detail.html:30
-#: templates/dashboard/tenant_list.html:43
+#: dashboard/models.py:59 dashboard/views.py:645
+#: templates/dashboard/tenant_detail.html:30
+#: templates/dashboard/tenant_list.html:48
+#: templates/dashboard/user_management.html:33
 msgid "البريد الإلكتروني"
 msgstr ""
 
@@ -193,11 +212,11 @@ msgstr ""
 msgid "من 1 إلى 5 نجوم."
 msgstr ""
 
-#: dashboard/models.py:64
+#: dashboard/models.py:64 templates/dashboard/user_management.html:57
 msgid "مستأجر"
 msgstr ""
 
-#: dashboard/models.py:65 templates/dashboard/base.html:37
+#: dashboard/models.py:65 templates/dashboard/base.html:107
 #: templates/dashboard/tenant_list.html:6
 msgid "المستأجرين"
 msgstr ""
@@ -222,7 +241,8 @@ msgstr ""
 msgid "قوالب العقود"
 msgstr ""
 
-#: dashboard/models.py:82
+#: dashboard/models.py:82 dashboard/views.py:636
+#: templates/dashboard/user_management.html:64
 msgid "نشط"
 msgstr ""
 
@@ -230,16 +250,16 @@ msgstr ""
 msgid "قريب الانتهاء"
 msgstr ""
 
-#: dashboard/models.py:82 templates/dashboard/lease_list.html:25
+#: dashboard/models.py:82 templates/dashboard/lease_list.html:48
 msgid "منتهي"
 msgstr ""
 
-#: dashboard/models.py:82 dashboard/models.py:243
+#: dashboard/models.py:82 dashboard/models.py:265
 msgid "ملغي"
 msgstr ""
 
 #: dashboard/models.py:83 templates/dashboard/lease_detail.html:24
-#: templates/dashboard/lease_list.html:13
+#: templates/dashboard/lease_list.html:28
 #: templates/dashboard/maintenance_detail.html:9
 #: templates/dashboard/reports/tenant_statement.html:21
 #: templates/dashboard/tenant_detail.html:76
@@ -248,9 +268,11 @@ msgstr ""
 msgid "الوحدة"
 msgstr ""
 
-#: dashboard/models.py:84 templates/dashboard/lease_list.html:13
-#: templates/dashboard/maintenance_list.html:9
-#: templates/dashboard/payment_list.html:14
+#: dashboard/models.py:84 templates/dashboard/check_management.html:36
+#: templates/dashboard/check_status_form.html:12
+#: templates/dashboard/lease_list.html:27
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/payment_list.html:21
 #: templates/dashboard/reports/annual_pl_report.html:23
 #: templates/dashboard/reports/monthly_pl_report.html:9
 #: templates/dashboard/reports/occupancy_report.html:40
@@ -261,8 +283,8 @@ msgid "المستأجر"
 msgstr ""
 
 #: dashboard/models.py:85 templates/dashboard/lease_detail.html:10
-#: templates/dashboard/lease_list.html:13
-#: templates/dashboard/payment_list.html:15
+#: templates/dashboard/lease_list.html:26
+#: templates/dashboard/payment_list.html:22
 #: templates/dashboard/reports/tenant_statement.html:21
 #: templates/dashboard/tenant_detail.html:75
 #: templates/dashboard/tenant_detail.html:104
@@ -339,186 +361,215 @@ msgstr ""
 msgid "تحويل بنكي"
 msgstr ""
 
-#: dashboard/models.py:217 dashboard/models.py:277
+#: dashboard/models.py:217 dashboard/models.py:299
 msgid "أخرى"
 msgstr ""
 
-#: dashboard/models.py:220 dashboard/models.py:245 dashboard/models.py:263
+#: dashboard/models.py:221
+msgid "معلق - في الانتظار"
+msgstr ""
+
+#: dashboard/models.py:222
+msgid "تم الصرف"
+msgstr ""
+
+#: dashboard/models.py:223
+msgid "مرتجع"
+msgstr ""
+
+#: dashboard/models.py:226 dashboard/models.py:267 dashboard/models.py:285
 msgid "العقد"
 msgstr ""
 
-#: dashboard/models.py:221 templates/dashboard/payment_list.html:13
+#: dashboard/models.py:227 templates/dashboard/payment_list.html:20
 #: templates/dashboard/reports/tenant_statement.html:26
 msgid "تاريخ الدفع"
 msgstr ""
 
-#: dashboard/models.py:222
+#: dashboard/models.py:228
 msgid "المبلغ المدفوع"
 msgstr ""
 
-#: dashboard/models.py:223
+#: dashboard/models.py:229
 msgid "دفعة عن شهر"
 msgstr ""
 
-#: dashboard/models.py:224
+#: dashboard/models.py:230
 msgid "دفعة عن سنة"
 msgstr ""
 
-#: dashboard/models.py:225 templates/dashboard/lease_detail.html:55
-#: templates/dashboard/payment_list.html:18
+#: dashboard/models.py:231 templates/dashboard/lease_detail.html:55
+#: templates/dashboard/payment_list.html:25
 #: templates/dashboard/reports/payment_receipt.html:215
 msgid "طريقة الدفع"
 msgstr ""
 
-#: dashboard/models.py:226 templates/dashboard/reports/payment_receipt.html:221
+#: dashboard/models.py:232 templates/dashboard/check_management.html:35
+#: templates/dashboard/check_status_form.html:11
+#: templates/dashboard/reports/payment_receipt.html:221
 msgid "رقم الشيك"
 msgstr ""
 
-#: dashboard/models.py:227 templates/dashboard/reports/payment_receipt.html:226
+#: dashboard/models.py:233 templates/dashboard/check_management.html:38
+#: templates/dashboard/check_status_form.html:15
+#: templates/dashboard/reports/payment_receipt.html:226
 msgid "تاريخ الشيك"
 msgstr ""
 
-#: dashboard/models.py:228 templates/dashboard/reports/payment_receipt.html:231
+#: dashboard/models.py:234 templates/dashboard/reports/payment_receipt.html:231
 msgid "اسم البنك"
 msgstr ""
 
-#: dashboard/models.py:229
+#: dashboard/models.py:235 templates/dashboard/reports/payment_receipt.html:237
+msgid "حالة الشيك"
+msgstr ""
+
+#: dashboard/models.py:236
+msgid "سبب إرجاع الشيك"
+msgstr ""
+
+#: dashboard/models.py:237
 msgid "ملاحظات"
 msgstr ""
 
-#: dashboard/models.py:232
+#: dashboard/models.py:240
 msgid "دفعة"
 msgstr ""
 
-#: dashboard/models.py:233 templates/portal/dashboard.html:26
+#: dashboard/models.py:241 templates/portal/dashboard.html:26
 msgid "الدفعات"
 msgstr ""
 
-#: dashboard/models.py:243
+#: dashboard/models.py:265
 msgid "تم الإرسال"
 msgstr ""
 
-#: dashboard/models.py:243
+#: dashboard/models.py:265
 msgid "قيد التنفيذ"
 msgstr ""
 
-#: dashboard/models.py:243
+#: dashboard/models.py:265
 msgid "مكتمل"
 msgstr ""
 
-#: dashboard/models.py:244
+#: dashboard/models.py:266
 msgid "منخفضة"
 msgstr ""
 
-#: dashboard/models.py:244
+#: dashboard/models.py:266
 msgid "متوسطة"
 msgstr ""
 
-#: dashboard/models.py:244
+#: dashboard/models.py:266
 msgid "عالية"
 msgstr ""
 
-#: dashboard/models.py:246
+#: dashboard/models.py:268
 msgid "عنوان الطلب"
 msgstr ""
 
-#: dashboard/models.py:247 templates/dashboard/maintenance_detail.html:14
+#: dashboard/models.py:269 templates/dashboard/maintenance_detail.html:14
 msgid "وصف المشكلة"
 msgstr ""
 
-#: dashboard/models.py:248 templates/dashboard/maintenance_detail.html:10
-#: templates/dashboard/maintenance_list.html:9
+#: dashboard/models.py:270 templates/dashboard/maintenance_detail.html:10
+#: templates/dashboard/maintenance_list.html:14
 msgid "الأولوية"
 msgstr ""
 
-#: dashboard/models.py:249 templates/dashboard/lease_detail.html:55
-#: templates/dashboard/lease_list.html:13
+#: dashboard/models.py:271 templates/dashboard/check_management.html:40
+#: templates/dashboard/lease_detail.html:55
+#: templates/dashboard/lease_list.html:32
 #: templates/dashboard/maintenance_detail.html:11
-#: templates/dashboard/maintenance_list.html:9
+#: templates/dashboard/maintenance_list.html:14
 #: templates/dashboard/reports/occupancy_report.html:40
 #: templates/dashboard/tenant_detail.html:79
 #: templates/dashboard/tenant_detail.html:107
 #: templates/dashboard/unit_detail.html:34
 #: templates/dashboard/unit_detail.html:81
-#: templates/dashboard/unit_list.html:50 templates/portal/dashboard.html:34
-#: templates/portal/maintenance_list.html:14
+#: templates/dashboard/unit_list.html:55
+#: templates/dashboard/user_management.html:35
+#: templates/portal/dashboard.html:35 templates/portal/maintenance_list.html:14
 msgid "الحالة"
 msgstr ""
 
-#: dashboard/models.py:250
+#: dashboard/models.py:272
 msgid "صورة مرفقة (اختياري)"
 msgstr ""
 
-#: dashboard/models.py:251
+#: dashboard/models.py:273
 msgid "تاريخ الإبلاغ"
 msgstr ""
 
-#: dashboard/models.py:252
+#: dashboard/models.py:274
 msgid "ملاحظات الموظف"
 msgstr ""
 
-#: dashboard/models.py:255
+#: dashboard/models.py:277
 msgid "طلب صيانة"
 msgstr ""
 
-#: dashboard/models.py:256 templates/dashboard/maintenance_list.html:5
-#: templates/portal/base.html:17 templates/portal/maintenance_list.html:3
+#: dashboard/models.py:278 templates/dashboard/maintenance_list.html:6
+#: templates/portal/base.html:19 templates/portal/dashboard.html:69
+#: templates/portal/maintenance_list.html:3
 msgid "طلبات الصيانة"
 msgstr ""
 
-#: dashboard/models.py:264
+#: dashboard/models.py:286
 msgid "عنوان المستند"
 msgstr ""
 
-#: dashboard/models.py:265
+#: dashboard/models.py:287
 msgid "الملف"
 msgstr ""
 
-#: dashboard/models.py:266
+#: dashboard/models.py:288
 msgid "تاريخ الرفع"
 msgstr ""
 
-#: dashboard/models.py:269
+#: dashboard/models.py:291
 msgid "مستند"
 msgstr ""
 
-#: dashboard/models.py:270 templates/dashboard/lease_detail.html:86
-#: templates/portal/dashboard.html:86
+#: dashboard/models.py:292 templates/dashboard/lease_detail.html:86
+#: templates/portal/dashboard.html:87
 msgid "المستندات"
 msgstr ""
 
-#: dashboard/models.py:277
+#: dashboard/models.py:299
 msgid "صيانة"
 msgstr ""
 
-#: dashboard/models.py:277
+#: dashboard/models.py:299
 msgid "خدمات (كهرباء، ماء)"
 msgstr ""
 
-#: dashboard/models.py:277
+#: dashboard/models.py:299
 msgid "رواتب"
 msgstr ""
 
-#: dashboard/models.py:277
+#: dashboard/models.py:299
 msgid "تسويق"
 msgstr ""
 
-#: dashboard/models.py:277
+#: dashboard/models.py:299
 msgid "رسوم إدارية/حكومية"
 msgstr ""
 
-#: dashboard/models.py:279
+#: dashboard/models.py:301
 msgid "فئة المصروف"
 msgstr ""
 
-#: dashboard/models.py:280 templates/dashboard/expense_list.html:12
+#: dashboard/models.py:302 templates/dashboard/expense_list.html:17
 #: templates/dashboard/reports/annual_pl_report.html:30
 #: templates/dashboard/reports/monthly_pl_report.html:15
 msgid "الوصف"
 msgstr ""
 
-#: dashboard/models.py:281 templates/dashboard/expense_list.html:12
-#: templates/dashboard/payment_list.html:17
+#: dashboard/models.py:303 templates/dashboard/check_management.html:37
+#: templates/dashboard/check_status_form.html:13
+#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/payment_list.html:24
 #: templates/dashboard/reports/annual_pl_report.html:23
 #: templates/dashboard/reports/annual_pl_report.html:30
 #: templates/dashboard/reports/monthly_pl_report.html:9
@@ -527,238 +578,294 @@ msgstr ""
 msgid "المبلغ"
 msgstr ""
 
-#: dashboard/models.py:282
+#: dashboard/models.py:304
 msgid "تاريخ المصروف"
 msgstr ""
 
-#: dashboard/models.py:283
+#: dashboard/models.py:305
 msgid "إيصال/فاتورة (اختياري)"
 msgstr ""
 
-#: dashboard/models.py:287
+#: dashboard/models.py:309
 msgid "مصروف"
 msgstr ""
 
-#: dashboard/models.py:288 templates/dashboard/base.html:40
-#: templates/dashboard/expense_list.html:6 templates/dashboard/home.html:67
+#: dashboard/models.py:310 templates/dashboard/base.html:127
+#: templates/dashboard/expense_list.html:6 templates/dashboard/home.html:125
 #: templates/dashboard/reports/annual_pl_report.html:28
 #: templates/dashboard/reports/monthly_pl_report.html:13
 msgid "المصاريف"
 msgstr ""
 
-#: dashboard/models.py:295
+#: dashboard/models.py:317
 msgid "المستخدم"
 msgstr ""
 
-#: dashboard/models.py:296
+#: dashboard/models.py:318
 msgid "الرسالة"
 msgstr ""
 
-#: dashboard/models.py:297
+#: dashboard/models.py:319
 msgid "مقروءة"
 msgstr ""
 
-#: dashboard/models.py:298
+#: dashboard/models.py:320
 msgid "الوقت"
 msgstr ""
 
-#: dashboard/models.py:304
+#: dashboard/models.py:326
 msgid "إشعار"
 msgstr ""
 
-#: dashboard/models.py:305
+#: dashboard/models.py:327
 msgid "الإشعارات"
 msgstr ""
 
 #: dashboard/signals.py:26
+#, python-brace-format
 msgid "'تم تقديم طلب صيانة جديد بعنوان {} من قبل المستأجر {}'"
 msgstr ""
 
 #: dashboard/signals.py:34
+#, python-brace-format
 msgid "'تم تحديث حالة طلب الصيانة {} إلى {}'"
 msgstr ""
 
 #: dashboard/signals.py:43
+#, python-brace-format
 msgid "'عقد الإيجار الخاص بك رقم {} سينتهي قريب في تاريخ {}'"
 msgstr ""
 
-#: dashboard/views.py:80 templates/dashboard/reports/occupancy_report.html:46
+#: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
 #: templates/dashboard/unit_detail.html:38
-#: templates/dashboard/unit_list.html:38 templates/dashboard/unit_list.html:65
+#: templates/dashboard/unit_list.html:43 templates/dashboard/unit_list.html:70
 msgid "مشغولة"
 msgstr ""
 
-#: dashboard/views.py:80 templates/dashboard/reports/occupancy_report.html:46
+#: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
 #: templates/dashboard/unit_detail.html:36
-#: templates/dashboard/unit_list.html:37 templates/dashboard/unit_list.html:63
+#: templates/dashboard/unit_list.html:42 templates/dashboard/unit_list.html:68
 msgid "متاحة"
 msgstr ""
 
-#: dashboard/views.py:155 templates/dashboard/unit_list.html:7
+#: dashboard/views.py:92 templates/dashboard/lease_renew.html:6
+msgid "تجديد عقد"
+msgstr ""
+
+#: dashboard/views.py:158 templates/dashboard/unit_list.html:11
 msgid "إضافة وحدة جديدة"
 msgstr ""
 
-#: dashboard/views.py:159
+#: dashboard/views.py:162
 msgid "تمت إضافة الوحدة بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:170
+#: dashboard/views.py:173
 msgid "تعديل الوحدة"
 msgstr ""
 
-#: dashboard/views.py:174
+#: dashboard/views.py:177
 msgid "تم تحديث الوحدة بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:183
+#: dashboard/views.py:186
 msgid "تم حذف الوحدة بنجاح."
 msgstr ""
 
-#: dashboard/views.py:232 templates/dashboard/tenant_list.html:7
+#: dashboard/views.py:235 templates/dashboard/tenant_list.html:11
 msgid "إضافة مستأجر جديد"
 msgstr ""
 
-#: dashboard/views.py:236
+#: dashboard/views.py:239
 msgid "تمت إضافة المستأجر بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:247
+#: dashboard/views.py:250
 msgid "تعديل بيانات المستأجر"
 msgstr ""
 
-#: dashboard/views.py:251
+#: dashboard/views.py:254
 msgid "تم تحديث بيانات المستأجر بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:260
+#: dashboard/views.py:263
 msgid "تم حذف المستأجر بنجاح."
 msgstr ""
 
-#: dashboard/views.py:286 templates/dashboard/building_list.html:7
+#: dashboard/views.py:289 templates/dashboard/building_list.html:11
 msgid "إضافة مبنى جديد"
 msgstr ""
 
-#: dashboard/views.py:290
+#: dashboard/views.py:293
 msgid "تمت إضافة المبنى بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:301
+#: dashboard/views.py:304
 msgid "تعديل المبنى"
 msgstr ""
 
-#: dashboard/views.py:305
+#: dashboard/views.py:308
 msgid "تم تحديث المبنى بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:314
+#: dashboard/views.py:317
 msgid "تم حذف المبنى بنجاح."
 msgstr ""
 
-#: dashboard/views.py:376
+#: dashboard/views.py:379
 msgid "تم تحديث تقييم العميل."
 msgstr ""
 
-#: dashboard/views.py:378
+#: dashboard/views.py:381
 msgid "حدث خطأ أثناء تحديث التقييم."
 msgstr ""
 
-#: dashboard/views.py:386 templates/dashboard/lease_list.html:7
+#: dashboard/views.py:389 templates/dashboard/lease_list.html:11
 msgid "إضافة عقد جديد"
 msgstr ""
 
-#: dashboard/views.py:388
+#: dashboard/views.py:391
 msgid "تمت إضافة العقد بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:393
+#: dashboard/views.py:396
 msgid "تعديل العقد"
 msgstr ""
 
-#: dashboard/views.py:395
+#: dashboard/views.py:398
 msgid "تم تحديث العقد بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:400
+#: dashboard/views.py:403
 msgid "تم حذف العقد بنجاح."
 msgstr ""
 
-#: dashboard/views.py:419
+#: dashboard/views.py:422
 msgid "تم إلغاء العقد بنجاح."
 msgstr ""
 
-#: dashboard/views.py:437
+#: dashboard/views.py:440
 msgid "الرجاء إدخال تاريخ انتهاء صحيح."
 msgstr ""
 
-#: dashboard/views.py:444
+#: dashboard/views.py:447
 msgid "تم تجديد العقد بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:451
+#: dashboard/views.py:454
 msgid "تم رفع المستند بنجاح!"
 msgstr ""
 
-#: dashboard/views.py:458
+#: dashboard/views.py:461
 msgid "تم حذف المستند بنجاح."
 msgstr ""
 
-#: dashboard/views.py:466
+#: dashboard/views.py:469
 msgid "تم تحديث حالة طلب الصيانة بنجاح."
 msgstr ""
 
-#: dashboard/views.py:474 templates/dashboard/expense_list.html:7
+#: dashboard/views.py:477 templates/dashboard/expense_list.html:11
 msgid "إضافة مصروف جديد"
 msgstr ""
 
-#: dashboard/views.py:476
+#: dashboard/views.py:479
 msgid "تم تسجيل المصروف بنجاح."
 msgstr ""
 
-#: dashboard/views.py:481
+#: dashboard/views.py:484
 msgid "تعديل المصروف"
 msgstr ""
 
-#: dashboard/views.py:483
+#: dashboard/views.py:486
 msgid "تم تحديث المصروف بنجاح."
 msgstr ""
 
-#: dashboard/views.py:488
+#: dashboard/views.py:491
 msgid "تم حذف المصروف بنجاح."
 msgstr ""
 
-#: dashboard/views.py:497 templates/dashboard/payment_list.html:7
+#: dashboard/views.py:500 templates/dashboard/payment_list.html:11
 msgid "إضافة دفعة جديدة"
 msgstr ""
 
-#: dashboard/views.py:499
+#: dashboard/views.py:502
 msgid "تم تسجيل الدفعة بنجاح."
 msgstr ""
 
-#: dashboard/views.py:504
+#: dashboard/views.py:507
 msgid "تعديل الدفعة"
 msgstr ""
 
-#: dashboard/views.py:506
+#: dashboard/views.py:509
 msgid "تم تحديث الدفعة بنجاح."
 msgstr ""
 
-#: dashboard/views.py:514
+#: dashboard/views.py:517
 msgid "تم حذف الدفعة بنجاح."
 msgstr ""
 
-#: dashboard/views.py:618
+#: dashboard/views.py:625
+msgid "تحديث حالة الشيك"
+msgstr ""
+
+#: dashboard/views.py:629
+msgid "تم تحديث حالة الشيك بنجاح."
+msgstr ""
+
+#: dashboard/views.py:634 templates/registration/login.html:63
+msgid "كلمة المرور"
+msgstr ""
+
+#: dashboard/views.py:635 templates/dashboard/user_management.html:53
+msgid "موظف"
+msgstr ""
+
+#: dashboard/views.py:642 templates/dashboard/user_management.html:31
+#: templates/registration/login.html:47
+msgid "اسم المستخدم"
+msgstr ""
+
+#: dashboard/views.py:643
+msgid "الاسم الأول"
+msgstr ""
+
+#: dashboard/views.py:644
+msgid "اسم العائلة"
+msgstr ""
+
+#: dashboard/views.py:681 templates/dashboard/user_management.html:7
+msgid "إضافة مستخدم جديد"
+msgstr ""
+
+#: dashboard/views.py:685
+msgid "تم إنشاء المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:696
+msgid "تعديل المستخدم"
+msgstr ""
+
+#: dashboard/views.py:700
+msgid "تم تحديث المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:709
+msgid "تم حذف المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:743
 msgid "الرجاء تحديد السنة والشهر."
 msgstr ""
 
-#: dashboard/views.py:636
+#: dashboard/views.py:761
 msgid "الرجاء تحديد السنة."
 msgstr ""
 
-#: dashboard/views.py:682
+#: dashboard/views.py:807
 msgid "إعدادات الشركة والهوية"
 msgstr ""
 
-#: dashboard/views.py:686
+#: dashboard/views.py:811
 msgid "تم تحديث بيانات الشركة بنجاح."
 msgstr ""
 
@@ -778,43 +885,59 @@ msgstr ""
 msgid "حسابك غير مرتبط بملف مستأجر."
 msgstr ""
 
-#: rent_management/settings.py:130
+#: rent_management/settings.py:137
 msgid "العربية"
 msgstr ""
 
-#: rent_management/settings.py:131
+#: rent_management/settings.py:138
 msgid "English"
 msgstr ""
 
-#: templates/dashboard/base.html:31
+#: templates/dashboard/base.html:86
 msgid "ادارة الايجارات"
 msgstr ""
 
-#: templates/dashboard/base.html:34 templates/portal/base.html:16
+#: templates/dashboard/base.html:89
+msgid "Primary"
+msgstr ""
+
+#: templates/dashboard/base.html:92 templates/portal/base.html:18
 msgid "لوحة المعلومات"
 msgstr ""
 
-#: templates/dashboard/base.html:38 templates/dashboard/lease_list.html:6
+#: templates/dashboard/base.html:112 templates/dashboard/lease_list.html:6
 msgid "العقود"
 msgstr ""
 
-#: templates/dashboard/base.html:39 templates/dashboard/payment_list.html:6
+#: templates/dashboard/base.html:117 templates/dashboard/payment_list.html:6
 msgid "المدفوعات"
 msgstr ""
 
-#: templates/dashboard/base.html:41
+#: templates/dashboard/base.html:122
+#: templates/dashboard/check_management.html:3
+#: templates/dashboard/check_management.html:6
+msgid "إدارة الشيكات"
+msgstr ""
+
+#: templates/dashboard/base.html:132
 msgid "الصيانة"
 msgstr ""
 
-#: templates/dashboard/base.html:42 templates/dashboard/report_selection.html:3
+#: templates/dashboard/base.html:137 templates/dashboard/user_management.html:3
+#: templates/dashboard/user_management.html:6
+msgid "إدارة المستخدمين"
+msgstr ""
+
+#: templates/dashboard/base.html:142
+#: templates/dashboard/report_selection.html:3
 msgid "التقارير"
 msgstr ""
 
-#: templates/dashboard/base.html:45
+#: templates/dashboard/base.html:147
 msgid "الاعدادات"
 msgstr ""
 
-#: templates/dashboard/base.html:56 templates/portal/base.html:18
+#: templates/dashboard/base.html:160 templates/portal/base.html:20
 msgid "تسجيل الخروج"
 msgstr ""
 
@@ -850,6 +973,7 @@ msgstr ""
 
 #: templates/dashboard/building_confirm_delete.html:18
 #: templates/dashboard/building_form.html:33
+#: templates/dashboard/check_status_form.html:40
 #: templates/dashboard/document_confirm_delete.html:11
 #: templates/dashboard/expense_confirm_delete.html:11
 #: templates/dashboard/lease_confirm_delete.html:11
@@ -858,6 +982,8 @@ msgstr ""
 #: templates/dashboard/tenant_form.html:67
 #: templates/dashboard/unit_confirm_delete.html:14
 #: templates/dashboard/unit_form.html:57
+#: templates/dashboard/user_confirm_delete.html:16
+#: templates/dashboard/user_form.html:64
 msgid "إلغاء"
 msgstr ""
 
@@ -870,9 +996,9 @@ msgstr ""
 #: templates/dashboard/company_form.html:12
 #: templates/dashboard/expense_form.html:10
 #: templates/dashboard/lease_detail.html:32
-#: templates/dashboard/payment_form.html:26
+#: templates/dashboard/payment_form.html:31
 #: templates/dashboard/tenant_form.html:66
-#: templates/dashboard/unit_form.html:56
+#: templates/dashboard/unit_form.html:56 templates/dashboard/user_form.html:63
 msgid "حفظ"
 msgstr ""
 
@@ -880,44 +1006,144 @@ msgstr ""
 msgid "إدارة المباني"
 msgstr ""
 
-#: templates/dashboard/building_list.html:16
-#: templates/dashboard/expense_list.html:22
+#: templates/dashboard/building_list.html:9
+#: templates/dashboard/expense_list.html:9
+#: templates/dashboard/lease_list.html:9
+#: templates/dashboard/maintenance_list.html:8
+#: templates/dashboard/payment_list.html:9
+#: templates/dashboard/tenant_list.html:9 templates/dashboard/unit_list.html:9
+msgid "تصدير Excel"
+msgstr ""
+
+#: templates/dashboard/building_list.html:21
+#: templates/dashboard/check_management.html:72
+#: templates/dashboard/expense_list.html:27
 #: templates/dashboard/lease_detail.html:16
-#: templates/dashboard/payment_list.html:37
+#: templates/dashboard/payment_list.html:57
 #: templates/dashboard/tenant_detail.html:8
-#: templates/dashboard/tenant_list.html:64
-#: templates/dashboard/unit_detail.html:8 templates/dashboard/unit_list.html:70
+#: templates/dashboard/tenant_list.html:69
+#: templates/dashboard/unit_detail.html:8 templates/dashboard/unit_list.html:75
+#: templates/dashboard/user_management.html:75
 msgid "تعديل"
 msgstr ""
 
-#: templates/dashboard/building_list.html:17
+#: templates/dashboard/building_list.html:22
 #: templates/dashboard/lease_detail.html:19
 #: templates/dashboard/lease_detail.html:96
-#: templates/dashboard/payment_list.html:39
-#: templates/dashboard/tenant_list.html:65
-#: templates/dashboard/unit_list.html:71
+#: templates/dashboard/payment_list.html:59
+#: templates/dashboard/tenant_list.html:70
+#: templates/dashboard/unit_list.html:76
+#: templates/dashboard/user_management.html:79
 msgid "حذف"
 msgstr ""
 
-#: templates/dashboard/building_list.html:23
+#: templates/dashboard/building_list.html:28
 #: templates/dashboard/reports/occupancy_report.html:23
-#: templates/dashboard/unit_list.html:12
+#: templates/dashboard/unit_list.html:17
 msgid "إجمالي الوحدات"
 msgstr ""
 
-#: templates/dashboard/building_list.html:27
+#: templates/dashboard/building_list.html:32
 #: templates/dashboard/reports/occupancy_report.html:25
-#: templates/dashboard/unit_list.html:20
+#: templates/dashboard/unit_list.html:25
 msgid "الوحدات المشغولة"
 msgstr ""
 
-#: templates/dashboard/building_list.html:31
+#: templates/dashboard/building_list.html:36
 #: templates/dashboard/reports/occupancy_report.html:31
 msgid "نسبة الإشغال"
 msgstr ""
 
-#: templates/dashboard/building_list.html:41
+#: templates/dashboard/building_list.html:46
 msgid "لم يتم العثور على مباني."
+msgstr ""
+
+#: templates/dashboard/check_management.html:12
+msgid "جميع الشيكات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:17
+msgid "شيكات معلقة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:22
+msgid "شيكات مصروفة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:27
+msgid "شيكات مرتجعة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:39
+#: templates/dashboard/check_status_form.html:14
+msgid "البنك"
+msgstr ""
+
+#: templates/dashboard/check_management.html:41
+#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/lease_list.html:33
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/payment_list.html:26
+#: templates/dashboard/tenant_detail.html:80
+#: templates/dashboard/tenant_detail.html:108
+#: templates/dashboard/tenant_list.html:50
+#: templates/dashboard/unit_detail.html:82
+#: templates/dashboard/unit_list.html:56
+#: templates/dashboard/user_management.html:37
+msgid "إجراءات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:69
+msgid "تحديث الحالة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:75
+#: templates/dashboard/payment_list.html:58
+#: templates/dashboard/reports/payment_receipt.html:188
+msgid "سند قبض"
+msgstr ""
+
+#: templates/dashboard/check_management.html:82
+msgid "لا توجد شيكات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:94
+#: templates/dashboard/user_management.html:99
+msgid "الأولى"
+msgstr ""
+
+#: templates/dashboard/check_management.html:95
+#: templates/dashboard/user_management.html:100
+msgid "السابقة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:98
+#: templates/dashboard/user_management.html:103
+msgid "صفحة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:98
+#: templates/dashboard/user_management.html:103
+msgid "من"
+msgstr ""
+
+#: templates/dashboard/check_management.html:101
+#: templates/dashboard/user_management.html:106
+msgid "التالية"
+msgstr ""
+
+#: templates/dashboard/check_management.html:102
+#: templates/dashboard/user_management.html:107
+msgid "الأخيرة"
+msgstr ""
+
+#: templates/dashboard/check_status_form.html:9
+msgid "معلومات الشيك"
+msgstr ""
+
+#: templates/dashboard/check_status_form.html:39
+#: templates/dashboard/lease_form.html:14
+msgid "حفظ التغييرات"
 msgstr ""
 
 #: templates/dashboard/document_confirm_delete.html:3
@@ -950,8 +1176,8 @@ msgstr ""
 msgid "إدارة المصاريف"
 msgstr ""
 
-#: templates/dashboard/expense_list.html:12
-#: templates/dashboard/maintenance_list.html:9
+#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/maintenance_list.html:14
 #: templates/dashboard/reports/annual_pl_report.html:23
 #: templates/dashboard/reports/annual_pl_report.html:30
 #: templates/dashboard/reports/monthly_pl_report.html:9
@@ -959,23 +1185,11 @@ msgstr ""
 msgid "التاريخ"
 msgstr ""
 
-#: templates/dashboard/expense_list.html:12
+#: templates/dashboard/expense_list.html:17
 msgid "الفئة"
 msgstr ""
 
-#: templates/dashboard/expense_list.html:12
-#: templates/dashboard/lease_list.html:13
-#: templates/dashboard/maintenance_list.html:9
-#: templates/dashboard/payment_list.html:19
-#: templates/dashboard/tenant_detail.html:80
-#: templates/dashboard/tenant_detail.html:108
-#: templates/dashboard/tenant_list.html:45
-#: templates/dashboard/unit_detail.html:82
-#: templates/dashboard/unit_list.html:51
-msgid "إجراءات"
-msgstr ""
-
-#: templates/dashboard/expense_list.html:25
+#: templates/dashboard/expense_list.html:30
 msgid "لا توجد مصاريف مسجلة."
 msgstr ""
 
@@ -995,22 +1209,22 @@ msgstr ""
 msgid "ينتهي بعد"
 msgstr ""
 
-#: templates/dashboard/home.html:23 templates/dashboard/lease_list.html:29
-#: templates/dashboard/lease_list.html:31
+#: templates/dashboard/home.html:23 templates/dashboard/lease_list.html:52
+#: templates/dashboard/lease_list.html:54
 msgid "يوم"
 msgstr ""
 
-#: templates/dashboard/home.html:35 templates/dashboard/tenant_detail.html:54
+#: templates/dashboard/home.html:36 templates/dashboard/tenant_detail.html:54
 #: templates/dashboard/tenant_detail.html:71
 msgid "العقود النشطة"
 msgstr ""
 
-#: templates/dashboard/home.html:36
+#: templates/dashboard/home.html:40
 msgid "الدخل الشهري المتوقع"
 msgstr ""
 
-#: templates/dashboard/home.html:36 templates/dashboard/home.html:37
-#: templates/dashboard/home.html:38 templates/dashboard/lease_detail.html:25
+#: templates/dashboard/home.html:41 templates/dashboard/home.html:45
+#: templates/dashboard/home.html:49 templates/dashboard/lease_detail.html:25
 #: templates/dashboard/lease_detail.html:35
 #: templates/dashboard/lease_detail.html:36
 #: templates/dashboard/lease_detail.html:37
@@ -1024,52 +1238,52 @@ msgstr ""
 #: templates/dashboard/reports/monthly_pl_report.html:22
 #: templates/dashboard/reports/monthly_pl_report.html:24
 #: templates/dashboard/reports/tenant_statement.html:28
-#: templates/portal/dashboard.html:21 templates/portal/dashboard.html:41
-#: templates/portal/dashboard.html:42 templates/portal/dashboard.html:43
+#: templates/portal/dashboard.html:21 templates/portal/dashboard.html:42
+#: templates/portal/dashboard.html:43 templates/portal/dashboard.html:44
 msgid "ر.ع"
 msgstr ""
 
-#: templates/dashboard/home.html:37
+#: templates/dashboard/home.html:44
 msgid "مصاريف هذا الشهر"
 msgstr ""
 
-#: templates/dashboard/home.html:38
+#: templates/dashboard/home.html:48
 msgid "صافي الدخل الشهري"
 msgstr ""
 
-#: templates/dashboard/home.html:44
+#: templates/dashboard/home.html:56
 msgid "تقويم تجديد العقود"
 msgstr ""
 
-#: templates/dashboard/home.html:47
+#: templates/dashboard/home.html:60
 msgid "اتجاه الإيرادات مقابل المصاريف (آخر 12 شهر)"
 msgstr ""
 
-#: templates/dashboard/home.html:51
+#: templates/dashboard/home.html:69
 msgid "إشغال الوحدات"
 msgstr ""
 
-#: templates/dashboard/home.html:55
+#: templates/dashboard/home.html:78
 msgid "آخر الحركات المالية"
 msgstr ""
 
-#: templates/dashboard/home.html:57
+#: templates/dashboard/home.html:80
 msgid "آخر الدفعات"
 msgstr ""
 
-#: templates/dashboard/home.html:58
+#: templates/dashboard/home.html:88
 msgid "لا توجد دفعات."
 msgstr ""
 
-#: templates/dashboard/home.html:59
+#: templates/dashboard/home.html:92
 msgid "آخر المصاريف"
 msgstr ""
 
-#: templates/dashboard/home.html:60
+#: templates/dashboard/home.html:100
 msgid "لا توجد مصاريف."
 msgstr ""
 
-#: templates/dashboard/home.html:67
+#: templates/dashboard/home.html:117
 #: templates/dashboard/reports/annual_pl_report.html:21
 #: templates/dashboard/reports/monthly_pl_report.html:7
 msgid "الإيرادات"
@@ -1126,7 +1340,7 @@ msgid "تجديد"
 msgstr ""
 
 #: templates/dashboard/lease_detail.html:25
-#: templates/dashboard/lease_list.html:13
+#: templates/dashboard/lease_list.html:31
 #: templates/dashboard/tenant_detail.html:77
 #: templates/dashboard/unit_detail.html:57 templates/portal/dashboard.html:21
 msgid "الإيجار الشهري"
@@ -1181,7 +1395,7 @@ msgstr ""
 msgid "المستحق"
 msgstr ""
 
-#: templates/dashboard/lease_detail.html:55
+#: templates/dashboard/lease_detail.html:55 templates/portal/dashboard.html:33
 msgid "المدفوع"
 msgstr ""
 
@@ -1205,7 +1419,7 @@ msgstr ""
 msgid "لم يدفع"
 msgstr ""
 
-#: templates/dashboard/lease_detail.html:76 templates/portal/dashboard.html:52
+#: templates/dashboard/lease_detail.html:76 templates/portal/dashboard.html:53
 msgid "قادم"
 msgstr ""
 
@@ -1221,46 +1435,42 @@ msgstr ""
 msgid "لا توجد مستندات مرفقة."
 msgstr ""
 
-#: templates/dashboard/lease_form.html:14
-msgid "حفظ التغييرات"
-msgstr ""
-
 #: templates/dashboard/lease_list.html:3
 msgid "إدارة العقود"
 msgstr ""
 
-#: templates/dashboard/lease_list.html:10
+#: templates/dashboard/lease_list.html:18
 msgid "ابحث عن عقد..."
 msgstr ""
 
-#: templates/dashboard/lease_list.html:13
+#: templates/dashboard/lease_list.html:29
 #: templates/dashboard/tenant_detail.html:78
 #: templates/dashboard/unit_detail.html:65 templates/portal/dashboard.html:22
 msgid "تاريخ الانتهاء"
 msgstr ""
 
-#: templates/dashboard/lease_list.html:13
+#: templates/dashboard/lease_list.html:30
 msgid "أيام متبقية"
 msgstr ""
 
-#: templates/dashboard/lease_list.html:27
+#: templates/dashboard/lease_list.html:50
 msgid "اليوم"
 msgstr ""
 
-#: templates/dashboard/lease_list.html:39
+#: templates/dashboard/lease_list.html:65
 #: templates/dashboard/tenant_detail.html:91
 #: templates/dashboard/tenant_detail.html:118
-#: templates/dashboard/tenant_list.html:63
+#: templates/dashboard/tenant_list.html:68
 #: templates/dashboard/unit_detail.html:92
-#: templates/dashboard/unit_list.html:69
+#: templates/dashboard/unit_list.html:74
 msgid "تفاصيل"
 msgstr ""
 
-#: templates/dashboard/lease_list.html:42
+#: templates/dashboard/lease_list.html:69
 msgid "لم يتم العثور على عقود."
 msgstr ""
 
-#: templates/dashboard/lease_list.html:49
+#: templates/dashboard/lease_list.html:78
 #, python-format
 msgid ""
 "\n"
@@ -1270,10 +1480,6 @@ msgstr ""
 
 #: templates/dashboard/lease_renew.html:3
 msgid "تجديد العقد"
-msgstr ""
-
-#: templates/dashboard/lease_renew.html:6
-msgid "تجديد عقد"
 msgstr ""
 
 #: templates/dashboard/lease_renew.html:7
@@ -1341,12 +1547,12 @@ msgstr ""
 msgid "إدارة الصيانة"
 msgstr ""
 
-#: templates/dashboard/maintenance_list.html:19
+#: templates/dashboard/maintenance_list.html:24
 msgid "عرض/تحديث"
 msgstr ""
 
-#: templates/dashboard/maintenance_list.html:22
-#: templates/portal/dashboard.html:81
+#: templates/dashboard/maintenance_list.html:27
+#: templates/portal/dashboard.html:82
 msgid "لا توجد طلبات صيانة."
 msgstr ""
 
@@ -1371,16 +1577,11 @@ msgstr ""
 msgid "إدارة المدفوعات"
 msgstr ""
 
-#: templates/dashboard/payment_list.html:16
+#: templates/dashboard/payment_list.html:23
 msgid "عن شهر/سنة"
 msgstr ""
 
-#: templates/dashboard/payment_list.html:38
-#: templates/dashboard/reports/payment_receipt.html:188
-msgid "سند قبض"
-msgstr ""
-
-#: templates/dashboard/payment_list.html:43 templates/portal/dashboard.html:58
+#: templates/dashboard/payment_list.html:64 templates/portal/dashboard.html:59
 msgid "لا توجد دفعات مسجلة."
 msgstr ""
 
@@ -1465,7 +1666,7 @@ msgid "ملخص الإشغال"
 msgstr ""
 
 #: templates/dashboard/reports/occupancy_report.html:29
-#: templates/dashboard/unit_list.html:16
+#: templates/dashboard/unit_list.html:21
 msgid "الوحدات المتاحة"
 msgstr ""
 
@@ -1475,9 +1676,10 @@ msgstr ""
 
 #: templates/dashboard/reports/occupancy_report.html:40
 #: templates/dashboard/tenant_detail.html:22
-#: templates/dashboard/tenant_list.html:41
+#: templates/dashboard/tenant_list.html:46
 #: templates/dashboard/unit_detail.html:26
-#: templates/dashboard/unit_list.html:48
+#: templates/dashboard/unit_list.html:53
+#: templates/dashboard/user_management.html:34
 msgid "النوع"
 msgstr ""
 
@@ -1510,31 +1712,35 @@ msgstr ""
 msgid "مبلغ وقدره"
 msgstr ""
 
-#: templates/dashboard/reports/payment_receipt.html:237
-msgid "على بناء"
-msgstr ""
-
-#: templates/dashboard/reports/payment_receipt.html:242
-msgid "وذلك مقابل"
-msgstr ""
-
 #: templates/dashboard/reports/payment_receipt.html:244
-msgid "دفعة إيجار عن شهر"
+msgid "سبب الإرجاع"
 msgstr ""
 
 #: templates/dashboard/reports/payment_receipt.html:251
-msgid "المحاسب"
+msgid "على بناء"
 msgstr ""
 
 #: templates/dashboard/reports/payment_receipt.html:256
+msgid "وذلك مقابل"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:258
+msgid "دفعة إيجار عن شهر"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:265
+msgid "المحاسب"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:270
 msgid "المستلم"
 msgstr ""
 
-#: templates/dashboard/reports/payment_receipt.html:334
+#: templates/dashboard/reports/payment_receipt.html:362
 msgid "هاتف"
 msgstr ""
 
-#: templates/dashboard/reports/payment_receipt.html:335
+#: templates/dashboard/reports/payment_receipt.html:363
 msgid "بريد إلكتروني"
 msgstr ""
 
@@ -1582,17 +1788,17 @@ msgid "المعلومات الأساسية"
 msgstr ""
 
 #: templates/dashboard/tenant_detail.html:18
-#: templates/dashboard/tenant_list.html:40
+#: templates/dashboard/tenant_list.html:45
 msgid "الاسم"
 msgstr ""
 
 #: templates/dashboard/tenant_detail.html:26
-#: templates/dashboard/tenant_list.html:42
+#: templates/dashboard/tenant_list.html:47
 msgid "الهاتف"
 msgstr ""
 
 #: templates/dashboard/tenant_detail.html:40
-#: templates/dashboard/tenant_list.html:44
+#: templates/dashboard/tenant_list.html:49
 msgid "التقييم"
 msgstr ""
 
@@ -1631,37 +1837,37 @@ msgstr ""
 msgid "إدارة المستأجرين"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:12
+#: templates/dashboard/tenant_list.html:17
 msgid "إجمالي المستأجرين"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:16
+#: templates/dashboard/tenant_list.html:21
 msgid "أفراد"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:20
+#: templates/dashboard/tenant_list.html:25
 msgid "شركات"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:28
+#: templates/dashboard/tenant_list.html:33
 msgid "ابحث عن مستأجر..."
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:30
+#: templates/dashboard/tenant_list.html:35
 msgid "كل الأنواع"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:34
-#: templates/dashboard/unit_list.html:40
+#: templates/dashboard/tenant_list.html:39
+#: templates/dashboard/unit_list.html:45
 msgid "بحث"
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:69
+#: templates/dashboard/tenant_list.html:74
 msgid "لم يتم العثور على مستأجرين."
 msgstr ""
 
-#: templates/dashboard/tenant_list.html:76
-#: templates/dashboard/unit_list.html:82
+#: templates/dashboard/tenant_list.html:81
+#: templates/dashboard/unit_list.html:87
 #, python-format
 msgid ""
 "\n"
@@ -1699,23 +1905,74 @@ msgstr ""
 msgid "إدارة الوحدات"
 msgstr ""
 
-#: templates/dashboard/unit_list.html:28
+#: templates/dashboard/unit_list.html:33
 msgid "ابحث عن وحدة..."
 msgstr ""
 
-#: templates/dashboard/unit_list.html:30
+#: templates/dashboard/unit_list.html:35
 msgid "كل المباني"
 msgstr ""
 
-#: templates/dashboard/unit_list.html:36
+#: templates/dashboard/unit_list.html:41
 msgid "كل الحالات"
 msgstr ""
 
-#: templates/dashboard/unit_list.html:75
+#: templates/dashboard/unit_list.html:80
 msgid "لم يتم العثور على وحدات."
 msgstr ""
 
-#: templates/portal/base.html:6 templates/portal/base.html:13
+#: templates/dashboard/user_confirm_delete.html:3
+#: templates/dashboard/user_confirm_delete.html:6
+msgid "تأكيد حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:8
+msgid "هل أنت متأكد من حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:10
+msgid ""
+"سيتم حذف جميع البيانات المرتبطة بهذا المستخدم ولا يمكن التراجع عن هذا "
+"الإجراء."
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:15
+msgid "نعم، حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_management.html:13
+msgid "إجمالي المستخدمين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:18
+msgid "الموظفين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:23
+msgid "المستخدمين النشطين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:32
+msgid "الاسم الكامل"
+msgstr ""
+
+#: templates/dashboard/user_management.html:36
+msgid "تاريخ الانضمام"
+msgstr ""
+
+#: templates/dashboard/user_management.html:49
+msgid "مدير النظام"
+msgstr ""
+
+#: templates/dashboard/user_management.html:68
+msgid "معطل"
+msgstr ""
+
+#: templates/dashboard/user_management.html:87
+msgid "لا يوجد مستخدمين"
+msgstr ""
+
+#: templates/portal/base.html:6 templates/portal/base.html:15
 msgid "بوابة المستأجر"
 msgstr ""
 
@@ -1739,39 +1996,35 @@ msgstr ""
 msgid "الإيجار المستحق"
 msgstr ""
 
-#: templates/portal/dashboard.html:33
+#: templates/portal/dashboard.html:34
 msgid "الرصيد المتبقي"
 msgstr ""
 
-#: templates/portal/dashboard.html:46
+#: templates/portal/dashboard.html:47
 msgid "مدفوع"
 msgstr ""
 
-#: templates/portal/dashboard.html:48
+#: templates/portal/dashboard.html:49
 msgid "جزئي"
 msgstr ""
 
-#: templates/portal/dashboard.html:50
+#: templates/portal/dashboard.html:51
 msgid "مستحق"
 msgstr ""
 
-#: templates/portal/dashboard.html:68
+#: templates/portal/dashboard.html:70
 msgid "طلب صيانة جديد"
 msgstr ""
 
-#: templates/portal/dashboard.html:69
-msgid "عرض جميع الطلبات"
-msgstr ""
-
-#: templates/portal/dashboard.html:93
+#: templates/portal/dashboard.html:94
 msgid "لا توجد مستندات."
 msgstr ""
 
-#: templates/portal/dashboard.html:100
+#: templates/portal/dashboard.html:101
 msgid "لا بوحد نشط"
 msgstr ""
 
-#: templates/portal/dashboard.html:101
+#: templates/portal/dashboard.html:102
 msgid "ليس لديك آي عقود إيجار نشطة مرتبطة بحسابك في الوقت الحالي."
 msgstr ""
 
@@ -1799,26 +2052,1373 @@ msgstr ""
 msgid "ليس لديك أي طلبات صيانة."
 msgstr ""
 
-#: templates/registration/login.html:6
+#: templates/registration/login.html:7
 msgid "تسجيل الدخول"
 msgstr ""
 
-#: templates/registration/login.html:12
+#: templates/registration/login.html:40
 msgid "تسجيل الدخول إلى النظام"
 msgstr ""
 
-#: templates/registration/login.html:13
+#: templates/registration/login.html:42
 msgid "اسم المستخدم أو كلمة المرور غير صحيحة."
 msgstr ""
 
-#: templates/registration/login.html:17
-msgid "اسم المستخدم"
+#: templates/registration/login.html:79 templates/registration/login.html:132
+msgid "إظهار كلمة المرور"
 msgstr ""
 
-#: templates/registration/login.html:21
-msgid "كلمة المرور"
+#: templates/registration/login.html:102
+msgid "تذكرني"
 msgstr ""
 
-#: templates/registration/login.html:24
+#: templates/registration/login.html:111
+msgid "نسيت كلمة المرور؟"
+msgstr ""
+
+#: templates/registration/login.html:115
 msgid "دخول"
+msgstr ""
+
+#: templates/registration/login.html:132
+msgid "إخفاء كلمة المرور"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/messages/apps.py:16
+msgid "Messages"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/sitemaps/apps.py:8
+msgid "Site Maps"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/staticfiles/apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/contrib/syndication/apps.py:7
+msgid "Syndication"
+msgstr ""
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:30
+msgid "…"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:32
+msgid "That page number is not an integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:33
+msgid "That page number is less than 1"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/paginator.py:34
+msgid "That page contains no results"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:22
+msgid "Enter a valid value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:70
+msgid "Enter a valid domain name."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:153
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:775
+msgid "Enter a valid URL."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:200
+msgid "Enter a valid integer."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:211
+msgid "Enter a valid email address."
+msgstr ""
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: venv/lib/python3.13/site-packages/django/core/validators.py:289
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:297
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:309
+#: venv/lib/python3.13/site-packages/django/core/validators.py:318
+#: venv/lib/python3.13/site-packages/django/core/validators.py:332
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2220
+#, python-format
+msgid "Enter a valid %(protocol)s address."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:311
+msgid "IPv4"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:320
+#: venv/lib/python3.13/site-packages/django/utils/ipv6.py:43
+msgid "IPv6"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:334
+msgid "IPv4 or IPv6"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:375
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:381
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:416
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:425
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:434
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:441
+#, python-format
+msgid ""
+"Ensure this value is a multiple of step size %(limit_value)s, starting from "
+"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:473
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:491
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:514
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:366
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:405
+msgid "Enter a number."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:516
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:521
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:526
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:597
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/core/validators.py:659
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/base.py:1600
+#: venv/lib/python3.13/site-packages/django/forms/models.py:908
+msgid "and"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/base.py:1602
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/constraints.py:22
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:134
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:135
+msgid "This field cannot be null."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:136
+msgid "This field cannot be blank."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:137
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:141
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:180
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1162
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1163
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1165
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1215
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1217
+msgid "String (unlimited)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1326
+msgid "Comma-separated integers"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1427
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1431
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1566
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1435
+msgid "Date (without time)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1562
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1570
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1575
+msgid "Date (with time)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1702
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1704
+msgid "Decimal number"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1864
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] "
+"[[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1868
+msgid "Duration"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1920
+msgid "Email address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:1945
+msgid "File path"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2023
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2025
+msgid "Floating point number"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2065
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2067
+msgid "Integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2163
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2180
+msgid "Small integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2188
+msgid "IPv4 address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2219
+msgid "IP address"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2310
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2311
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2313
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2364
+msgid "Positive big integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2379
+msgid "Positive integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2394
+msgid "Positive small integer"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2410
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2446
+msgid "Text"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2526
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2530
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2534
+msgid "Time"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2642
+msgid "URL"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2666
+msgid "Raw binary data"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2731
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py:2733
+msgid "Universally unique identifier"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/files.py:244
+msgid "File"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/files.py:420
+msgid "Image"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/json.py:24
+msgid "A JSON object"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/json.py:26
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:979
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r is not a valid choice."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:982
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1276
+msgid "One-to-one relationship"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1333
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1335
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/db/models/fields/related.py:1383
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: venv/lib/python3.13/site-packages/django/forms/boundfield.py:185
+msgid ":?.!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:95
+msgid "This field is required."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:315
+msgid "Enter a whole number."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:486
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1267
+msgid "Enter a valid date."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:509
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1268
+msgid "Enter a valid time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:536
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:570
+msgid "Enter a valid duration."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:571
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:640
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:641
+msgid "No file was submitted."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:642
+msgid "The submitted file is empty."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:644
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:649
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:717
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:889
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:975
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1592
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:977
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1096
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1590
+msgid "Enter a list of values."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1097
+msgid "Enter a complete value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1339
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/fields.py:1369
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: venv/lib/python3.13/site-packages/django/forms/forms.py:97
+msgid ":"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/forms.py:239
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:61
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:65
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:70
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:484
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:491
+msgid "Order"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/formsets.py:499
+msgid "Delete"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:901
+#, python-format
+msgid "Please correct the duplicate data for %(field)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:906
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:913
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:922
+msgid "Please correct the duplicate values below."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1359
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1450
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/models.py:1594
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/utils.py:229
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:527
+msgid "Clear"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:528
+msgid "Currently"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:529
+msgid "Change"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:866
+msgid "Unknown"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:867
+msgid "Yes"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/forms/widgets.py:868
+msgid "No"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:873
+msgid "yes,no,maybe"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:903
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:920
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:922
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:924
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:926
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:928
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/template/defaultfilters.py:930
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:74
+msgid "p.m."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:75
+msgid "a.m."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:80
+msgid "PM"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:81
+msgid "AM"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:153
+msgid "midnight"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dateformat.py:155
+msgid "noon"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:7
+msgid "Monday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:8
+msgid "Tuesday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:9
+msgid "Wednesday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:10
+msgid "Thursday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:11
+msgid "Friday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:12
+msgid "Saturday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:13
+msgid "Sunday"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:16
+msgid "Mon"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:17
+msgid "Tue"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:18
+msgid "Wed"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:19
+msgid "Thu"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:20
+msgid "Fri"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:21
+msgid "Sat"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:22
+msgid "Sun"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:25
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:26
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:27
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:28
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:29
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:30
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:31
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:32
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:33
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:34
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:35
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:36
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:39
+msgid "jan"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:40
+msgid "feb"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:41
+msgid "mar"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:42
+msgid "apr"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:43
+msgid "may"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:44
+msgid "jun"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:45
+msgid "jul"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:46
+msgid "aug"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:47
+msgid "sep"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:48
+msgid "oct"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:49
+msgid "nov"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:50
+msgid "dec"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:53
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:54
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:55
+msgctxt "abbrev. month"
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:56
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:57
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:58
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:59
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:60
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:61
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:62
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:63
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:64
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:67
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:68
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:69
+msgctxt "alt. month"
+msgid "March"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:70
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:71
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:72
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:73
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:74
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:75
+msgctxt "alt. month"
+msgid "September"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:76
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:77
+msgctxt "alt. month"
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/dates.py:78
+msgctxt "alt. month"
+msgid "December"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/ipv6.py:20
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/text.py:76
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/text.py:287
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: venv/lib/python3.13/site-packages/django/utils/text.py:306
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:135
+msgid ", "
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:8
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:9
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:10
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:11
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:12
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/utils/timesince.py:13
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:29
+msgid "Forbidden"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:30
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:34
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:40
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:45
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:54
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:60
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/csrf.py:66
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:44
+msgid "No year specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:64
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:115
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:214
+msgid "Date out of range"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:94
+msgid "No month specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:147
+msgid "No day specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:194
+msgid "No week specified"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:353
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:384
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:680
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because "
+"%(class_name)s.allow_future is False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/dates.py:720
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/detail.py:56
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:70
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:77
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/generic/list.py:173
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:49
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:51
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/static.py:68
+#: venv/lib/python3.13/site-packages/django/views/templates/directory_index.html:8
+#: venv/lib/python3.13/site-packages/django/views/templates/directory_index.html:11
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:7
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:204
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:206
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:208
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:217
+msgid "Django Documentation"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:218
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:226
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:227
+msgid "Get started with Django"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:235
+msgid "Django Community"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:236
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:14
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:54
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:62
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:72
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:82
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:86
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:118
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:137
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:364
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:369
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:379
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:399
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:416
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:435
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:441
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:458
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:470
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:478
+msgid "title"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:18
+msgid "password"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:245
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:264
+msgid "title a"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:249
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:275
+msgid "title b"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:253
+msgid "title c"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:257
+msgid "title d"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/models.py:380
+msgid "visits"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/tests/translation.py:62
+msgid "Sorry, translation is not available."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/modeltranslation/widgets.py:32
+msgid "None"
 msgstr ""
