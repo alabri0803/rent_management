@@ -151,3 +151,4 @@ weasyprint
 whitenoise
 xhtml2pdf
 django-allauth
+PyJWT
