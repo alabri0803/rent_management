@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'modeltranslation',   # تعليق مؤقت لإصلاح النشر
+    'modeltranslation', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
