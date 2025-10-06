@@ -2,76 +2,52 @@
 {% load i18n %}
 {% block title %}{% trans "إدارة العقود" %}{% endblock %}
 {% block content %}
-<div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{% trans "العقود" %}</h2>
-    <div class="flex flex-col sm:flex-row gap-3">
-        <a href="{% url 'export_leases_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold text-center text-sm md:text-base">
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">{% trans "العقود" %}</h2>
+    <div class="flex gap-3">
+        <a href="{% url 'export_leases_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
             📊 {% trans "تصدير Excel" %}
         </a>
-        <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold text-center text-sm md:text-base">{% trans "إضافة عقد جديد" %}</a>
+        <a href="{% url 'lease_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة عقد جديد" %}</a>
     </div>
 </div>
-
 <div class="card overflow-hidden">
-    <div class="p-4">
-        <form method="get">
-            <input type="text" name="q" placeholder="{% trans 'ابحث عن عقد...' %}" class="w-full p-3 border rounded-md text-base">
-        </form>
-    </div>
-    
-    <div class="overflow-x-auto">
-        <table class="w-full text-start min-w-max">
-            <thead class="bg-gray-50 border-b">
-                <tr>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "رقم العقد" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "المستأجر" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "الوحدة" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "تاريخ الانتهاء" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "أيام متبقية" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "الإيجار الشهري" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "الحالة" %}</th>
-                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "إجراءات" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lease in leases %}
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">
-                        <a href="{{ lease.get_absolute_url }}" class="font-bold text-blue-600">{{ lease.contract_number }}</a>
-                    </td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm">{{ lease.tenant.name }}</td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm">{{ lease.unit }}</td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{{ lease.end_date|date:"d M Y" }}</td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">
-                        {% if lease.days_until_expiry != None %}
-                            {% if lease.days_until_expiry < 0 %}
-                                <span class="text-red-600 font-bold">{% trans "منتهي" %}</span>
-                            {% elif lease.days_until_expiry == 0 %}
-                                <span class="text-orange-600 font-bold">{% trans "اليوم" %}</span>
-                            {% elif lease.days_until_expiry < 30 %}
-                                <span class="text-orange-600 font-bold">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
-                            {% else %}
-                                <span class="text-green-600">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
-                            {% endif %}
+    <div class="p-4"><form method="get"><input type="text" name="q" placeholder="{% trans 'ابحث عن عقد...' %}" class="w-full p-2 border rounded-md"></form></div>
+    <table class="w-full text-start">
+        <thead class="bg-gray-50 border-b">
+            <tr><th class="p-4">{% trans "رقم العقد" %}</th><th class="p-4">{% trans "المستأجر" %}</th><th class="p-4">{% trans "الوحدة" %}</th><th class="p-4">{% trans "تاريخ الانتهاء" %}</th><th class="p-4">{% trans "أيام متبقية" %}</th><th class="p-4">{% trans "الإيجار الشهري" %}</th><th class="p-4">{% trans "الحالة" %}</th><th class="p-4">{% trans "إجراءات" %}</th></tr>
+        </thead>
+        <tbody>
+            {% for lease in leases %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4"><a href="{{ lease.get_absolute_url }}" class="font-bold text-blue-600">{{ lease.contract_number }}</a></td>
+                <td class="p-4">{{ lease.tenant.name }}</td>
+                <td class="p-4">{{ lease.unit }}</td>
+                <td class="p-4">{{ lease.end_date|date:"d M Y" }}</td>
+                <td class="p-4">
+                    {% if lease.days_until_expiry != None %}
+                        {% if lease.days_until_expiry < 0 %}
+                            <span class="text-red-600 font-bold">{% trans "منتهي" %}</span>
+                        {% elif lease.days_until_expiry == 0 %}
+                            <span class="text-orange-600 font-bold">{% trans "اليوم" %}</span>
+                        {% elif lease.days_until_expiry < 30 %}
+                            <span class="text-orange-600 font-bold">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
                         {% else %}
-                            <span class="text-gray-400">-</span>
+                            <span class="text-green-600">{{ lease.days_until_expiry }} {% trans "يوم" %}</span>
                         {% endif %}
-                    </td>
-                    <td class="p-3 md:p-4 font-mono text-xs md:text-sm whitespace-nowrap">{{ lease.monthly_rent|floatformat:2 }}</td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm">
-                        <span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span>
-                    </td>
-                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">
-                        <a href="{{ lease.get_absolute_url }}" class="text-blue-600 hover:underline">{% trans "تفاصيل" %}</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="8" class="p-6 text-center text-gray-500 text-sm">{% trans "لم يتم العثور على عقود." %}</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
+                    {% else %}
+                        <span class="text-gray-400">-</span>
+                    {% endif %}
+                </td>
+                <td class="p-4 font-mono">{{ lease.monthly_rent|floatformat:2 }}</td>
+                <td class="p-4"><span class="status-badge status-{{ lease.get_status_color }}">{{ lease.get_status_display }}</span></td>
+                <td class="p-4"><a href="{{ lease.get_absolute_url }}" class="text-blue-600 hover:underline">{% trans "تفاصيل" %}</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="p-6 text-center text-gray-500">{% trans "لم يتم العثور على عقود." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% if is_paginated %}
     <div class="p-4 flex justify-center">
         <span class="text-sm text-gray-700">
