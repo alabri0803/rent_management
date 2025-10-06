@@ -10,54 +10,53 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap'); 
-        body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; } 
-        :root { --primary-color: #993333; --secondary-color: #D4AF37; } 
-        .sidebar { background-color: #1a202c; transition: transform 0.3s ease-in-out; transform: translateX(-100%); left: 0; right: auto; } 
-        .lang-ar .sidebar { transform: translateX(100%); left: auto; right: 0; }
-        .sidebar nav a { color: #a0aec0; transition: all 0.2s; min-height: 44px; display: flex; align-items: center; } 
-        .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; } 
-        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } 
-        .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; min-height: 44px; } 
-        .btn-primary:hover { background-color: #7c2a2a; } 
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; } 
-        .status-active { background-color: #dcfce7; color: #166534; } 
-        .status-expiring { background-color: #fef9c3; color: #854d0e; } 
-        .status-expired { background-color: #fee2e2; color: #991b1b; } 
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap');
+        body { font-family: '{% if LANGUAGE_CODE == 'ar' %}Tajawal{% else %}Inter{% endif %}', sans-serif; background-color: #f7fafc; }
+        :root { --primary-color: #993333; --secondary-color: #D4AF37; }
+        .sidebar { background-color: #1a202c; transition: transform 0.3s ease-in-out; }
+        .sidebar nav a { color: #a0aec0; transition: all 0.2s; min-height: 44px; display: flex; align-items: center; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: var(--primary-color); color: white; }
+        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+        .btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s; min-height: 44px; }
+        .btn-primary:hover { background-color: #7c2a2a; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-active { background-color: #dcfce7; color: #166534; }
+        .status-expiring { background-color: #fef9c3; color: #854d0e; }
+        .status-expired { background-color: #fee2e2; color: #991b1b; }
         .status-cancelled { background-color: #e5e7eb; color: #374151; }
 
         /* Icon & nav layout */
         .nav-item { display: flex; align-items: center; gap: 0.75rem; }
-        .nav-icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; stroke-width: 1.5; color: #cbd5e1; }
+        .nav-icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; color: currentColor; display: inline-block; }
         .lang-ar .nav-item { flex-direction: row-reverse; }
-        .lang-ar .nav-icon { transform: none; }
 
         @media (max-width: 768px) {
-            .sidebar { 
-                position: fixed; 
-                top: 0; 
+            .sidebar {
+                position: fixed;
+                top: 0;
                 left: 0;
                 right: auto;
-                height: 100vh; 
-                z-index: 50; 
-                /* Remove dynamic transform from CSS, will set inline below */
+                height: 100vh;
+                z-index: 50;
+                transform: translateX(-100%);
             }
-            .sidebar.open { transform: translateX(0); }
-            .overlay { 
-                position: fixed; 
-                inset: 0; 
-                background-color: rgba(0, 0, 0, 0.5); 
-                z-index: 40; 
-                display: none; 
+            .lang-ar .sidebar { left: auto; right: 0; transform: translateX(100%); }
+            .sidebar.open { transform: translateX(0) !important; }
+            .overlay {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 40;
+                display: none;
             }
             .overlay.show { display: block; }
         }
-        
-        button, a, input, select, textarea { 
-            min-height: 44px; 
-            min-width: 44px; 
+
+        button, a, input, select, textarea {
+            min-height: 44px;
+            min-width: 44px;
         }
-        
+
         @media (max-width: 640px) {
             body { font-size: 16px; }
         }
@@ -66,20 +65,16 @@
 <body class="text-gray-700">
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<button onclick="toggleMenu()" class="md:hidden fixed top-4 {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %}-4 z-50 bg-[#993333] text-white p-3 rounded-lg shadow-lg">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-    </svg>
+<button onclick="toggleMenu()" class="md:hidden fixed top-4 {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %}-4 z-50 bg-[#993333] text-white p-3 rounded-lg shadow-lg" aria-label="Menu">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
 </button>
 
-<aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col overflow-y-auto" id="sidebar">
-    style="{% if LANGUAGE_CODE == 'ar' %}transform: translateX(100%); left: auto; right: 0;{% else %}transform: translateX(-100%); left: 0; right: auto;{% endif %}">
-    <button onclick="toggleMenu()" class="md:hidden absolute top-4 {% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}-4 text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+<div class="flex h-screen overflow-hidden">
+<aside class="sidebar w-64 p-6 text-white flex-shrink-0 flex flex-col overflow-y-auto" id="sidebar" aria-hidden="true">
+    <button onclick="toggleMenu()" class="md:hidden absolute top-4 {% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}-4 text-white" aria-label="Close">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
-    
+
     <div class="text-center mb-6 md:mb-10">
         {% get_company_logo as logo %}
         {% if logo %}
@@ -88,56 +83,67 @@
         <h1 class="text-xl md:text-2xl font-bold">{% get_company_name %}</h1>
         <p class="text-xs md:text-sm text-gray-400">{% trans "ادارة الايجارات" %}</p>
     </div>
-    
-    <nav class="flex-1 overflow-y-auto">
+
+    <nav class="flex-1 overflow-y-auto" role="navigation" aria-label="{% trans 'Primary' %}">
         <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-7 9 7v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V12H9v7a2 2 0 0 1-2 2H3z"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-7 9 7v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V12H9v7a2 2 0 0 1-2 2H3z"/></svg>
             {% trans "لوحة المعلومات" %}
         </a>
+
         <a href="{% url 'building_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'building' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 21V7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14M3 21h18"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21V7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14M3 21h18"/></svg>
             {% trans "المباني" %}
         </a>
+
         <a href="{% url 'unit_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'unit' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             {% trans "الوحدات" %}
         </a>
+
         <a href="{% url 'tenant_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'tenant' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.6 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.6 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             {% trans "المستأجرين" %}
         </a>
+
         <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             {% trans "العقود" %}
         </a>
+
         <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 3v4M8 3v4"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 3v4M8 3v4"/></svg>
             {% trans "المدفوعات" %}
         </a>
+
         <a href="{% url 'check_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'check' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M21 12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M21 12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/></svg>
             {% trans "إدارة الشيكات" %}
         </a>
+
         <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/></svg>
             {% trans "المصاريف" %}
         </a>
+
         <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.24 13.78l-7.07-7.07a4 4 0 00-5.66 5.66l7.07 7.07a4 4 0 005.66-5.66z"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.24 13.78l-7.07-7.07a4 4 0 00-5.66 5.66l7.07 7.07a4 4 0 005.66-5.66z"/></svg>
             {% trans "الصيانة" %}
         </a>
+
         <a href="{% url 'user_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
             {% trans "إدارة المستخدمين" %}
         </a>
+
         <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+            <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
             {% trans "التقارير" %}
         </a>
     </nav>
-    
+
     <div class="mt-auto pt-4 border-t border-gray-700">
         <a href="{% url 'company_update' %}" class="block py-2 px-4 rounded-lg mb-2 text-sm md:text-base text-gray-300 hover:bg-gray-700">{% trans "الاعدادات" %}</a>
+
         <form action="{% url 'set_language' %}" method="post" class="mb-4">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}">
@@ -148,6 +154,7 @@
                 {% endfor %}
             </select>
         </form>
+
         <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left py-3 px-4 rounded-lg text-sm md:text-base text-gray-400 hover:bg-red-800 hover:text-white">{% trans "تسجيل الخروج" %}</button></form>
     </div>
 </aside>
@@ -169,22 +176,24 @@ function toggleMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
 
-    // On mobile, set correct transform direction based on language
+    // For mobile, ensure starting transform matches language before toggling
     if (!sidebar.classList.contains('open')) {
         if ("{{ LANGUAGE_CODE }}" === "ar") {
             sidebar.style.transform = 'translateX(100%)';
+            sidebar.style.right = '0';
+            sidebar.style.left = 'auto';
         } else {
             sidebar.style.transform = 'translateX(-100%)';
+            sidebar.style.left = '0';
+            sidebar.style.right = 'auto';
         }
-        // allow CSS transition then toggle
-        requestAnimationFrame(() => {
-            sidebar.classList.add('open');
-        });
+        // trigger a frame so transition applies
+        requestAnimationFrame(() => sidebar.classList.add('open'));
+        overlay.classList.add('show');
     } else {
         sidebar.classList.remove('open');
+        overlay.classList.remove('show');
     }
-
-    overlay.classList.toggle('show');
 }
 
 document.querySelectorAll('.sidebar nav a').forEach(link => {
