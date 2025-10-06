@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load dashboard_extras %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' %}rtl{% else %}ltr{% endif %}" class="{% if LANGUAGE_CODE == 'ar' %}lang-ar{% endif %}">
 <head>
@@ -24,7 +25,13 @@
         .status-expiring { background-color: #fef9c3; color: #854d0e; } 
         .status-expired { background-color: #fee2e2; color: #991b1b; } 
         .status-cancelled { background-color: #e5e7eb; color: #374151; }
-        
+
+        /* Icon & nav layout */
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; }
+        .nav-icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; stroke-width: 1.5; color: #cbd5e1; }
+        .lang-ar .nav-item { flex-direction: row-reverse; }
+        .lang-ar .nav-icon { transform: none; }
+
         @media (max-width: 768px) {
             .sidebar { 
                 position: fixed; 
@@ -83,17 +90,50 @@
     </div>
     
     <nav class="flex-1 overflow-y-auto">
-        <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">{% trans "لوحة المعلومات" %}</a>
-        <a href="{% url 'building_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'building' in request.resolver_match.url_name %}active{% endif %}">{% trans "المباني" %}</a>
-        <a href="{% url 'unit_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'unit' in request.resolver_match.url_name %}active{% endif %}">{% trans "الوحدات" %}</a>
-        <a href="{% url 'tenant_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'tenant' in request.resolver_match.url_name %}active{% endif %}">{% trans "المستأجرين" %}</a>
-        <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">{% trans "العقود" %}</a>
-        <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">{% trans "المدفوعات" %}</a>
-        <a href="{% url 'check_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'check' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة الشيكات" %}</a>
-        <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">{% trans "المصاريف" %}</a>
-        <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">{% trans "الصيانة" %}</a>
-        <a href="{% url 'user_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'user' in request.resolver_match.url_name %}active{% endif %}">{% trans "إدارة المستخدمين" %}</a>
-        <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base {% if 'report' in request.resolver_match.url_name %}active{% endif %}">{% trans "التقارير" %}</a>
+        <a href="{% url 'dashboard_home' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-7 9 7v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V12H9v7a2 2 0 0 1-2 2H3z"/></svg>
+            {% trans "لوحة المعلومات" %}
+        </a>
+        <a href="{% url 'building_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'building' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 21V7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14M3 21h18"/></svg>
+            {% trans "المباني" %}
+        </a>
+        <a href="{% url 'unit_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'unit' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            {% trans "الوحدات" %}
+        </a>
+        <a href="{% url 'tenant_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'tenant' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.6 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            {% trans "المستأجرين" %}
+        </a>
+        <a href="{% url 'lease_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'lease' in request.resolver_match.url_name or request.path == '/dashboard/' %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            {% trans "العقود" %}
+        </a>
+        <a href="{% url 'payment_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'payment' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 3v4M8 3v4"/></svg>
+            {% trans "المدفوعات" %}
+        </a>
+        <a href="{% url 'check_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'check' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M21 12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/></svg>
+            {% trans "إدارة الشيكات" %}
+        </a>
+        <a href="{% url 'expense_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'expense' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/></svg>
+            {% trans "المصاريف" %}
+        </a>
+        <a href="{% url 'maintenance_admin_list' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.24 13.78l-7.07-7.07a4 4 0 00-5.66 5.66l7.07 7.07a4 4 0 005.66-5.66z"/></svg>
+            {% trans "الصيانة" %}
+        </a>
+        <a href="{% url 'user_management' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
+            {% trans "إدارة المستخدمين" %}
+        </a>
+        <a href="{% url 'report_selection' %}" class="block py-3 px-4 rounded-lg mb-2 text-sm md:text-base nav-item {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+            {% trans "التقارير" %}
+        </a>
     </nav>
     
     <div class="mt-auto pt-4 border-t border-gray-700">
@@ -128,7 +168,22 @@
 function toggleMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    sidebar.classList.toggle('open');
+
+    // On mobile, set correct transform direction based on language
+    if (!sidebar.classList.contains('open')) {
+        if ("{{ LANGUAGE_CODE }}" === "ar") {
+            sidebar.style.transform = 'translateX(100%)';
+        } else {
+            sidebar.style.transform = 'translateX(-100%)';
+        }
+        // allow CSS transition then toggle
+        requestAnimationFrame(() => {
+            sidebar.classList.add('open');
+        });
+    } else {
+        sidebar.classList.remove('open');
+    }
+
     overlay.classList.toggle('show');
 }
 
