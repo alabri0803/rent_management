@@ -1616,7 +1616,7 @@ msgstr "Delete the tenant"
 #: templates/dashboard/tenant_confirm_delete.html:8
 #, python-format
 msgid "هل أنت متأكد من حذف المستأجر %(tenant_name)s؟"
-msgstr "Are you sure the tenant is deleted?"
+msgstr "Are you sure you want to delete tenant %(tenant_name)s?"
 
 #: templates/dashboard/tenant_confirm_delete.html:11
 msgid "تحذير: سيتم حذف جميع العقود المرتبطة بهذا المستأجر أيضاً!"
@@ -1904,15 +1904,15 @@ msgstr "Username or password is incorrect."
 
 #: templates/registration/login.html:17
 msgid "اسم المستخدم"
-msgstr "user name"
+msgstr "Username"
 
 #: templates/registration/login.html:21
 msgid "كلمة المرور"
-msgstr "password"
+msgstr "Password"
 
 #: templates/registration/login.html:24
 msgid "دخول"
-msgstr "entrance"
+msgstr "Login"
 
 #~ msgid "صافي الربح السنوي"
 #~ msgstr "Annual Net Profit"
