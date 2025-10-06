@@ -175,6 +175,7 @@ SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         # These are the permissions you want to request from Google.
