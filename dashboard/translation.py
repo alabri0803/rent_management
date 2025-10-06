@@ -1,5 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Building, Tenant, Expense
+from .models import Building, Tenant, Expense, Company
 
 
 class BuildingTranslationOptions(TranslationOptions):
@@ -14,6 +14,11 @@ class ExpenseTranslationOptions(TranslationOptions):
     fields = ('description',)
 
 
+class CompanyTranslationOptions(TranslationOptions):
+    fields = ('name', 'address')
+
+
 translator.register(Building, BuildingTranslationOptions)
 translator.register(Tenant, TenantTranslationOptions)
 translator.register(Expense, ExpenseTranslationOptions)
+translator.register(Company, CompanyTranslationOptions)
