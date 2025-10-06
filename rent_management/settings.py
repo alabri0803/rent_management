@@ -97,8 +97,7 @@ DATABASES = {
         'USER': 'AdminAlabrialabr',
         'PASSWORD': 'Alabri@@@99',
         #'PORT': '3306',
-        'HOST': 'AdminAlabrialabri.mysql.pythonanywhere-services.com
-',
+        'HOST': 'AdminAlabrialabri.mysql.pythonanywhere-services.com',
     }
 }
 
