@@ -93,11 +93,12 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ox3h62lb0h2hwudt',
-        'USER': 'oilpoycpc2s9fv9d',
-        'PASSWORD': 'n6wwd3n0pw6kckir',
+        'NAME': 'rent_management',
+        'USER': 'AdminAlabrialabr',
+        'PASSWORD': 'Alabri@@@99',
         'PORT': '3306',
-        'HOST': 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+        'HOST': 'AdminAlabrialabri.mysql.pythonanywhere-services.com
+',
     }
 }
 
