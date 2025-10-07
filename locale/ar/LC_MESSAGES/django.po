@@ -1,0 +1,2100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-07 18:14+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+#: dashboard/apps.py:7 templates/dashboard/base.html:9
+msgid "لوحة التحكم"
+msgstr ""
+
+#: dashboard/forms.py:70
+msgid "يرجى ذكر سبب إلغاء العقد..."
+msgstr ""
+
+#: dashboard/forms.py:111
+msgid "مثال: نسخة من العقد الموقّع"
+msgstr ""
+
+#: dashboard/forms.py:150 dashboard/models.py:249
+msgid "حالة الشيك مطلوبة عند اختيار طريقة الدفع بالشيك"
+msgstr ""
+
+#: dashboard/forms.py:153 dashboard/models.py:252
+msgid "سبب إرجاع الشيك مطلوب عند اختيار حالة \"مرتجع\""
+msgstr ""
+
+#: dashboard/management/commands/send_payment_reminders.py:13
+msgid "Starting payment reminders process..."
+msgstr ""
+
+#: dashboard/management/commands/send_payment_reminders.py:22
+msgid ""
+"تذكير: دفعة ايجار عقد ٪(contracts)s عن شهر ٪(month)s / ٪(year)s تستحق قريبا."
+msgstr ""
+
+#: dashboard/management/commands/send_payment_reminders.py:33
+#, python-format
+msgid ""
+"تنبيه: يوجد مبلغ متاخر بقيمة %(balance)s على عقد %(contract)s عن شهر "
+"%(month)s / %(year)s."
+msgstr ""
+
+#: dashboard/management/commands/send_payment_reminders.py:39
+msgid "Process finished."
+msgstr ""
+
+#: dashboard/management/commands/update_lease_statues.py:9
+msgid "Starting lease status update process..."
+msgstr ""
+
+#: dashboard/management/commands/update_lease_statues.py:21
+msgid "Lease"
+msgstr ""
+
+#: dashboard/management/commands/update_lease_statues.py:21
+msgid "status updated to"
+msgstr ""
+
+#: dashboard/management/commands/update_lease_statues.py:25
+#, python-format
+msgid "Process finished. Updated %(count)d leases."
+msgstr ""
+
+#: dashboard/models.py:14
+msgid "اسم الشركة"
+msgstr ""
+
+#: dashboard/models.py:15
+msgid "الشعار"
+msgstr ""
+
+#: dashboard/models.py:16
+msgid "البريد الإلكتروني للتواصل"
+msgstr ""
+
+#: dashboard/models.py:17
+msgid " الهاتف للتواصل"
+msgstr ""
+
+#: dashboard/models.py:18 dashboard/models.py:29
+#: templates/dashboard/maintenance_list.html:14
+msgid "العنوان"
+msgstr ""
+
+#: dashboard/models.py:21 dashboard/models.py:22
+msgid "ملف الشركة"
+msgstr ""
+
+#: dashboard/models.py:28
+msgid "اسم المبنى"
+msgstr ""
+
+#: dashboard/models.py:32
+msgid "مبنى"
+msgstr ""
+
+#: dashboard/models.py:33 templates/dashboard/base.html:107
+#: templates/dashboard/building_list.html:6
+msgid "المباني"
+msgstr ""
+
+#: dashboard/models.py:39
+msgid "مكتب"
+msgstr ""
+
+#: dashboard/models.py:39
+msgid "شقة"
+msgstr ""
+
+#: dashboard/models.py:39
+msgid "محل"
+msgstr ""
+
+#: dashboard/models.py:40 dashboard/models.py:300
+#: templates/dashboard/expense_list.html:18
+#: templates/dashboard/unit_detail.html:22
+#: templates/dashboard/unit_list.html:53
+msgid "المبنى"
+msgstr ""
+
+#: dashboard/models.py:41 templates/dashboard/reports/occupancy_report.html:40
+#: templates/dashboard/unit_detail.html:18
+#: templates/dashboard/unit_list.html:52
+msgid "رقم الوحدة"
+msgstr ""
+
+#: dashboard/models.py:42
+msgid "نوع الوحدة"
+msgstr ""
+
+#: dashboard/models.py:43 templates/dashboard/unit_detail.html:30
+#: templates/dashboard/unit_list.html:55
+msgid "الطابق"
+msgstr ""
+
+#: dashboard/models.py:44
+msgid "متاحة للإيجار"
+msgstr ""
+
+#: dashboard/models.py:47
+msgid "وحدة"
+msgstr ""
+
+#: dashboard/models.py:48 templates/dashboard/base.html:111
+#: templates/dashboard/home.html:151 templates/dashboard/unit_list.html:6
+msgid "الوحدات"
+msgstr ""
+
+#: dashboard/models.py:54 templates/dashboard/tenant_list.html:36
+msgid "فرد"
+msgstr ""
+
+#: dashboard/models.py:54 templates/dashboard/tenant_list.html:37
+msgid "شركة"
+msgstr ""
+
+#: dashboard/models.py:55
+msgid "حساب المستخدم"
+msgstr ""
+
+#: dashboard/models.py:55
+msgid "اربط المستأجر بحساب مستخدم لتسجيل الدخول إلى البوابة."
+msgstr ""
+
+#: dashboard/models.py:56
+msgid "اسم المستأجر"
+msgstr ""
+
+#: dashboard/models.py:57
+msgid "نوع المستأجر"
+msgstr ""
+
+#: dashboard/models.py:58
+msgid "رقم الهاتف"
+msgstr ""
+
+#: dashboard/models.py:59 dashboard/views.py:645
+#: templates/dashboard/tenant_detail.html:30
+#: templates/dashboard/tenant_list.html:49
+#: templates/dashboard/user_management.html:34
+msgid "البريد الإلكتروني"
+msgstr ""
+
+#: dashboard/models.py:60 templates/dashboard/tenant_detail.html:35
+msgid "المفوض بالتوقيع"
+msgstr ""
+
+#: dashboard/models.py:60 templates/dashboard/tenant_form.html:50
+msgid "يُملأ فقط في حال كان المستأجر شركة"
+msgstr ""
+
+#: dashboard/models.py:61 templates/dashboard/lease_detail.html:28
+msgid "تقييم العميل"
+msgstr ""
+
+#: dashboard/models.py:61
+msgid "من 1 إلى 5 نجوم."
+msgstr ""
+
+#: dashboard/models.py:64 templates/dashboard/user_management.html:58
+msgid "مستأجر"
+msgstr ""
+
+#: dashboard/models.py:65 templates/dashboard/base.html:157
+#: templates/dashboard/tenant_list.html:6
+msgid "المستأجرين"
+msgstr ""
+
+#: dashboard/models.py:71
+msgid "عنوان القالب"
+msgstr ""
+
+#: dashboard/models.py:72
+msgid "محتوى القالب"
+msgstr ""
+
+#: dashboard/models.py:72
+msgid "استخدم HTML لتخصيص القالب."
+msgstr ""
+
+#: dashboard/models.py:75
+msgid "قالب عقد"
+msgstr ""
+
+#: dashboard/models.py:76
+msgid "قوالب العقود"
+msgstr ""
+
+#: dashboard/models.py:82 dashboard/views.py:636
+#: templates/dashboard/user_management.html:65
+msgid "نشط"
+msgstr ""
+
+#: dashboard/models.py:82
+msgid "قريب الانتهاء"
+msgstr ""
+
+#: dashboard/models.py:82 templates/dashboard/lease_list.html:48
+msgid "منتهي"
+msgstr ""
+
+#: dashboard/models.py:82 dashboard/models.py:265
+msgid "ملغي"
+msgstr ""
+
+#: dashboard/models.py:83 templates/dashboard/lease_detail.html:24
+#: templates/dashboard/lease_list.html:28
+#: templates/dashboard/maintenance_detail.html:9
+#: templates/dashboard/reports/tenant_statement.html:21
+#: templates/dashboard/tenant_detail.html:76
+#: templates/dashboard/tenant_detail.html:105
+#: templates/portal/dashboard.html:20
+msgid "الوحدة"
+msgstr ""
+
+#: dashboard/models.py:84 templates/dashboard/check_management.html:36
+#: templates/dashboard/check_status_form.html:12
+#: templates/dashboard/lease_list.html:27
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/payment_list.html:21
+#: templates/dashboard/reports/annual_pl_report.html:23
+#: templates/dashboard/reports/monthly_pl_report.html:9
+#: templates/dashboard/reports/occupancy_report.html:40
+#: templates/dashboard/reports/tenant_statement.html:20
+#: templates/dashboard/unit_detail.html:53
+#: templates/dashboard/unit_detail.html:79
+msgid "المستأجر"
+msgstr ""
+
+#: dashboard/models.py:85 templates/dashboard/lease_detail.html:10
+#: templates/dashboard/lease_list.html:26
+#: templates/dashboard/payment_list.html:22
+#: templates/dashboard/reports/tenant_statement.html:21
+#: templates/dashboard/tenant_detail.html:75
+#: templates/dashboard/tenant_detail.html:104
+#: templates/dashboard/unit_detail.html:49
+#: templates/dashboard/unit_detail.html:78 templates/portal/dashboard.html:19
+msgid "رقم العقد"
+msgstr ""
+
+#: dashboard/models.py:86
+msgid "رقم نموذج العقد"
+msgstr ""
+
+#: dashboard/models.py:87
+msgid "مبلغ الإيجار الشهري"
+msgstr ""
+
+#: dashboard/models.py:88
+msgid "تاريخ بدء العقد"
+msgstr ""
+
+#: dashboard/models.py:89
+msgid "تاريخ انتهاء العقد"
+msgstr ""
+
+#: dashboard/models.py:90
+msgid "رقم عداد الكهرباء"
+msgstr ""
+
+#: dashboard/models.py:91
+msgid "رقم عداد المياه"
+msgstr ""
+
+#: dashboard/models.py:92
+msgid "حالة العقد"
+msgstr ""
+
+#: dashboard/models.py:93
+msgid "رسوم المكتب"
+msgstr ""
+
+#: dashboard/models.py:94
+msgid "الرسوم الإدارية"
+msgstr ""
+
+#: dashboard/models.py:95
+msgid "رسوم تسجيل العقد (3%)"
+msgstr ""
+
+#: dashboard/models.py:96 templates/dashboard/lease_detail.html:44
+msgid "تاريخ الإلغاء"
+msgstr ""
+
+#: dashboard/models.py:97 templates/dashboard/lease_detail.html:45
+msgid "سبب الإلغاء"
+msgstr ""
+
+#: dashboard/models.py:100
+msgid "عقد إيجار"
+msgstr ""
+
+#: dashboard/models.py:101
+msgid "عقود الإيجار"
+msgstr ""
+
+#: dashboard/models.py:214
+msgid "نقداً"
+msgstr ""
+
+#: dashboard/models.py:215
+msgid "شيك"
+msgstr ""
+
+#: dashboard/models.py:216
+msgid "تحويل بنكي"
+msgstr ""
+
+#: dashboard/models.py:217 dashboard/models.py:299
+msgid "أخرى"
+msgstr ""
+
+#: dashboard/models.py:221
+msgid "معلق - في الانتظار"
+msgstr ""
+
+#: dashboard/models.py:222
+msgid "تم الصرف"
+msgstr ""
+
+#: dashboard/models.py:223
+msgid "مرتجع"
+msgstr ""
+
+#: dashboard/models.py:226 dashboard/models.py:267 dashboard/models.py:285
+msgid "العقد"
+msgstr ""
+
+#: dashboard/models.py:227 templates/dashboard/payment_list.html:20
+#: templates/dashboard/reports/tenant_statement.html:26
+msgid "تاريخ الدفع"
+msgstr ""
+
+#: dashboard/models.py:228
+msgid "المبلغ المدفوع"
+msgstr ""
+
+#: dashboard/models.py:229
+msgid "دفعة عن شهر"
+msgstr ""
+
+#: dashboard/models.py:230
+msgid "دفعة عن سنة"
+msgstr ""
+
+#: dashboard/models.py:231 templates/dashboard/lease_detail.html:55
+#: templates/dashboard/payment_list.html:25
+#: templates/dashboard/reports/payment_receipt.html:215
+msgid "طريقة الدفع"
+msgstr ""
+
+#: dashboard/models.py:232 templates/dashboard/check_management.html:35
+#: templates/dashboard/check_status_form.html:11
+#: templates/dashboard/reports/payment_receipt.html:221
+msgid "رقم الشيك"
+msgstr ""
+
+#: dashboard/models.py:233 templates/dashboard/check_management.html:38
+#: templates/dashboard/check_status_form.html:15
+#: templates/dashboard/reports/payment_receipt.html:226
+msgid "تاريخ الشيك"
+msgstr ""
+
+#: dashboard/models.py:234 templates/dashboard/reports/payment_receipt.html:231
+msgid "اسم البنك"
+msgstr ""
+
+#: dashboard/models.py:235 templates/dashboard/reports/payment_receipt.html:237
+msgid "حالة الشيك"
+msgstr ""
+
+#: dashboard/models.py:236
+msgid "سبب إرجاع الشيك"
+msgstr ""
+
+#: dashboard/models.py:237
+msgid "ملاحظات"
+msgstr ""
+
+#: dashboard/models.py:240
+msgid "دفعة"
+msgstr ""
+
+#: dashboard/models.py:241 templates/portal/dashboard.html:26
+msgid "الدفعات"
+msgstr ""
+
+#: dashboard/models.py:265
+msgid "تم الإرسال"
+msgstr ""
+
+#: dashboard/models.py:265
+msgid "قيد التنفيذ"
+msgstr ""
+
+#: dashboard/models.py:265
+msgid "مكتمل"
+msgstr ""
+
+#: dashboard/models.py:266
+msgid "منخفضة"
+msgstr ""
+
+#: dashboard/models.py:266
+msgid "متوسطة"
+msgstr ""
+
+#: dashboard/models.py:266
+msgid "عالية"
+msgstr ""
+
+#: dashboard/models.py:268
+msgid "عنوان الطلب"
+msgstr ""
+
+#: dashboard/models.py:269 templates/dashboard/maintenance_detail.html:14
+msgid "وصف المشكلة"
+msgstr ""
+
+#: dashboard/models.py:270 templates/dashboard/maintenance_detail.html:10
+#: templates/dashboard/maintenance_list.html:14
+msgid "الأولوية"
+msgstr ""
+
+#: dashboard/models.py:271 templates/dashboard/check_management.html:40
+#: templates/dashboard/lease_detail.html:55
+#: templates/dashboard/lease_list.html:32
+#: templates/dashboard/maintenance_detail.html:11
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/reports/occupancy_report.html:40
+#: templates/dashboard/tenant_detail.html:79
+#: templates/dashboard/tenant_detail.html:107
+#: templates/dashboard/unit_detail.html:34
+#: templates/dashboard/unit_detail.html:81
+#: templates/dashboard/unit_list.html:56
+#: templates/dashboard/user_management.html:36
+#: templates/portal/dashboard.html:35 templates/portal/maintenance_list.html:14
+msgid "الحالة"
+msgstr ""
+
+#: dashboard/models.py:272
+msgid "صورة مرفقة (اختياري)"
+msgstr ""
+
+#: dashboard/models.py:273
+msgid "تاريخ الإبلاغ"
+msgstr ""
+
+#: dashboard/models.py:274
+msgid "ملاحظات الموظف"
+msgstr ""
+
+#: dashboard/models.py:277
+msgid "طلب صيانة"
+msgstr ""
+
+#: dashboard/models.py:278 templates/dashboard/maintenance_list.html:6
+#: templates/portal/base.html:19 templates/portal/dashboard.html:69
+#: templates/portal/maintenance_list.html:3
+msgid "طلبات الصيانة"
+msgstr ""
+
+#: dashboard/models.py:286
+msgid "عنوان المستند"
+msgstr ""
+
+#: dashboard/models.py:287
+msgid "الملف"
+msgstr ""
+
+#: dashboard/models.py:288
+msgid "تاريخ الرفع"
+msgstr ""
+
+#: dashboard/models.py:291
+msgid "مستند"
+msgstr ""
+
+#: dashboard/models.py:292 templates/dashboard/lease_detail.html:86
+#: templates/portal/dashboard.html:87
+msgid "المستندات"
+msgstr ""
+
+#: dashboard/models.py:299
+msgid "صيانة"
+msgstr ""
+
+#: dashboard/models.py:299
+msgid "خدمات (كهرباء، ماء)"
+msgstr ""
+
+#: dashboard/models.py:299
+msgid "رواتب"
+msgstr ""
+
+#: dashboard/models.py:299
+msgid "تسويق"
+msgstr ""
+
+#: dashboard/models.py:299
+msgid "رسوم إدارية/حكومية"
+msgstr ""
+
+#: dashboard/models.py:301
+msgid "فئة المصروف"
+msgstr ""
+
+#: dashboard/models.py:302 templates/dashboard/expense_list.html:18
+#: templates/dashboard/reports/annual_pl_report.html:30
+#: templates/dashboard/reports/monthly_pl_report.html:15
+msgid "الوصف"
+msgstr ""
+
+#: dashboard/models.py:303 templates/dashboard/check_management.html:37
+#: templates/dashboard/check_status_form.html:13
+#: templates/dashboard/expense_list.html:18
+#: templates/dashboard/payment_list.html:24
+#: templates/dashboard/reports/annual_pl_report.html:23
+#: templates/dashboard/reports/annual_pl_report.html:30
+#: templates/dashboard/reports/monthly_pl_report.html:9
+#: templates/dashboard/reports/monthly_pl_report.html:15
+#: templates/dashboard/reports/tenant_statement.html:26
+msgid "المبلغ"
+msgstr ""
+
+#: dashboard/models.py:304
+msgid "تاريخ المصروف"
+msgstr ""
+
+#: dashboard/models.py:305
+msgid "إيصال/فاتورة (اختياري)"
+msgstr ""
+
+#: dashboard/models.py:309
+msgid "مصروف"
+msgstr ""
+
+#: dashboard/models.py:310 templates/dashboard/base.html:140
+#: templates/dashboard/expense_list.html:6 templates/dashboard/home.html:125
+#: templates/dashboard/reports/annual_pl_report.html:28
+#: templates/dashboard/reports/monthly_pl_report.html:13
+msgid "المصاريف"
+msgstr ""
+
+#: dashboard/models.py:317
+msgid "المستخدم"
+msgstr ""
+
+#: dashboard/models.py:318
+msgid "الرسالة"
+msgstr ""
+
+#: dashboard/models.py:319
+msgid "مقروءة"
+msgstr ""
+
+#: dashboard/models.py:320
+msgid "الوقت"
+msgstr ""
+
+#: dashboard/models.py:326
+msgid "إشعار"
+msgstr ""
+
+#: dashboard/models.py:327
+msgid "الإشعارات"
+msgstr ""
+
+#: dashboard/signals.py:26
+#, python-brace-format
+msgid "'تم تقديم طلب صيانة جديد بعنوان {} من قبل المستأجر {}'"
+msgstr ""
+
+#: dashboard/signals.py:34
+#, python-brace-format
+msgid "'تم تحديث حالة طلب الصيانة {} إلى {}'"
+msgstr ""
+
+#: dashboard/signals.py:43
+#, python-brace-format
+msgid "'عقد الإيجار الخاص بك رقم {} سينتهي قريب في تاريخ {}'"
+msgstr ""
+
+#: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
+#: templates/dashboard/unit_detail.html:38
+#: templates/dashboard/unit_list.html:43 templates/dashboard/unit_list.html:71
+msgid "مشغولة"
+msgstr ""
+
+#: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
+#: templates/dashboard/unit_detail.html:36
+#: templates/dashboard/unit_list.html:42 templates/dashboard/unit_list.html:69
+msgid "متاحة"
+msgstr ""
+
+#: dashboard/views.py:92 templates/dashboard/lease_renew.html:6
+msgid "تجديد عقد"
+msgstr ""
+
+#: dashboard/views.py:158 templates/dashboard/unit_list.html:11
+msgid "إضافة وحدة جديدة"
+msgstr ""
+
+#: dashboard/views.py:162
+msgid "تمت إضافة الوحدة بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:173
+msgid "تعديل الوحدة"
+msgstr ""
+
+#: dashboard/views.py:177
+msgid "تم تحديث الوحدة بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:186
+msgid "تم حذف الوحدة بنجاح."
+msgstr ""
+
+#: dashboard/views.py:235 templates/dashboard/tenant_list.html:11
+msgid "إضافة مستأجر جديد"
+msgstr ""
+
+#: dashboard/views.py:239
+msgid "تمت إضافة المستأجر بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:250
+msgid "تعديل بيانات المستأجر"
+msgstr ""
+
+#: dashboard/views.py:254
+msgid "تم تحديث بيانات المستأجر بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:263
+msgid "تم حذف المستأجر بنجاح."
+msgstr ""
+
+#: dashboard/views.py:289 templates/dashboard/building_list.html:11
+msgid "إضافة مبنى جديد"
+msgstr ""
+
+#: dashboard/views.py:293
+msgid "تمت إضافة المبنى بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:304
+msgid "تعديل المبنى"
+msgstr ""
+
+#: dashboard/views.py:308
+msgid "تم تحديث المبنى بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:317
+msgid "تم حذف المبنى بنجاح."
+msgstr ""
+
+#: dashboard/views.py:379
+msgid "تم تحديث تقييم العميل."
+msgstr ""
+
+#: dashboard/views.py:381
+msgid "حدث خطأ أثناء تحديث التقييم."
+msgstr ""
+
+#: dashboard/views.py:389 templates/dashboard/lease_list.html:11
+msgid "إضافة عقد جديد"
+msgstr ""
+
+#: dashboard/views.py:391
+msgid "تمت إضافة العقد بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:396
+msgid "تعديل العقد"
+msgstr ""
+
+#: dashboard/views.py:398
+msgid "تم تحديث العقد بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:403
+msgid "تم حذف العقد بنجاح."
+msgstr ""
+
+#: dashboard/views.py:422
+msgid "تم إلغاء العقد بنجاح."
+msgstr ""
+
+#: dashboard/views.py:440
+msgid "الرجاء إدخال تاريخ انتهاء صحيح."
+msgstr ""
+
+#: dashboard/views.py:447
+msgid "تم تجديد العقد بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:454
+msgid "تم رفع المستند بنجاح!"
+msgstr ""
+
+#: dashboard/views.py:461
+msgid "تم حذف المستند بنجاح."
+msgstr ""
+
+#: dashboard/views.py:469
+msgid "تم تحديث حالة طلب الصيانة بنجاح."
+msgstr ""
+
+#: dashboard/views.py:477 templates/dashboard/expense_list.html:11
+msgid "إضافة مصروف جديد"
+msgstr ""
+
+#: dashboard/views.py:479
+msgid "تم تسجيل المصروف بنجاح."
+msgstr ""
+
+#: dashboard/views.py:484
+msgid "تعديل المصروف"
+msgstr ""
+
+#: dashboard/views.py:486
+msgid "تم تحديث المصروف بنجاح."
+msgstr ""
+
+#: dashboard/views.py:491
+msgid "تم حذف المصروف بنجاح."
+msgstr ""
+
+#: dashboard/views.py:500 templates/dashboard/payment_list.html:11
+msgid "إضافة دفعة جديدة"
+msgstr ""
+
+#: dashboard/views.py:502
+msgid "تم تسجيل الدفعة بنجاح."
+msgstr ""
+
+#: dashboard/views.py:507
+msgid "تعديل الدفعة"
+msgstr ""
+
+#: dashboard/views.py:509
+msgid "تم تحديث الدفعة بنجاح."
+msgstr ""
+
+#: dashboard/views.py:517
+msgid "تم حذف الدفعة بنجاح."
+msgstr ""
+
+#: dashboard/views.py:625
+msgid "تحديث حالة الشيك"
+msgstr ""
+
+#: dashboard/views.py:629
+msgid "تم تحديث حالة الشيك بنجاح."
+msgstr ""
+
+#: dashboard/views.py:634 templates/registration/login.html:74
+msgid "كلمة المرور"
+msgstr ""
+
+#: dashboard/views.py:635 templates/dashboard/user_management.html:54
+msgid "موظف"
+msgstr ""
+
+#: dashboard/views.py:642 templates/dashboard/user_management.html:32
+#: templates/registration/login.html:58
+msgid "اسم المستخدم"
+msgstr ""
+
+#: dashboard/views.py:643
+msgid "الاسم الأول"
+msgstr ""
+
+#: dashboard/views.py:644
+msgid "اسم العائلة"
+msgstr ""
+
+#: dashboard/views.py:681 templates/dashboard/user_management.html:7
+msgid "إضافة مستخدم جديد"
+msgstr ""
+
+#: dashboard/views.py:685
+msgid "تم إنشاء المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:696
+msgid "تعديل المستخدم"
+msgstr ""
+
+#: dashboard/views.py:700
+msgid "تم تحديث المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:709
+msgid "تم حذف المستخدم بنجاح."
+msgstr ""
+
+#: dashboard/views.py:743
+msgid "الرجاء تحديد السنة والشهر."
+msgstr ""
+
+#: dashboard/views.py:761
+msgid "الرجاء تحديد السنة."
+msgstr ""
+
+#: dashboard/views.py:807
+msgid "إعدادات الشركة والهوية"
+msgstr ""
+
+#: dashboard/views.py:811
+msgid "تم تحديث بيانات الشركة بنجاح."
+msgstr ""
+
+#: portal/views.py:24
+msgid "لا يوجد ملف مستأجر مرتبط بحسابك."
+msgstr ""
+
+#: portal/views.py:43
+msgid "لا يمكنك إنشاء طلب صيانة بدون عقد نشط."
+msgstr ""
+
+#: portal/views.py:46
+msgid "تم إرسال طلب الصيانة بنجاح!"
+msgstr ""
+
+#: portal/views.py:49
+msgid "حسابك غير مرتبط بملف مستأجر."
+msgstr ""
+
+#: rent_management/settings.py:137
+msgid "العربية"
+msgstr ""
+
+#: rent_management/settings.py:138
+msgid "English"
+msgstr ""
+
+#: templates/dashboard/base.html:86
+msgid "ادارة الايجارات"
+msgstr ""
+
+#: templates/dashboard/base.html:89
+msgid "Primary"
+msgstr ""
+
+#: templates/dashboard/base.html:92 templates/portal/base.html:18
+msgid "لوحة المعلومات"
+msgstr ""
+
+#: templates/dashboard/base.html:100
+msgid "إدارة العقارات"
+msgstr ""
+
+#: templates/dashboard/base.html:115 templates/dashboard/lease_list.html:6
+msgid "العقود"
+msgstr ""
+
+#: templates/dashboard/base.html:125
+msgid "المالية"
+msgstr ""
+
+#: templates/dashboard/base.html:132 templates/dashboard/payment_list.html:6
+msgid "المدفوعات"
+msgstr ""
+
+#: templates/dashboard/base.html:136
+#: templates/dashboard/check_management.html:3
+#: templates/dashboard/check_management.html:6
+msgid "إدارة الشيكات"
+msgstr ""
+
+#: templates/dashboard/base.html:150
+msgid "العمليات"
+msgstr ""
+
+#: templates/dashboard/base.html:161
+msgid "الصيانة"
+msgstr ""
+
+#: templates/dashboard/base.html:165 templates/dashboard/user_management.html:3
+#: templates/dashboard/user_management.html:6
+msgid "إدارة المستخدمين"
+msgstr ""
+
+#: templates/dashboard/base.html:169
+#: templates/dashboard/report_selection.html:3
+msgid "التقارير"
+msgstr ""
+
+#: templates/dashboard/base.html:176
+msgid "الاعدادات"
+msgstr ""
+
+#: templates/dashboard/base.html:189 templates/portal/base.html:20
+msgid "تسجيل الخروج"
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:3
+msgid "حذف المبنى"
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:7
+#: templates/dashboard/expense_confirm_delete.html:3
+#: templates/dashboard/lease_confirm_delete.html:3
+#: templates/dashboard/payment_confirm_delete.html:6
+#: templates/dashboard/tenant_confirm_delete.html:7
+#: templates/dashboard/unit_confirm_delete.html:7
+msgid "تأكيد الحذف"
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:8
+#, python-format
+msgid ""
+"هل أنت متأكد من حذف المبنى %(building_name)s؟ سيتم حذف جميع الوحدات التابعة "
+"له أيضاً."
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:11
+msgid "تحذير: هذا الإجراء لا يمكن التراجع عنه!"
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:17
+#: templates/dashboard/tenant_confirm_delete.html:17
+#: templates/dashboard/unit_confirm_delete.html:13
+msgid "نعم، احذف"
+msgstr ""
+
+#: templates/dashboard/building_confirm_delete.html:18
+#: templates/dashboard/building_form.html:33
+#: templates/dashboard/check_status_form.html:40
+#: templates/dashboard/document_confirm_delete.html:11
+#: templates/dashboard/expense_confirm_delete.html:11
+#: templates/dashboard/lease_confirm_delete.html:11
+#: templates/dashboard/payment_confirm_delete.html:15
+#: templates/dashboard/tenant_confirm_delete.html:18
+#: templates/dashboard/tenant_form.html:67
+#: templates/dashboard/unit_confirm_delete.html:14
+#: templates/dashboard/unit_form.html:57
+#: templates/dashboard/user_confirm_delete.html:16
+#: templates/dashboard/user_form.html:64
+msgid "إلغاء"
+msgstr ""
+
+#: templates/dashboard/building_form.html:8
+#: templates/dashboard/tenant_form.html:8 templates/dashboard/unit_form.html:8
+msgid "العودة إلى القائمة"
+msgstr ""
+
+#: templates/dashboard/building_form.html:32
+#: templates/dashboard/company_form.html:12
+#: templates/dashboard/expense_form.html:10
+#: templates/dashboard/lease_detail.html:32
+#: templates/dashboard/payment_form.html:31
+#: templates/dashboard/tenant_form.html:66
+#: templates/dashboard/unit_form.html:56 templates/dashboard/user_form.html:63
+msgid "حفظ"
+msgstr ""
+
+#: templates/dashboard/building_list.html:3
+msgid "إدارة المباني"
+msgstr ""
+
+#: templates/dashboard/building_list.html:9
+#: templates/dashboard/expense_list.html:9
+#: templates/dashboard/lease_list.html:9
+#: templates/dashboard/maintenance_list.html:8
+#: templates/dashboard/payment_list.html:9
+#: templates/dashboard/tenant_list.html:9 templates/dashboard/unit_list.html:9
+msgid "تصدير Excel"
+msgstr ""
+
+#: templates/dashboard/building_list.html:22
+#: templates/dashboard/check_management.html:72
+#: templates/dashboard/expense_list.html:28
+#: templates/dashboard/lease_detail.html:16
+#: templates/dashboard/payment_list.html:57
+#: templates/dashboard/tenant_detail.html:8
+#: templates/dashboard/tenant_list.html:71
+#: templates/dashboard/unit_detail.html:8 templates/dashboard/unit_list.html:77
+#: templates/dashboard/user_management.html:77
+msgid "تعديل"
+msgstr ""
+
+#: templates/dashboard/building_list.html:23
+#: templates/dashboard/lease_detail.html:19
+#: templates/dashboard/lease_detail.html:96
+#: templates/dashboard/payment_list.html:59
+#: templates/dashboard/tenant_list.html:72
+#: templates/dashboard/unit_list.html:78
+#: templates/dashboard/user_management.html:81
+msgid "حذف"
+msgstr ""
+
+#: templates/dashboard/building_list.html:29
+#: templates/dashboard/reports/occupancy_report.html:23
+#: templates/dashboard/unit_list.html:17
+msgid "إجمالي الوحدات"
+msgstr ""
+
+#: templates/dashboard/building_list.html:33
+#: templates/dashboard/reports/occupancy_report.html:25
+#: templates/dashboard/unit_list.html:25
+msgid "الوحدات المشغولة"
+msgstr ""
+
+#: templates/dashboard/building_list.html:37
+#: templates/dashboard/reports/occupancy_report.html:31
+msgid "نسبة الإشغال"
+msgstr ""
+
+#: templates/dashboard/building_list.html:47
+msgid "لم يتم العثور على مباني."
+msgstr ""
+
+#: templates/dashboard/check_management.html:12
+msgid "جميع الشيكات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:17
+msgid "شيكات معلقة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:22
+msgid "شيكات مصروفة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:27
+msgid "شيكات مرتجعة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:39
+#: templates/dashboard/check_status_form.html:14
+msgid "البنك"
+msgstr ""
+
+#: templates/dashboard/check_management.html:41
+#: templates/dashboard/expense_list.html:18
+#: templates/dashboard/lease_list.html:33
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/payment_list.html:26
+#: templates/dashboard/tenant_detail.html:80
+#: templates/dashboard/tenant_detail.html:108
+#: templates/dashboard/tenant_list.html:51
+#: templates/dashboard/unit_detail.html:82
+#: templates/dashboard/unit_list.html:57
+#: templates/dashboard/user_management.html:38
+msgid "إجراءات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:69
+msgid "تحديث الحالة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:75
+#: templates/dashboard/payment_list.html:58
+#: templates/dashboard/reports/payment_receipt.html:188
+msgid "سند قبض"
+msgstr ""
+
+#: templates/dashboard/check_management.html:82
+msgid "لا توجد شيكات"
+msgstr ""
+
+#: templates/dashboard/check_management.html:94
+#: templates/dashboard/user_management.html:103
+msgid "الأولى"
+msgstr ""
+
+#: templates/dashboard/check_management.html:95
+#: templates/dashboard/user_management.html:104
+msgid "السابقة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:98
+#: templates/dashboard/user_management.html:107
+msgid "صفحة"
+msgstr ""
+
+#: templates/dashboard/check_management.html:98
+#: templates/dashboard/user_management.html:107
+msgid "من"
+msgstr ""
+
+#: templates/dashboard/check_management.html:101
+#: templates/dashboard/user_management.html:110
+msgid "التالية"
+msgstr ""
+
+#: templates/dashboard/check_management.html:102
+#: templates/dashboard/user_management.html:111
+msgid "الأخيرة"
+msgstr ""
+
+#: templates/dashboard/check_status_form.html:9
+msgid "معلومات الشيك"
+msgstr ""
+
+#: templates/dashboard/check_status_form.html:39
+#: templates/dashboard/lease_form.html:14
+msgid "حفظ التغييرات"
+msgstr ""
+
+#: templates/dashboard/document_confirm_delete.html:3
+#: templates/dashboard/document_confirm_delete.html:6
+msgid "تأكيد حذف المستند"
+msgstr ""
+
+#: templates/dashboard/document_confirm_delete.html:7
+#, python-format
+msgid "سيتم حذف المستند \"<strong>%(doc_title)s</strong>\" بشكل نهائي."
+msgstr ""
+
+#: templates/dashboard/document_confirm_delete.html:12
+#: templates/dashboard/expense_confirm_delete.html:12
+#: templates/dashboard/lease_confirm_delete.html:12
+#: templates/dashboard/payment_confirm_delete.html:16
+msgid "نعم، قم بالحذف"
+msgstr ""
+
+#: templates/dashboard/expense_confirm_delete.html:6
+msgid "تأكيد حذف المصروف"
+msgstr ""
+
+#: templates/dashboard/expense_confirm_delete.html:7
+#, python-format
+msgid "سيتم حذف المصروف \"<strong>%(expense_desc)s</strong>\" بشكل نهائي."
+msgstr ""
+
+#: templates/dashboard/expense_list.html:3
+msgid "إدارة المصاريف"
+msgstr ""
+
+#: templates/dashboard/expense_list.html:18
+#: templates/dashboard/maintenance_list.html:14
+#: templates/dashboard/reports/annual_pl_report.html:23
+#: templates/dashboard/reports/annual_pl_report.html:30
+#: templates/dashboard/reports/monthly_pl_report.html:9
+#: templates/dashboard/reports/monthly_pl_report.html:15
+msgid "التاريخ"
+msgstr ""
+
+#: templates/dashboard/expense_list.html:18
+msgid "الفئة"
+msgstr ""
+
+#: templates/dashboard/expense_list.html:31
+msgid "لا توجد مصاريف مسجلة."
+msgstr ""
+
+#: templates/dashboard/home.html:3
+msgid "لوحة المعلومات الرئيسية"
+msgstr ""
+
+#: templates/dashboard/home.html:15
+msgid "تنبيه: عقود قريبة من الانتهاء"
+msgstr ""
+
+#: templates/dashboard/home.html:21
+msgid "عقد"
+msgstr ""
+
+#: templates/dashboard/home.html:23
+msgid "ينتهي بعد"
+msgstr ""
+
+#: templates/dashboard/home.html:23 templates/dashboard/lease_list.html:52
+#: templates/dashboard/lease_list.html:54
+msgid "يوم"
+msgstr ""
+
+#: templates/dashboard/home.html:36 templates/dashboard/tenant_detail.html:54
+#: templates/dashboard/tenant_detail.html:71
+msgid "العقود النشطة"
+msgstr ""
+
+#: templates/dashboard/home.html:40
+msgid "الدخل الشهري المتوقع"
+msgstr ""
+
+#: templates/dashboard/home.html:41 templates/dashboard/home.html:45
+#: templates/dashboard/home.html:49 templates/dashboard/lease_detail.html:25
+#: templates/dashboard/lease_detail.html:35
+#: templates/dashboard/lease_detail.html:36
+#: templates/dashboard/lease_detail.html:37
+#: templates/dashboard/lease_detail.html:82
+#: templates/dashboard/reports/annual_pl_report.html:25
+#: templates/dashboard/reports/annual_pl_report.html:32
+#: templates/dashboard/reports/annual_pl_report.html:37
+#: templates/dashboard/reports/annual_pl_report.html:39
+#: templates/dashboard/reports/monthly_pl_report.html:11
+#: templates/dashboard/reports/monthly_pl_report.html:17
+#: templates/dashboard/reports/monthly_pl_report.html:22
+#: templates/dashboard/reports/monthly_pl_report.html:24
+#: templates/dashboard/reports/tenant_statement.html:28
+#: templates/portal/dashboard.html:21 templates/portal/dashboard.html:42
+#: templates/portal/dashboard.html:43 templates/portal/dashboard.html:44
+msgid "ر.ع"
+msgstr ""
+
+#: templates/dashboard/home.html:44
+msgid "مصاريف هذا الشهر"
+msgstr ""
+
+#: templates/dashboard/home.html:48
+msgid "صافي الدخل الشهري"
+msgstr ""
+
+#: templates/dashboard/home.html:56
+msgid "تقويم تجديد العقود"
+msgstr ""
+
+#: templates/dashboard/home.html:60
+msgid "اتجاه الإيرادات مقابل المصاريف (آخر 12 شهر)"
+msgstr ""
+
+#: templates/dashboard/home.html:69
+msgid "إشغال الوحدات"
+msgstr ""
+
+#: templates/dashboard/home.html:78
+msgid "آخر الحركات المالية"
+msgstr ""
+
+#: templates/dashboard/home.html:80
+msgid "آخر الدفعات"
+msgstr ""
+
+#: templates/dashboard/home.html:88
+msgid "لا توجد دفعات."
+msgstr ""
+
+#: templates/dashboard/home.html:92
+msgid "آخر المصاريف"
+msgstr ""
+
+#: templates/dashboard/home.html:100
+msgid "لا توجد مصاريف."
+msgstr ""
+
+#: templates/dashboard/home.html:117
+#: templates/dashboard/reports/annual_pl_report.html:21
+#: templates/dashboard/reports/monthly_pl_report.html:7
+msgid "الإيرادات"
+msgstr ""
+
+#: templates/dashboard/lease_cancel_form.html:3
+#: templates/dashboard/lease_detail.html:17
+msgid "إلغاء العقد"
+msgstr ""
+
+#: templates/dashboard/lease_cancel_form.html:6
+msgid "تأكيد إلغاء العقد"
+msgstr ""
+
+#: templates/dashboard/lease_cancel_form.html:8
+#, python-format
+msgid ""
+"\n"
+"        سيتم إلغاء العقد رقم <strong>%(contract_number)s</strong> الخاص "
+"بالمستأجر <strong>%(tenant_name)s</strong>. لن يمكن التراجع عن هذا الإجراء.\n"
+"        "
+msgstr ""
+
+#: templates/dashboard/lease_cancel_form.html:16
+msgid "تراجع"
+msgstr ""
+
+#: templates/dashboard/lease_cancel_form.html:17
+msgid "نعم، قم بالإلغاء"
+msgstr ""
+
+#: templates/dashboard/lease_confirm_delete.html:6
+msgid "هل أنت متأكد؟"
+msgstr ""
+
+#: templates/dashboard/lease_confirm_delete.html:7
+#, python-format
+msgid ""
+"سيتم حذف العقد رقم <strong>%(contract_number)s</strong> الخاص بالمستأجر "
+"<strong>%(tenant_name)s</strong> بشكل نهائي."
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:3
+msgid "تفاصيل العقد"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:5
+#: templates/dashboard/lease_form.html:5
+msgid "العودة إلى قائمة العقود"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:15
+msgid "تجديد"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:25
+#: templates/dashboard/lease_list.html:31
+#: templates/dashboard/tenant_detail.html:77
+#: templates/dashboard/unit_detail.html:57 templates/portal/dashboard.html:21
+msgid "الإيجار الشهري"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:26
+#: templates/dashboard/reports/tenant_statement.html:22
+msgid "فترة العقد"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:35
+msgid "إجمالي الإيجار السنوي"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:36
+msgid "رسوم تسجيل العقد (بدون رسوم مكتب)"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:37
+msgid "رسوم تسجيل العقد (مع رسوم مكتب)"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:38
+msgid "عداد الكهرباء"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:39
+msgid "عداد المياه"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:40
+msgid "طباعة كشف الحساب"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:43
+msgid "معلومات الإلغاء"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:45
+msgid "لم يحدد سبب."
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:53
+msgid "كشف حساب الإيجار"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:55
+msgid "شهر/سنة"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:55
+msgid "المستحق"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:55 templates/portal/dashboard.html:33
+msgid "المدفوع"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:55
+msgid "المتبقي"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:67
+msgid "التالي"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:73
+msgid "تم الدفع"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:74
+msgid "دفع جزئي"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:75
+msgid "لم يدفع"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:76 templates/portal/dashboard.html:53
+msgid "قادم"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:82
+msgid "الإجمالي المدفوع"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:90
+msgid "رفع مستند جديد"
+msgstr ""
+
+#: templates/dashboard/lease_detail.html:99
+msgid "لا توجد مستندات مرفقة."
+msgstr ""
+
+#: templates/dashboard/lease_list.html:3
+msgid "إدارة العقود"
+msgstr ""
+
+#: templates/dashboard/lease_list.html:18
+msgid "ابحث عن عقد..."
+msgstr ""
+
+#: templates/dashboard/lease_list.html:29
+#: templates/dashboard/tenant_detail.html:78
+#: templates/dashboard/unit_detail.html:65 templates/portal/dashboard.html:22
+msgid "تاريخ الانتهاء"
+msgstr ""
+
+#: templates/dashboard/lease_list.html:30
+msgid "أيام متبقية"
+msgstr ""
+
+#: templates/dashboard/lease_list.html:50
+msgid "اليوم"
+msgstr ""
+
+#: templates/dashboard/lease_list.html:65
+#: templates/dashboard/tenant_detail.html:91
+#: templates/dashboard/tenant_detail.html:118
+#: templates/dashboard/tenant_list.html:70
+#: templates/dashboard/unit_detail.html:92
+#: templates/dashboard/unit_list.html:76
+msgid "تفاصيل"
+msgstr ""
+
+#: templates/dashboard/lease_list.html:69
+msgid "لم يتم العثور على عقود."
+msgstr ""
+
+#: templates/dashboard/lease_list.html:78
+#, python-format
+msgid ""
+"\n"
+"            Page %(page)s of %(num_pages)s\n"
+"            "
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:3
+msgid "تجديد العقد"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:7
+msgid "تاريخ انتهاء العقد الحالي:"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:7
+msgid "سيبدأ العقد الجديد في اليوم التالي مباشرة."
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:11
+msgid "اختر مدة التجديد"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:13
+msgid "سنة واحدة"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:14
+msgid "6 أشهر"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:15
+msgid "3 أشهر"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:17
+msgid "أو"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:19
+msgid "حدد تاريخ انتهاء يدويًا:"
+msgstr ""
+
+#: templates/dashboard/lease_renew.html:21
+msgid "تجديد بتاريخ مخصص"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:3
+msgid "تفاصيل طلب الصيانة"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:7
+msgid "مقدم من"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:7
+msgid "في"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:19
+#: templates/dashboard/maintenance_detail.html:20
+msgid "صورة مرفقة"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:25
+msgid "تحديث الطلب"
+msgstr ""
+
+#: templates/dashboard/maintenance_detail.html:29
+msgid "حفظ التحديث"
+msgstr ""
+
+#: templates/dashboard/maintenance_list.html:3
+msgid "إدارة الصيانة"
+msgstr ""
+
+#: templates/dashboard/maintenance_list.html:24
+msgid "عرض/تحديث"
+msgstr ""
+
+#: templates/dashboard/maintenance_list.html:27
+#: templates/portal/dashboard.html:82
+msgid "لا توجد طلبات صيانة."
+msgstr ""
+
+#: templates/dashboard/payment_confirm_delete.html:3
+msgid "تأكيد حذف الدفعة"
+msgstr ""
+
+#: templates/dashboard/payment_confirm_delete.html:8
+#, python-format
+msgid ""
+"\n"
+"        هل أنت متأكد من حذف دفعة بمبلغ <strong>%(amount)s</strong> للمستأجر "
+"<strong>%(tenant)s</strong>؟\n"
+"        "
+msgstr ""
+
+#: templates/dashboard/payment_form.html:18
+msgid "تفاصيل الشيك"
+msgstr ""
+
+#: templates/dashboard/payment_list.html:3
+msgid "إدارة المدفوعات"
+msgstr ""
+
+#: templates/dashboard/payment_list.html:23
+msgid "عن شهر/سنة"
+msgstr ""
+
+#: templates/dashboard/payment_list.html:64 templates/portal/dashboard.html:59
+msgid "لا توجد دفعات مسجلة."
+msgstr ""
+
+#: templates/dashboard/report_selection.html:5
+msgid "إنشاء التقارير"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:8
+msgid "تقارير الأرباح والخسائر"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:11
+msgid "تقرير شهري"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:12
+#: templates/dashboard/report_selection.html:25
+msgid "السنة"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:20
+#: templates/dashboard/report_selection.html:27
+msgid "إنشاء"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:24
+msgid "تقرير سنوي"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:31
+msgid "تقارير أخرى"
+msgstr ""
+
+#: templates/dashboard/report_selection.html:33
+#: templates/dashboard/reports/occupancy_report.html:17
+msgid "تقرير إشغال الوحدات"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:18
+msgid "تقرير الأرباح والخسائر السنوي"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:19
+msgid "عن سنة"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:25
+#: templates/dashboard/reports/monthly_pl_report.html:11
+msgid "إجمالي الإيرادات"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:32
+#: templates/dashboard/reports/monthly_pl_report.html:17
+msgid "إجمالي المصاريف"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:37
+#: templates/dashboard/reports/monthly_pl_report.html:22
+msgid "توجد لديك خسارة"
+msgstr ""
+
+#: templates/dashboard/reports/annual_pl_report.html:39
+#: templates/dashboard/reports/monthly_pl_report.html:24
+msgid "أرباح"
+msgstr ""
+
+#: templates/dashboard/reports/monthly_pl_report.html:6
+msgid "تقرير الأرباح والخسائر"
+msgstr ""
+
+#: templates/dashboard/reports/monthly_pl_report.html:6
+#, python-format
+msgid "%(month)s/%(year)s"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:18
+msgid "بتاريخ"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:20
+msgid "ملخص الإشغال"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:29
+#: templates/dashboard/unit_list.html:21
+msgid "الوحدات المتاحة"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:36
+msgid "تفاصيل الوحدات حسب المبنى"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:40
+#: templates/dashboard/tenant_detail.html:22
+#: templates/dashboard/tenant_list.html:47
+#: templates/dashboard/unit_detail.html:26
+#: templates/dashboard/unit_list.html:54
+#: templates/dashboard/user_management.html:35
+msgid "النوع"
+msgstr ""
+
+#: templates/dashboard/reports/occupancy_report.html:50
+msgid "لا توجد وحدات في هذا المبنى."
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:183
+msgid "رقم السند"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:189
+msgid "Receipt Voucher"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:191
+#: templates/dashboard/reports/payment_receipt.html:211
+msgid "ريال عماني"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:200
+msgid "تاريخ"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:205
+msgid "استلمنا من السيد"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:210
+msgid "مبلغ وقدره"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:244
+msgid "سبب الإرجاع"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:251
+msgid "على بناء"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:256
+msgid "وذلك مقابل"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:258
+msgid "دفعة إيجار عن شهر"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:265
+msgid "المحاسب"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:270
+msgid "المستلم"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:362
+msgid "هاتف"
+msgstr ""
+
+#: templates/dashboard/reports/payment_receipt.html:363
+msgid "بريد إلكتروني"
+msgstr ""
+
+#: templates/dashboard/reports/tenant_statement.html:18
+msgid "كشف حساب مستأجر"
+msgstr ""
+
+#: templates/dashboard/reports/tenant_statement.html:20
+msgid "تاريخ الطباعة"
+msgstr ""
+
+#: templates/dashboard/reports/tenant_statement.html:24
+msgid "سجل الدفعات"
+msgstr ""
+
+#: templates/dashboard/reports/tenant_statement.html:26
+msgid "دفعة عن شهر/سنة"
+msgstr ""
+
+#: templates/dashboard/tenant_confirm_delete.html:3
+msgid "حذف المستأجر"
+msgstr ""
+
+#: templates/dashboard/tenant_confirm_delete.html:8
+#, python-format
+msgid "هل أنت متأكد من حذف المستأجر %(tenant_name)s؟"
+msgstr ""
+
+#: templates/dashboard/tenant_confirm_delete.html:11
+msgid "تحذير: سيتم حذف جميع العقود المرتبطة بهذا المستأجر أيضاً!"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:3
+#: templates/dashboard/tenant_detail.html:6
+msgid "تفاصيل المستأجر"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:9
+#: templates/dashboard/unit_detail.html:9
+msgid "العودة"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:15
+msgid "المعلومات الأساسية"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:18
+#: templates/dashboard/tenant_list.html:46
+msgid "الاسم"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:26
+#: templates/dashboard/tenant_list.html:48
+msgid "الهاتف"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:40
+#: templates/dashboard/tenant_list.html:50
+msgid "التقييم"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:51
+msgid "الإحصائيات"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:58
+msgid "إجمالي العقود"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:62
+msgid "إجمالي المدفوعات"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:100
+#: templates/dashboard/unit_detail.html:74
+msgid "سجل العقود"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:106
+#: templates/dashboard/unit_detail.html:80
+msgid "الفترة"
+msgstr ""
+
+#: templates/dashboard/tenant_detail.html:121
+#: templates/dashboard/unit_detail.html:95
+msgid "لا يوجد سجل للعقود."
+msgstr ""
+
+#: templates/dashboard/tenant_form.html:59
+msgid "من 1 إلى 5 نجوم"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:3
+msgid "إدارة المستأجرين"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:17
+msgid "إجمالي المستأجرين"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:21
+msgid "أفراد"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:25
+msgid "شركات"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:33
+msgid "ابحث عن مستأجر..."
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:35
+msgid "كل الأنواع"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:39
+#: templates/dashboard/unit_list.html:45
+msgid "بحث"
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:77
+msgid "لم يتم العثور على مستأجرين."
+msgstr ""
+
+#: templates/dashboard/tenant_list.html:85
+#: templates/dashboard/unit_list.html:91
+#, python-format
+msgid ""
+"\n"
+"            الصفحة %(page)s من %(num_pages)s\n"
+"            "
+msgstr ""
+
+#: templates/dashboard/unit_confirm_delete.html:3
+msgid "حذف الوحدة"
+msgstr ""
+
+#: templates/dashboard/unit_confirm_delete.html:8
+#, python-format
+msgid "هل أنت متأكد من حذف الوحدة %(unit_number)s في المبنى %(building)s؟"
+msgstr ""
+
+#: templates/dashboard/unit_detail.html:3
+#: templates/dashboard/unit_detail.html:6
+msgid "تفاصيل الوحدة"
+msgstr ""
+
+#: templates/dashboard/unit_detail.html:15
+msgid "معلومات الوحدة"
+msgstr ""
+
+#: templates/dashboard/unit_detail.html:46
+msgid "العقد الحالي"
+msgstr ""
+
+#: templates/dashboard/unit_detail.html:61
+msgid "تاريخ البداية"
+msgstr ""
+
+#: templates/dashboard/unit_list.html:3
+msgid "إدارة الوحدات"
+msgstr ""
+
+#: templates/dashboard/unit_list.html:33
+msgid "ابحث عن وحدة..."
+msgstr ""
+
+#: templates/dashboard/unit_list.html:35
+msgid "كل المباني"
+msgstr ""
+
+#: templates/dashboard/unit_list.html:41
+msgid "كل الحالات"
+msgstr ""
+
+#: templates/dashboard/unit_list.html:83
+msgid "لم يتم العثور على وحدات."
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:3
+#: templates/dashboard/user_confirm_delete.html:6
+msgid "تأكيد حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:8
+msgid "هل أنت متأكد من حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:10
+msgid ""
+"سيتم حذف جميع البيانات المرتبطة بهذا المستخدم ولا يمكن التراجع عن هذا "
+"الإجراء."
+msgstr ""
+
+#: templates/dashboard/user_confirm_delete.html:15
+msgid "نعم، حذف المستخدم"
+msgstr ""
+
+#: templates/dashboard/user_management.html:13
+msgid "إجمالي المستخدمين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:18
+msgid "الموظفين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:23
+msgid "المستخدمين النشطين"
+msgstr ""
+
+#: templates/dashboard/user_management.html:33
+msgid "الاسم الكامل"
+msgstr ""
+
+#: templates/dashboard/user_management.html:37
+msgid "تاريخ الانضمام"
+msgstr ""
+
+#: templates/dashboard/user_management.html:50
+msgid "مدير النظام"
+msgstr ""
+
+#: templates/dashboard/user_management.html:69
+msgid "معطل"
+msgstr ""
+
+#: templates/dashboard/user_management.html:90
+msgid "لا يوجد مستخدمين"
+msgstr ""
+
+#: templates/portal/base.html:6 templates/portal/base.html:15
+msgid "بوابة المستأجر"
+msgstr ""
+
+#: templates/portal/dashboard.html:4
+msgid "مرحباً بك،"
+msgstr ""
+
+#: templates/portal/dashboard.html:8
+msgid "خطأ:"
+msgstr ""
+
+#: templates/portal/dashboard.html:17
+msgid "تفاصيل عقدك النشط"
+msgstr ""
+
+#: templates/portal/dashboard.html:31
+msgid "الشهر/السنة"
+msgstr ""
+
+#: templates/portal/dashboard.html:32
+msgid "الإيجار المستحق"
+msgstr ""
+
+#: templates/portal/dashboard.html:34
+msgid "الرصيد المتبقي"
+msgstr ""
+
+#: templates/portal/dashboard.html:47
+msgid "مدفوع"
+msgstr ""
+
+#: templates/portal/dashboard.html:49
+msgid "جزئي"
+msgstr ""
+
+#: templates/portal/dashboard.html:51
+msgid "مستحق"
+msgstr ""
+
+#: templates/portal/dashboard.html:70
+msgid "طلب صيانة جديد"
+msgstr ""
+
+#: templates/portal/dashboard.html:94
+msgid "لا توجد مستندات."
+msgstr ""
+
+#: templates/portal/dashboard.html:101
+msgid "لا بوحد نشط"
+msgstr ""
+
+#: templates/portal/dashboard.html:102
+msgid "ليس لديك آي عقود إيجار نشطة مرتبطة بحسابك في الوقت الحالي."
+msgstr ""
+
+#: templates/portal/maintenance_form.html:3
+msgid "إنشاء طلب صيانة"
+msgstr ""
+
+#: templates/portal/maintenance_form.html:6
+msgid "إنشاء طلب صيانة جديد"
+msgstr ""
+
+#: templates/portal/maintenance_form.html:10
+msgid "إرسال الطلب"
+msgstr ""
+
+#: templates/portal/maintenance_list.html:6
+msgid "طلبات الصيانة الخاصة بي"
+msgstr ""
+
+#: templates/portal/maintenance_list.html:7
+msgid "إنشاء طلب جديد"
+msgstr ""
+
+#: templates/portal/maintenance_list.html:17
+msgid "ليس لديك أي طلبات صيانة."
+msgstr ""
+
+#: templates/registration/login.html:7
+msgid "تسجيل الدخول"
+msgstr ""
+
+#: templates/registration/login.html:44
+msgid "اللغة"
+msgstr ""
+
+#: templates/registration/login.html:51
+msgid "تسجيل الدخول إلى النظام"
+msgstr ""
+
+#: templates/registration/login.html:53
+msgid "اسم المستخدم أو كلمة المرور غير صحيحة."
+msgstr ""
+
+#: templates/registration/login.html:90 templates/registration/login.html:143
+msgid "إظهار كلمة المرور"
+msgstr ""
+
+#: templates/registration/login.html:113
+msgid "تذكرني"
+msgstr ""
+
+#: templates/registration/login.html:122
+msgid "نسيت كلمة المرور؟"
+msgstr ""
+
+#: templates/registration/login.html:126
+msgid "دخول"
+msgstr ""
+
+#: templates/registration/login.html:143
+msgid "إخفاء كلمة المرور"
+msgstr ""
