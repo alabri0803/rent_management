@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company, ContractTemplate
+from .models import Building, Unit, Tenant, Lease, Payment, MaintenanceRequest, Document, Expense, Notification, Company, ContractTemplate, Invoice, InvoiceItem
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
@@ -66,3 +66,14 @@ admin.site.register(Document)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'read', 'timestamp')
     list_filter = ('read', 'user')
+
+class InvoiceItemInline(admin.TabularInline):
+    model = InvoiceItem
+    extra = 1
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ('invoice_number', 'tenant', 'lease', 'issue_date', 'due_date', 'total_amount', 'status')
+    list_filter = ('status', 'issue_date', 'due_date')
+    search_fields = ('invoice_number', 'tenant__name', 'lease__contract_number')
+    inlines = [InvoiceItemInline]

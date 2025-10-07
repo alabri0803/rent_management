@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Company, Tenant, Building
+from .models import Lease, Unit, MaintenanceRequest, Document, Expense, Payment, Company, Tenant, Building, Invoice, InvoiceItem
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -153,3 +153,32 @@ class PaymentForm(forms.ModelForm):
                 self.add_error('return_reason', _('سبب إرجاع الشيك مطلوب عند اختيار حالة "مرتجع"'))
         
         return cleaned_data
+
+class InvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ['tenant', 'lease', 'invoice_number', 'issue_date', 'due_date', 'status', 'notes']
+        widgets = {
+            'issue_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md'})
+
+class InvoiceItemForm(forms.ModelForm):
+    class Meta:
+        model = InvoiceItem
+        fields = ['description', 'amount']
+
+InvoiceItemFormSet = forms.inlineformset_factory(
+    Invoice,
+    InvoiceItem,
+    form=InvoiceItemForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=True
+)

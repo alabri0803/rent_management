@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-semibold mb-6">{{ title }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{ form.as_p }}
+            </div>
+
+            <hr class="my-6">
+
+            <h3 class="text-xl font-semibold mb-4">{% trans "بنود الفاتورة" %}</h3>
+            {{ items.management_form }}
+            <div id="item-forms-container">
+                {% for form in items.forms %}
+                <div class="item-form mb-4 p-4 border rounded-md">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {{ form.as_p }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-item-form" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">{% trans "إضافة بند" %}</button>
+
+            <div class="mt-6 flex justify-end">
+                <a href="{% url 'invoice_list' %}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 mr-2">{% trans "إلغاء" %}</a>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">{% trans "حفظ" %}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('add-item-form').addEventListener('click', function() {
+    var formContainer = document.getElementById('item-forms-container');
+    var totalForms = document.getElementById('id_items-TOTAL_FORMS');
+    var formIdx = totalForms.value;
+    var newForm = formContainer.children[0].cloneNode(true);
+
+    // Clear input values and update names
+    newForm.querySelectorAll('input, select, textarea').forEach(function(input) {
+        input.name = input.name.replace('-0-', '-' + formIdx + '-');
+        input.id = input.id.replace('-0-', '-' + formIdx + '-');
+        input.value = '';
+    });
+
+    formContainer.appendChild(newForm);
+    totalForms.value = parseInt(formIdx) + 1;
+});
+</script>
+{% endblock %}

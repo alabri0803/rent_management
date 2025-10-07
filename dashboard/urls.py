@@ -13,6 +13,7 @@ from .views import (
     UserManagementView, UserCreateView, UserUpdateView, UserDeleteView,
     ReportSelectionView, GenerateTenantStatementPDF, GenerateMonthlyPLReportPDF, GenerateAnnualPLReportPDF, GenerateOccupancyReportPDF, GeneratePaymentReceiptPDF,
     CompanyUpdateView, UpdateTenantRatingView,
+    InvoiceListView, InvoiceDetailView, InvoiceCreateView, InvoiceUpdateView, InvoiceDeleteView,
 )
 from .export_views import (
     export_tenants_excel,
@@ -109,4 +110,11 @@ urlpatterns = [
     path('export/buildings/', export_buildings_excel, name='export_buildings_excel'),
     path('export/units/', export_units_excel, name='export_units_excel'),
     path('export/maintenance/', export_maintenance_excel, name='export_maintenance_excel'),
+
+    # Invoices
+    path('invoices/', InvoiceListView.as_view(), name='invoice_list'),
+    path('invoices/<int:pk>/', InvoiceDetailView.as_view(), name='invoice_detail'),
+    path('invoices/new/', InvoiceCreateView.as_view(), name='invoice_create'),
+    path('invoices/<int:pk>/edit/', InvoiceUpdateView.as_view(), name='invoice_update'),
+    path('invoices/<int:pk>/delete/', InvoiceDeleteView.as_view(), name='invoice_delete'),
 ]

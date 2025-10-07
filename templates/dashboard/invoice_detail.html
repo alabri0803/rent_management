@@ -1,0 +1,82 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+            <h2 class="text-2xl font-semibold">{% trans "فاتورة" %} #{{ invoice.invoice_number }}</h2>
+            <div>
+                <a href="{% url 'invoice_update' invoice.pk %}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">{% trans "تعديل" %}</a>
+                <a href="#" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">{% trans "طباعة" %}</a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-lg font-semibold mb-2">{% trans "من" %}:</h3>
+                <p>{{ company.name }}</p>
+                <p>{{ company.address }}</p>
+                <p>{% trans "البريد الإلكتروني" %}: {{ company.contact_email }}</p>
+                <p>{% trans "الهاتف" %}: {{ company.contact_phone }}</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-2">{% trans "إلى" %}:</h3>
+                <p>{{ invoice.tenant.name }}</p>
+                {% if invoice.tenant.address %}<p>{{ invoice.tenant.address }}</p>{% endif %}
+                <p>{% trans "البريد الإلكتروني" %}: {{ invoice.tenant.email }}</p>
+                <p>{% trans "الهاتف" %}: {{ invoice.tenant.phone }}</p>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <p class="font-semibold">{% trans "رقم الفاتورة" %}:</p>
+                    <p>{{ invoice.invoice_number }}</p>
+                </div>
+                <div>
+                    <p class="font-semibold">{% trans "تاريخ الإصدار" %}:</p>
+                    <p>{{ invoice.issue_date }}</p>
+                </div>
+                <div>
+                    <p class="font-semibold">{% trans "تاريخ الاستحقاق" %}:</p>
+                    <p>{{ invoice.due_date }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="border-b-2 py-2">{% trans "الوصف" %}</th>
+                        <th class="border-b-2 py-2 text-right">{% trans "المبلغ" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice.items.all %}
+                    <tr>
+                        <td class="border-b py-2">{{ item.description }}</td>
+                        <td class="border-b py-2 text-right">{{ item.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="text-right font-semibold py-2">{% trans "الإجمالي" %}:</td>
+                        <td class="text-right font-semibold py-2">{{ invoice.total_amount }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        {% if invoice.notes %}
+        <div class="mt-8">
+            <h3 class="text-lg font-semibold mb-2">{% trans "ملاحظات" %}:</h3>
+            <p class="text-gray-600">{{ invoice.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

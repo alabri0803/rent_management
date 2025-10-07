@@ -329,3 +329,46 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
+class Invoice(models.Model):
+    INVOICE_STATUS_CHOICES = [
+        ('draft', _('مسودة')),
+        ('sent', _('مرسلة')),
+        ('paid', _('مدفوعة')),
+        ('overdue', _('متأخرة')),
+        ('cancelled', _('ملغاة')),
+    ]
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='invoices', verbose_name=_("المستأجر"))
+    lease = models.ForeignKey(Lease, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoices', verbose_name=_("العقد"))
+    invoice_number = models.CharField(_("رقم الفاتورة"), max_length=50, unique=True)
+    issue_date = models.DateField(_("تاريخ الإصدار"), default=timezone.now)
+    due_date = models.DateField(_("تاريخ الاستحقاق"))
+    status = models.CharField(_("الحالة"), max_length=20, choices=INVOICE_STATUS_CHOICES, default='draft')
+    notes = models.TextField(_("ملاحظات"), blank=True, null=True)
+
+    class Meta:
+        verbose_name = _("فاتورة")
+        verbose_name_plural = _("الفواتير")
+        ordering = ['-issue_date']
+
+    def __str__(self):
+        return f"{self.invoice_number} - {self.tenant.name}"
+
+    @property
+    def total_amount(self):
+        return self.items.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+
+    def get_absolute_url(self):
+        return reverse('invoice_detail', kwargs={'pk': self.pk})
+
+class InvoiceItem(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items', verbose_name=_("الفاتورة"))
+    description = models.CharField(_("الوصف"), max_length=255)
+    amount = models.DecimalField(_("المبلغ"), max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = _("بند الفاتورة")
+        verbose_name_plural = _("بنود الفواتير")
+
+    def __str__(self):
+        return self.description

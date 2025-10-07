@@ -139,6 +139,10 @@
                     <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/></svg>
                     {% trans "المصاريف" %}
                 </a>
+                <a href="{% url 'invoice_list' %}" class="block py-2 px-4 rounded-lg mb-1 text-sm md:text-base nav-item {% if 'invoice' in request.resolver_match.url_name %}active{% endif %}">
+                    <svg class="nav-icon text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    {% trans "الفواتير" %}
+                </a>
             </div>
         </div>
 

@@ -16,25 +16,25 @@ from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Sum, Count, Q
+from django.db import transaction
 from dateutil.relativedelta import relativedelta
 from io import BytesIO
 from django.http import HttpResponse
-from django.template.loader import get_template
 from django.utils.translation import gettext as _
 from django.conf import settings
 from django import forms
 import json
 
-from .models import Lease, Unit, Payment, MaintenanceRequest, Document, Expense, Company, Tenant, Building
-from .forms import LeaseForm, DocumentForm, MaintenanceRequestUpdateForm, PaymentForm, ExpenseForm, CompanyForm, LeaseCancelForm, TenantRatingForm, UnitForm, BuildingForm, TenantForm
+from .models import (
+    Tenant, Unit, Building, Lease, Document, MaintenanceRequest, 
+    Expense, Payment, Company, Invoice, InvoiceItem
+)
+from .forms import (
+    TenantForm, UnitForm, BuildingForm, LeaseForm, DocumentForm, 
+    MaintenanceRequestUpdateForm, ExpenseForm, PaymentForm, LeaseCancelForm, 
+    CompanyForm, TenantRatingForm, InvoiceForm, InvoiceItemFormSet
+)
 from .utils import render_to_pdf
-
-class CustomLoginView(LoginView):
-    def get_success_url(self):
-        if self.request.user.is_staff:
-            return reverse('dashboard_home')
-        else:
-            return reverse('portal_dashboard')
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
@@ -713,6 +713,98 @@ class UserDeleteView(StaffRequiredMixin, DeleteView):
     
     def form_valid(self, form):
         messages.success(self.request, _("تم حذف المستخدم بنجاح."))
+        return super().form_valid(form)
+
+# --- Reports ---
+# --- Invoice Views ---
+class InvoiceListView(StaffRequiredMixin, ListView):
+    model = Invoice
+    template_name = 'dashboard/invoice_list.html'
+    context_object_name = 'invoices'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Invoice.objects.select_related('tenant', 'lease').all()
+        search_query = self.request.GET.get('q', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(invoice_number__icontains=search_query) |
+                Q(tenant__name__icontains=search_query) |
+                Q(lease__contract_number__icontains=search_query)
+            )
+        return queryset.order_by('-issue_date')
+
+class InvoiceDetailView(StaffRequiredMixin, DetailView):
+    model = Invoice
+    template_name = 'dashboard/invoice_detail.html'
+    context_object_name = 'invoice'
+
+class InvoiceCreateView(StaffRequiredMixin, CreateView):
+    model = Invoice
+    form_class = InvoiceForm
+    template_name = 'dashboard/invoice_form.html'
+    success_url = reverse_lazy('invoice_list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['items'] = InvoiceItemFormSet(self.request.POST)
+        else:
+            data['items'] = InvoiceItemFormSet()
+        data['title'] = _("إنشاء فاتورة جديدة")
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        items = context['items']
+        with transaction.atomic():
+            self.object = form.save()
+            if items.is_valid():
+                items.instance = self.object
+                items.save()
+                messages.success(self.request, _("تم إنشاء الفاتورة بنجاح."))
+            else:
+                # If items are not valid, we prevent the form from being considered valid.
+                return self.form_invalid(form)
+        return super().form_valid(form)
+
+class InvoiceUpdateView(StaffRequiredMixin, UpdateView):
+    model = Invoice
+    form_class = InvoiceForm
+    template_name = 'dashboard/invoice_form.html'
+
+    def get_success_url(self):
+        return reverse('invoice_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['items'] = InvoiceItemFormSet(self.request.POST, instance=self.object)
+        else:
+            data['items'] = InvoiceItemFormSet(instance=self.object)
+        data['title'] = _("تعديل الفاتورة")
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        items = context['items']
+        with transaction.atomic():
+            self.object = form.save()
+            if items.is_valid():
+                items.instance = self.object
+                items.save()
+                messages.success(self.request, _("تم تحديث الفاتورة بنجاح."))
+            else:
+                return self.form_invalid(form)
+        return super().form_valid(form)
+
+class InvoiceDeleteView(StaffRequiredMixin, DeleteView):
+    model = Invoice
+    template_name = 'dashboard/invoice_confirm_delete.html'
+    success_url = reverse_lazy('invoice_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, _("تم حذف الفاتورة بنجاح."))
         return super().form_valid(form)
 
 # --- Reports ---
