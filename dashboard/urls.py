@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-    login_redirect,
     DashboardHomeView,
     TenantListView, TenantDetailView, TenantCreateView, TenantUpdateView, TenantDeleteView,
     UnitListView, UnitDetailView, UnitCreateView, UnitUpdateView, UnitDeleteView,
@@ -26,7 +25,6 @@ from .export_views import (
 )
 
 urlpatterns = [
-    path('login-redirect/', login_redirect, name='login_redirect'),
     path('', DashboardHomeView.as_view(), name='dashboard_home'),
 
     # Company Settings
