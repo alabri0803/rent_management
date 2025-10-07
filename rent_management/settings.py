@@ -178,7 +178,7 @@ SITE_ID = 1
 # إعدادات Allauth إضافية (اختيارية)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGIN_METHODS = ['username', 'email']
-ACCOUNT_SIGNUP_FIELDS = ['username', 'email', 'password']
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email', 'password1', 'password2']
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         # These are the permissions you want to request from Google.
