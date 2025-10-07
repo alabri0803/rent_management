@@ -175,10 +175,17 @@
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth'
+                right: 'dayGridMonth,listWeek'
             },
             events: {{ calendar_events|safe }},
-            eventColor: '#993333'
+            eventColor: '#8a2be2',
+            eventDisplay: 'block',
+            eventMouseEnter: function(info) {
+                info.el.style.backgroundColor = '#9370DB';
+            },
+            eventMouseLeave: function(info) {
+                info.el.style.backgroundColor = '#8a2be2';
+            }
         });
         calendar.render();
     });
