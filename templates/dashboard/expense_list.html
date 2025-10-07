@@ -2,34 +2,36 @@
 {% load i18n %}
 {% block title %}{% trans "إدارة المصاريف" %}{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold text-gray-800">{% trans "المصاريف" %}</h2>
-    <div class="flex gap-3">
-        <a href="{% url 'export_expenses_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">{% trans "المصاريف" %}</h2>
+    <div class="flex gap-3 w-full sm:w-auto flex-wrap">
+        <a href="{% url 'export_expenses_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold w-full sm:w-auto text-center">
             📊 {% trans "تصدير Excel" %}
         </a>
-        <a href="{% url 'expense_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مصروف جديد" %}</a>
+        <a href="{% url 'expense_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold w-full sm:w-auto text-center">{% trans "إضافة مصروف جديد" %}</a>
     </div>
 </div>
 <div class="card overflow-hidden">
-    <table class="w-full text-start">
-        <thead class="bg-gray-50 border-b">
-            <tr><th class="p-4">{% trans "التاريخ" %}</th><th class="p-4">{% trans "الوصف" %}</th><th class="p-4">{% trans "المبنى" %}</th><th class="p-4">{% trans "الفئة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th></tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-4">{{ expense.expense_date|date:"d M Y" }}</td>
-                <td class="p-4">{{ expense.description }}</td>
-                <td class="p-4">{{ expense.building.name }}</td>
-                <td class="p-4">{{ expense.get_category_display }}</td>
-                <td class="p-4 font-mono">{{ expense.amount|floatformat:2 }}</td>
-                <td class="p-4"><a href="{% url 'expense_update' expense.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a></td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد مصاريف مسجلة." %}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="w-full overflow-x-auto">
+        <table class="w-full text-start min-w-[720px]">
+            <thead class="bg-gray-50 border-b">
+                <tr><th class="p-4">{% trans "التاريخ" %}</th><th class="p-4">{% trans "الوصف" %}</th><th class="p-4">{% trans "المبنى" %}</th><th class="p-4">{% trans "الفئة" %}</th><th class="p-4">{% trans "المبلغ" %}</th><th class="p-4">{% trans "إجراءات" %}</th></tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-4">{{ expense.expense_date|date:"d M Y" }}</td>
+                    <td class="p-4">{{ expense.description }}</td>
+                    <td class="p-4">{{ expense.building.name }}</td>
+                    <td class="p-4">{{ expense.get_category_display }}</td>
+                    <td class="p-4 font-mono">{{ expense.amount|floatformat:2 }}</td>
+                    <td class="p-4"><a href="{% url 'expense_update' expense.pk %}" class="text-blue-600 hover:underline">{% trans "تعديل" %}</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="p-6 text-center text-gray-500">{% trans "لا توجد مصاريف مسجلة." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
