@@ -2,22 +2,23 @@
 {% load i18n %}
 {% block title %}{% trans "إدارة المباني" %}{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold text-gray-800">{% trans "المباني" %}</h2>
-    <div class="flex gap-3">
-        <a href="{% url 'export_buildings_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">{% trans "المباني" %}</h2>
+    <div class="flex gap-3 w-full sm:w-auto flex-wrap">
+        <a href="{% url 'export_buildings_excel' %}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-5 rounded-lg font-semibold w-full sm:w-auto text-center">
             📊 {% trans "تصدير Excel" %}
         </a>
-        <a href="{% url 'building_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold">{% trans "إضافة مبنى جديد" %}</a>
+        <a href="{% url 'building_create' %}" class="btn-primary py-2 px-5 rounded-lg font-semibold w-full sm:w-auto text-center">{% trans "إضافة مبنى جديد" %}</a>
     </div>
+
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for building in buildings %}
     <div class="card p-6">
-        <div class="flex justify-between items-start mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-2 mb-4">
             <h3 class="text-xl font-bold text-gray-800">{{ building.name }}</h3>
-            <div>
+            <div class="flex gap-2 flex-wrap">
                 <a href="{% url 'building_update' building.pk %}" class="text-blue-600 hover:underline text-sm mr-2">{% trans "تعديل" %}</a>
                 <a href="{% url 'building_delete' building.pk %}" class="text-red-600 hover:underline text-sm">{% trans "حذف" %}</a>
             </div>
@@ -42,9 +43,10 @@
         </div>
     </div>
     {% empty %}
-    <div class="col-span-3 card p-6 text-center text-gray-500">
+    <div class="col-span-1 md:col-span-2 lg:col-span-3 card p-6 text-center text-gray-500">
         {% trans "لم يتم العثور على مباني." %}
     </div>
     {% endfor %}
+
 </div>
 {% endblock %}
