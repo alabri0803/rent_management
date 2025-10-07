@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rent Management 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-07 19:56+0400\n"
+"POT-Creation-Date: 2025-10-07 21:53+0400\n"
 "PO-Revision-Date: 2025-10-07 18:14+0400\n"
 "Last-Translator: Admin\n"
 "Language-Team: Arabic\n"
@@ -2079,7 +2079,7 @@ msgstr ""
 msgid "اسم المستخدم أو كلمة المرور غير صحيحة."
 msgstr ""
 
-#: templates/registration/login.html:90 templates/registration/login.html:165
+#: templates/registration/login.html:90 templates/registration/login.html:164
 msgid "إظهار كلمة المرور"
 msgstr ""
 
@@ -2096,14 +2096,14 @@ msgid "دخول"
 msgstr ""
 
 #: templates/registration/login.html:136
-msgid "أو سجل الدخول عبر"
+msgid "أو تسجيل الدخول عبر"
 msgstr ""
 
-#: templates/registration/login.html:146
+#: templates/registration/login.html:145
 msgid "تسجيل الدخول عبر GitHub"
 msgstr ""
 
-#: templates/registration/login.html:165
+#: templates/registration/login.html:164
 msgid "إخفاء كلمة المرور"
 msgstr ""
 

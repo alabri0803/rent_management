@@ -1,0 +1,53 @@
+feat: Add GitHub OAuth login integration
+
+## Changes Made
+
+### Frontend
+- Added GitHub login button to login page with GitHub icon
+- Added "Or sign in with" separator section
+- Styled social login button with hover effects
+- Added translations for new UI elements (Arabic & English)
+
+### Backend
+- Configured django-allauth for GitHub provider
+- Created management command `setup_github_oauth` for easy setup
+- Updated URL patterns to support GitHub OAuth callback
+
+### Documentation
+- Created GITHUB_OAUTH_SETUP.md with step-by-step setup instructions
+- Included troubleshooting section for common issues
+- Added both automatic and manual setup methods
+
+### Translations
+- Added Arabic translation: "أو تسجيل الدخول عبر"
+- Added English translation: "Or sign in with"
+- Added Arabic translation: "تسجيل الدخول عبر GitHub"
+- Added English translation: "Sign in with GitHub"
+
+### Files Modified
+- templates/registration/login.html
+- locale/en/LC_MESSAGES/django.po
+- locale/ar/LC_MESSAGES/django.po
+
+### Files Created
+- dashboard/management/commands/setup_github_oauth.py
+- GITHUB_OAUTH_SETUP.md
+- COMMIT_MESSAGE.txt
+
+## Setup Instructions
+
+1. Run: `python manage.py setup_github_oauth`
+2. Follow the prompts to enter GitHub OAuth credentials
+3. Test login at /accounts/login/
+
+## Dependencies
+- django-allauth (already installed)
+- GitHub OAuth App (requires setup)
+
+## Breaking Changes
+None
+
+## Notes
+- Requires GitHub OAuth app creation on GitHub Developer Settings
+- Callback URL must be: https://[your-domain]/accounts/github/login/callback/
+- Works with existing authentication system
