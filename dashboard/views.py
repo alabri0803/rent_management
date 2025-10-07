@@ -91,14 +91,18 @@ class DashboardHomeView(StaffRequiredMixin, ListView):
             'data': [occupied_units, available_units],
         }
         # ADDED: Calendar data for renewals
-        renewals = Lease.objects.filter(end_date__gte=today.date()).values('pk', 'end_date', 'tenant__name', 'unit__unit_number')
+        renewals = Lease.objects.filter(end_date__gte=today.date())
         calendar_events = []
         for renewal in renewals:
             calendar_events.append({
-                'title': f"{_('تجديد')}: {renewal['tenant__name']} - {_('وحدة')} {renewal['unit__unit_number']}",
-                'start': renewal['end_date'].isoformat(),
+                'title': f"{_('تجديد')}: {renewal.tenant.name} - {_('وحدة')} {renewal.unit.unit_number}",
+                'start': renewal.end_date.isoformat(),
                 'allDay': True,
-                'url': reverse('lease_detail', kwargs={'pk': renewal['pk']})
+                'url': reverse('lease_detail', kwargs={'pk': renewal.pk}),
+                'extendedProps': {
+                    'contract_number': renewal.contract_number,
+                    'days_until_expiry': renewal.days_until_expiry()
+                }
             })
         context['calendar_events'] = json.dumps(calendar_events)
         # Alerts for expiring leases

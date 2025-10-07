@@ -106,6 +106,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://unpkg.com/popper.js@1"></script>
+<script src="https://unpkg.com/tippy.js@5"></script>
 <script>
     // Financial Trend Chart
     new Chart(document.getElementById('financialTrendChart'), { 
@@ -180,11 +182,20 @@
             events: {{ calendar_events|safe }},
             eventColor: '#8a2be2',
             eventDisplay: 'block',
-            eventMouseEnter: function(info) {
-                info.el.style.backgroundColor = '#9370DB';
+            eventContent: function(arg) {
+                let tooltipContent = `
+                    <strong>{% trans 'عقد' %}:</strong> ${arg.event.extendedProps.contract_number}<br>
+                    <strong>{% trans 'ينتهي بعد' %}:</strong> ${arg.event.extendedProps.days_until_expiry} {% trans 'يوم' %}
+                `;
+                return {
+                    html: `<div class="fc-event-main-frame">${arg.event.title}</div>`
+                };
             },
-            eventMouseLeave: function(info) {
-                info.el.style.backgroundColor = '#8a2be2';
+            eventMouseEnter: function(info) {
+                tippy(info.el, {
+                    content: `<strong>{% trans 'عقد' %}:</strong> ${info.event.extendedProps.contract_number}<br><strong>{% trans 'ينتهي بعد' %}:</strong> ${info.event.extendedProps.days_until_expiry} {% trans 'يوم' %}`,
+                    allowHTML: true,
+                });
             }
         });
         calendar.render();
