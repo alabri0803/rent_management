@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-06 21:32+0400\n"
+"POT-Creation-Date: 2025-10-07 14:38+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,7 +112,7 @@ msgstr "Building Name"
 msgid "مبنى"
 msgstr "Building"
 
-#: dashboard/models.py:33 templates/dashboard/base.html:97
+#: dashboard/models.py:33 templates/dashboard/base.html:107
 #: templates/dashboard/building_list.html:6
 msgid "المباني"
 msgstr "Buildings"
@@ -130,15 +130,15 @@ msgid "محل"
 msgstr "Shop"
 
 #: dashboard/models.py:40 dashboard/models.py:300
-#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/expense_list.html:18
 #: templates/dashboard/unit_detail.html:22
-#: templates/dashboard/unit_list.html:52
+#: templates/dashboard/unit_list.html:53
 msgid "المبنى"
 msgstr "Building"
 
 #: dashboard/models.py:41 templates/dashboard/reports/occupancy_report.html:40
 #: templates/dashboard/unit_detail.html:18
-#: templates/dashboard/unit_list.html:51
+#: templates/dashboard/unit_list.html:52
 msgid "رقم الوحدة"
 msgstr "Unit Number"
 
@@ -147,7 +147,7 @@ msgid "نوع الوحدة"
 msgstr "Unit Type"
 
 #: dashboard/models.py:43 templates/dashboard/unit_detail.html:30
-#: templates/dashboard/unit_list.html:54
+#: templates/dashboard/unit_list.html:55
 msgid "الطابق"
 msgstr "Floor"
 
@@ -159,7 +159,7 @@ msgstr "Available for Rent"
 msgid "وحدة"
 msgstr "Unit"
 
-#: dashboard/models.py:48 templates/dashboard/base.html:102
+#: dashboard/models.py:48 templates/dashboard/base.html:111
 #: templates/dashboard/home.html:151 templates/dashboard/unit_list.html:6
 msgid "الوحدات"
 msgstr "Units"
@@ -194,8 +194,8 @@ msgstr "Phone Number"
 
 #: dashboard/models.py:59 dashboard/views.py:645
 #: templates/dashboard/tenant_detail.html:30
-#: templates/dashboard/tenant_list.html:48
-#: templates/dashboard/user_management.html:33
+#: templates/dashboard/tenant_list.html:49
+#: templates/dashboard/user_management.html:34
 msgid "البريد الإلكتروني"
 msgstr "Email"
 
@@ -215,11 +215,11 @@ msgstr "Customer Rating"
 msgid "من 1 إلى 5 نجوم."
 msgstr "From 1 to 5 stars."
 
-#: dashboard/models.py:64 templates/dashboard/user_management.html:57
+#: dashboard/models.py:64 templates/dashboard/user_management.html:58
 msgid "مستأجر"
 msgstr "Tenant"
 
-#: dashboard/models.py:65 templates/dashboard/base.html:107
+#: dashboard/models.py:65 templates/dashboard/base.html:157
 #: templates/dashboard/tenant_list.html:6
 msgid "المستأجرين"
 msgstr "Tenants"
@@ -245,7 +245,7 @@ msgid "قوالب العقود"
 msgstr "Contract Templates"
 
 #: dashboard/models.py:82 dashboard/views.py:636
-#: templates/dashboard/user_management.html:64
+#: templates/dashboard/user_management.html:65
 msgid "نشط"
 msgstr "Active"
 
@@ -490,8 +490,8 @@ msgstr "Priority"
 #: templates/dashboard/tenant_detail.html:107
 #: templates/dashboard/unit_detail.html:34
 #: templates/dashboard/unit_detail.html:81
-#: templates/dashboard/unit_list.html:55
-#: templates/dashboard/user_management.html:35
+#: templates/dashboard/unit_list.html:56
+#: templates/dashboard/user_management.html:36
 #: templates/portal/dashboard.html:35 templates/portal/maintenance_list.html:14
 msgid "الحالة"
 msgstr "Status"
@@ -563,7 +563,7 @@ msgstr "Administrative/Government Fees"
 msgid "فئة المصروف"
 msgstr "Expense Category"
 
-#: dashboard/models.py:302 templates/dashboard/expense_list.html:17
+#: dashboard/models.py:302 templates/dashboard/expense_list.html:18
 #: templates/dashboard/reports/annual_pl_report.html:30
 #: templates/dashboard/reports/monthly_pl_report.html:15
 msgid "الوصف"
@@ -571,7 +571,7 @@ msgstr "Description"
 
 #: dashboard/models.py:303 templates/dashboard/check_management.html:37
 #: templates/dashboard/check_status_form.html:13
-#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/expense_list.html:18
 #: templates/dashboard/payment_list.html:24
 #: templates/dashboard/reports/annual_pl_report.html:23
 #: templates/dashboard/reports/annual_pl_report.html:30
@@ -593,7 +593,7 @@ msgstr "Receipt/Invoice (Optional)"
 msgid "مصروف"
 msgstr "Expense"
 
-#: dashboard/models.py:310 templates/dashboard/base.html:127
+#: dashboard/models.py:310 templates/dashboard/base.html:140
 #: templates/dashboard/expense_list.html:6 templates/dashboard/home.html:125
 #: templates/dashboard/reports/annual_pl_report.html:28
 #: templates/dashboard/reports/monthly_pl_report.html:13
@@ -641,13 +641,13 @@ msgstr "'Your lease contract number {} will expire soon on {}'"
 
 #: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
 #: templates/dashboard/unit_detail.html:38
-#: templates/dashboard/unit_list.html:43 templates/dashboard/unit_list.html:70
+#: templates/dashboard/unit_list.html:43 templates/dashboard/unit_list.html:71
 msgid "مشغولة"
 msgstr "Occupied"
 
 #: dashboard/views.py:83 templates/dashboard/reports/occupancy_report.html:46
 #: templates/dashboard/unit_detail.html:36
-#: templates/dashboard/unit_list.html:42 templates/dashboard/unit_list.html:68
+#: templates/dashboard/unit_list.html:42 templates/dashboard/unit_list.html:69
 msgid "متاحة"
 msgstr "Available"
 
@@ -819,11 +819,11 @@ msgstr "Check status updated successfully."
 msgid "كلمة المرور"
 msgstr "Password"
 
-#: dashboard/views.py:635 templates/dashboard/user_management.html:53
+#: dashboard/views.py:635 templates/dashboard/user_management.html:54
 msgid "موظف"
 msgstr "Employee"
 
-#: dashboard/views.py:642 templates/dashboard/user_management.html:31
+#: dashboard/views.py:642 templates/dashboard/user_management.html:32
 #: templates/registration/login.html:47
 msgid "اسم المستخدم"
 msgstr "Username"
@@ -908,39 +908,55 @@ msgstr "Primary"
 msgid "لوحة المعلومات"
 msgstr "Dashboard"
 
-#: templates/dashboard/base.html:112 templates/dashboard/lease_list.html:6
+#: templates/dashboard/base.html:100
+#, fuzzy
+#| msgid "ادارة الايجارات"
+msgid "إدارة العقارات"
+msgstr "Rental Management"
+
+#: templates/dashboard/base.html:115 templates/dashboard/lease_list.html:6
 msgid "العقود"
 msgstr "Contracts"
 
-#: templates/dashboard/base.html:117 templates/dashboard/payment_list.html:6
+#: templates/dashboard/base.html:125
+#, fuzzy
+#| msgid "التالية"
+msgid "المالية"
+msgstr "Next"
+
+#: templates/dashboard/base.html:132 templates/dashboard/payment_list.html:6
 msgid "المدفوعات"
 msgstr "Payments"
 
-#: templates/dashboard/base.html:122
+#: templates/dashboard/base.html:136
 #: templates/dashboard/check_management.html:3
 #: templates/dashboard/check_management.html:6
 msgid "إدارة الشيكات"
 msgstr "Check Management"
 
-#: templates/dashboard/base.html:132
+#: templates/dashboard/base.html:150
+msgid "العمليات"
+msgstr ""
+
+#: templates/dashboard/base.html:161
 msgid "الصيانة"
 msgstr "Maintenance"
 
-#: templates/dashboard/base.html:137 templates/dashboard/user_management.html:3
+#: templates/dashboard/base.html:165 templates/dashboard/user_management.html:3
 #: templates/dashboard/user_management.html:6
 msgid "إدارة المستخدمين"
 msgstr "User Management"
 
-#: templates/dashboard/base.html:142
+#: templates/dashboard/base.html:169
 #: templates/dashboard/report_selection.html:3
 msgid "التقارير"
 msgstr "Reports"
 
-#: templates/dashboard/base.html:147
+#: templates/dashboard/base.html:176
 msgid "الاعدادات"
 msgstr "Settings"
 
-#: templates/dashboard/base.html:160 templates/portal/base.html:20
+#: templates/dashboard/base.html:189 templates/portal/base.html:20
 msgid "تسجيل الخروج"
 msgstr "Logout"
 
@@ -1020,46 +1036,46 @@ msgstr "Buildings Management"
 msgid "تصدير Excel"
 msgstr "Export Excel"
 
-#: templates/dashboard/building_list.html:21
+#: templates/dashboard/building_list.html:22
 #: templates/dashboard/check_management.html:72
-#: templates/dashboard/expense_list.html:27
+#: templates/dashboard/expense_list.html:28
 #: templates/dashboard/lease_detail.html:16
 #: templates/dashboard/payment_list.html:57
 #: templates/dashboard/tenant_detail.html:8
-#: templates/dashboard/tenant_list.html:69
-#: templates/dashboard/unit_detail.html:8 templates/dashboard/unit_list.html:75
-#: templates/dashboard/user_management.html:75
+#: templates/dashboard/tenant_list.html:71
+#: templates/dashboard/unit_detail.html:8 templates/dashboard/unit_list.html:77
+#: templates/dashboard/user_management.html:77
 msgid "تعديل"
 msgstr "Edit"
 
-#: templates/dashboard/building_list.html:22
+#: templates/dashboard/building_list.html:23
 #: templates/dashboard/lease_detail.html:19
 #: templates/dashboard/lease_detail.html:96
 #: templates/dashboard/payment_list.html:59
-#: templates/dashboard/tenant_list.html:70
-#: templates/dashboard/unit_list.html:76
-#: templates/dashboard/user_management.html:79
+#: templates/dashboard/tenant_list.html:72
+#: templates/dashboard/unit_list.html:78
+#: templates/dashboard/user_management.html:81
 msgid "حذف"
 msgstr "Delete"
 
-#: templates/dashboard/building_list.html:28
+#: templates/dashboard/building_list.html:29
 #: templates/dashboard/reports/occupancy_report.html:23
 #: templates/dashboard/unit_list.html:17
 msgid "إجمالي الوحدات"
 msgstr "Total Units"
 
-#: templates/dashboard/building_list.html:32
+#: templates/dashboard/building_list.html:33
 #: templates/dashboard/reports/occupancy_report.html:25
 #: templates/dashboard/unit_list.html:25
 msgid "الوحدات المشغولة"
 msgstr "Occupied Units"
 
-#: templates/dashboard/building_list.html:36
+#: templates/dashboard/building_list.html:37
 #: templates/dashboard/reports/occupancy_report.html:31
 msgid "نسبة الإشغال"
 msgstr "Occupancy Rate"
 
-#: templates/dashboard/building_list.html:46
+#: templates/dashboard/building_list.html:47
 msgid "لم يتم العثور على مباني."
 msgstr "No buildings found."
 
@@ -1085,16 +1101,16 @@ msgid "البنك"
 msgstr "Bank"
 
 #: templates/dashboard/check_management.html:41
-#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/expense_list.html:18
 #: templates/dashboard/lease_list.html:33
 #: templates/dashboard/maintenance_list.html:14
 #: templates/dashboard/payment_list.html:26
 #: templates/dashboard/tenant_detail.html:80
 #: templates/dashboard/tenant_detail.html:108
-#: templates/dashboard/tenant_list.html:50
+#: templates/dashboard/tenant_list.html:51
 #: templates/dashboard/unit_detail.html:82
-#: templates/dashboard/unit_list.html:56
-#: templates/dashboard/user_management.html:37
+#: templates/dashboard/unit_list.html:57
+#: templates/dashboard/user_management.html:38
 msgid "إجراءات"
 msgstr "Actions"
 
@@ -1113,32 +1129,32 @@ msgid "لا توجد شيكات"
 msgstr "No checks"
 
 #: templates/dashboard/check_management.html:94
-#: templates/dashboard/user_management.html:99
+#: templates/dashboard/user_management.html:103
 msgid "الأولى"
 msgstr "First"
 
 #: templates/dashboard/check_management.html:95
-#: templates/dashboard/user_management.html:100
+#: templates/dashboard/user_management.html:104
 msgid "السابقة"
 msgstr "Previous"
 
 #: templates/dashboard/check_management.html:98
-#: templates/dashboard/user_management.html:103
+#: templates/dashboard/user_management.html:107
 msgid "صفحة"
 msgstr "Page"
 
 #: templates/dashboard/check_management.html:98
-#: templates/dashboard/user_management.html:103
+#: templates/dashboard/user_management.html:107
 msgid "من"
 msgstr "of"
 
 #: templates/dashboard/check_management.html:101
-#: templates/dashboard/user_management.html:106
+#: templates/dashboard/user_management.html:110
 msgid "التالية"
 msgstr "Next"
 
 #: templates/dashboard/check_management.html:102
-#: templates/dashboard/user_management.html:107
+#: templates/dashboard/user_management.html:111
 msgid "الأخيرة"
 msgstr "Last"
 
@@ -1184,7 +1200,7 @@ msgstr ""
 msgid "إدارة المصاريف"
 msgstr "Expense Management"
 
-#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/expense_list.html:18
 #: templates/dashboard/maintenance_list.html:14
 #: templates/dashboard/reports/annual_pl_report.html:23
 #: templates/dashboard/reports/annual_pl_report.html:30
@@ -1193,11 +1209,11 @@ msgstr "Expense Management"
 msgid "التاريخ"
 msgstr "Date"
 
-#: templates/dashboard/expense_list.html:17
+#: templates/dashboard/expense_list.html:18
 msgid "الفئة"
 msgstr "Category"
 
-#: templates/dashboard/expense_list.html:30
+#: templates/dashboard/expense_list.html:31
 msgid "لا توجد مصاريف مسجلة."
 msgstr "No expenses recorded."
 
@@ -1475,9 +1491,9 @@ msgstr "Today"
 #: templates/dashboard/lease_list.html:65
 #: templates/dashboard/tenant_detail.html:91
 #: templates/dashboard/tenant_detail.html:118
-#: templates/dashboard/tenant_list.html:68
+#: templates/dashboard/tenant_list.html:70
 #: templates/dashboard/unit_detail.html:92
-#: templates/dashboard/unit_list.html:74
+#: templates/dashboard/unit_list.html:76
 msgid "تفاصيل"
 msgstr "Details"
 
@@ -1698,10 +1714,10 @@ msgstr "Unit Details by Building"
 
 #: templates/dashboard/reports/occupancy_report.html:40
 #: templates/dashboard/tenant_detail.html:22
-#: templates/dashboard/tenant_list.html:46
+#: templates/dashboard/tenant_list.html:47
 #: templates/dashboard/unit_detail.html:26
-#: templates/dashboard/unit_list.html:53
-#: templates/dashboard/user_management.html:34
+#: templates/dashboard/unit_list.html:54
+#: templates/dashboard/user_management.html:35
 msgid "النوع"
 msgstr "Type"
 
@@ -1811,17 +1827,17 @@ msgid "المعلومات الأساسية"
 msgstr "Basic Information"
 
 #: templates/dashboard/tenant_detail.html:18
-#: templates/dashboard/tenant_list.html:45
+#: templates/dashboard/tenant_list.html:46
 msgid "الاسم"
 msgstr "Name"
 
 #: templates/dashboard/tenant_detail.html:26
-#: templates/dashboard/tenant_list.html:47
+#: templates/dashboard/tenant_list.html:48
 msgid "الهاتف"
 msgstr "Phone"
 
 #: templates/dashboard/tenant_detail.html:40
-#: templates/dashboard/tenant_list.html:49
+#: templates/dashboard/tenant_list.html:50
 msgid "التقييم"
 msgstr "Rating"
 
@@ -1885,12 +1901,12 @@ msgstr "All Types"
 msgid "بحث"
 msgstr "Search"
 
-#: templates/dashboard/tenant_list.html:74
+#: templates/dashboard/tenant_list.html:77
 msgid "لم يتم العثور على مستأجرين."
 msgstr "No tenants found."
 
-#: templates/dashboard/tenant_list.html:81
-#: templates/dashboard/unit_list.html:87
+#: templates/dashboard/tenant_list.html:85
+#: templates/dashboard/unit_list.html:91
 #, python-format
 msgid ""
 "\n"
@@ -1945,7 +1961,7 @@ msgstr "All Buildings"
 msgid "كل الحالات"
 msgstr "All Statuses"
 
-#: templates/dashboard/unit_list.html:80
+#: templates/dashboard/unit_list.html:83
 msgid "لم يتم العثور على وحدات."
 msgstr "No units found."
 
@@ -1982,23 +1998,23 @@ msgstr "Employees"
 msgid "المستخدمين النشطين"
 msgstr "Active Users"
 
-#: templates/dashboard/user_management.html:32
+#: templates/dashboard/user_management.html:33
 msgid "الاسم الكامل"
 msgstr "Full Name"
 
-#: templates/dashboard/user_management.html:36
+#: templates/dashboard/user_management.html:37
 msgid "تاريخ الانضمام"
 msgstr "Join Date"
 
-#: templates/dashboard/user_management.html:49
+#: templates/dashboard/user_management.html:50
 msgid "مدير النظام"
 msgstr "System Administrator"
 
-#: templates/dashboard/user_management.html:68
+#: templates/dashboard/user_management.html:69
 msgid "معطل"
 msgstr "Disabled"
 
-#: templates/dashboard/user_management.html:87
+#: templates/dashboard/user_management.html:90
 msgid "لا يوجد مستخدمين"
 msgstr "No users"
 
@@ -2056,7 +2072,9 @@ msgstr "No Active Unit"
 
 #: templates/portal/dashboard.html:102
 msgid "ليس لديك آي عقود إيجار نشطة مرتبطة بحسابك في الوقت الحالي."
-msgstr "You don't have any active lease contracts linked to your account at the moment."
+msgstr ""
+"You don't have any active lease contracts linked to your account at the "
+"moment."
 
 #: templates/portal/maintenance_form.html:3
 msgid "إنشاء طلب صيانة"
