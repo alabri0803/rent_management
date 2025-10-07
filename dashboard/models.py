@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 import datetime
 from django.db.models import Sum
+from .utils import auto_translate_to_english
 
 class Company(models.Model):
     name = models.CharField(_("اسم الشركة"), max_length=200)
@@ -21,6 +22,14 @@ class Company(models.Model):
         verbose_name = _("ملف الشركة")
         verbose_name_plural = _("ملف الشركة")
 
+    def save(self, *args, **kwargs):
+        # ترجمة تلقائية للحقول
+        if self.name and not self.name_en:
+            self.name_en = auto_translate_to_english(self.name)
+        if self.address and not self.address_en:
+            self.address_en = auto_translate_to_english(self.address)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -31,6 +40,14 @@ class Building(models.Model):
     class Meta:
         verbose_name = _("مبنى")
         verbose_name_plural = _("المباني")
+    
+    def save(self, *args, **kwargs):
+        # ترجمة تلقائية للحقول
+        if self.name and not self.name_en:
+            self.name_en = auto_translate_to_english(self.name)
+        if self.address and not self.address_en:
+            self.address_en = auto_translate_to_english(self.address)
+        super().save(*args, **kwargs)
         
     def __str__(self):
         return self.name
@@ -63,6 +80,14 @@ class Tenant(models.Model):
     class Meta:
         verbose_name = _("مستأجر")
         verbose_name_plural = _("المستأجرين")
+    
+    def save(self, *args, **kwargs):
+        # ترجمة تلقائية للحقول
+        if self.name and not self.name_en:
+            self.name_en = auto_translate_to_english(self.name)
+        if self.authorized_signatory and not self.authorized_signatory_en:
+            self.authorized_signatory_en = auto_translate_to_english(self.authorized_signatory)
+        super().save(*args, **kwargs)
         
     def __str__(self):
         return self.name
@@ -309,6 +334,12 @@ class Expense(models.Model):
         verbose_name = _("مصروف")
         verbose_name_plural = _("المصاريف")
         ordering = ['-expense_date']
+    
+    def save(self, *args, **kwargs):
+        # ترجمة تلقائية للحقول
+        if self.description and not self.description_en:
+            self.description_en = auto_translate_to_english(self.description)
+        super().save(*args, **kwargs)
         
     def __str__(self):
         return f"{self.get_category_display()} - {self.amount}"
