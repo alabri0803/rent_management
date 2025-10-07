@@ -37,6 +37,17 @@
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-md bg-white p-6 md:p-8 rounded-lg shadow-lg">
+        <div class="flex justify-end mb-4">
+            <form action="/i18n/setlang/" method="post" class="flex items-center gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <label for="lang" class="text-sm text-gray-600">{% trans "اللغة" %}</label>
+                <select id="lang" name="language" class="border rounded-md p-1 text-sm" onchange="this.form.submit()">
+                    <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>العربية</option>
+                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                </select>
+            </form>
+        </div>
         <h2 class="text-xl md:text-2xl font-bold text-center text-[#993333] mb-6">{% trans "تسجيل الدخول إلى النظام" %}</h2>
         {% if form.errors %}
             <p class="text-red-500 text-sm mb-4 p-3 bg-red-50 rounded">{% trans "اسم المستخدم أو كلمة المرور غير صحيحة." %}</p>
