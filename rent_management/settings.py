@@ -93,9 +93,9 @@ WSGI_APPLICATION = 'rent_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rent_management',
+        'NAME': 'AdminAlabrialabr$rent_management',
         'USER': 'AdminAlabrialabr',
-        'PASSWORD': 'Alabri@@@99',
+        'PASSWORD': 'Rashid@@@99',
         #'PORT': '3306',
         'HOST': 'AdminAlabrialabri.mysql.pythonanywhere-services.com',
     }
@@ -149,7 +149,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+STATIC_ROOT = '/home/AdminAlabrialabri/rent_management/static'
+MEDIA_ROOT = '/home/AdminAlabrialabri/rent_management/media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
