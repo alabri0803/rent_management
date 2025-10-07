@@ -149,8 +149,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = '/home/AdminAlabrialabri/rent_management/static'
-MEDIA_ROOT = '/home/AdminAlabrialabri/rent_management/media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -179,8 +177,8 @@ SITE_ID = 1
 
 # إعدادات Allauth إضافية (اختيارية)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = ['username', 'email']
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email', 'password']
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         # These are the permissions you want to request from Google.
