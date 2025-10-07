@@ -29,7 +29,6 @@ urlpatterns = [
 
 # Language-prefixed URLs
 urlpatterns += i18n_patterns(
-    path('', CustomLoginView.as_view(), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
     path('dashboard/', include('dashboard.urls')),

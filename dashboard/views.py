@@ -1,4 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
+
+def login_redirect(request):
+    if request.user.is_staff:
+        return redirect('dashboard_home')
+    else:
+        return redirect('portal_dashboard')
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
