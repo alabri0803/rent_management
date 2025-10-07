@@ -250,7 +250,7 @@
                     
                     <div class="detail-line">
                         <span class="detail-label">{% trans "على بناء" %}:</span>
-                        <span class="detail-value">{{ lease.unit.property.name|default:"________________" }}</span>
+                        <span class="detail-value">{{ lease.unit.building.name|default:"________________" }}</span>
                     </div>
                     
                     <div class="detail-line">
@@ -298,7 +298,7 @@
                     
                     <div class="english-detail">
                         <span class="english-label">Payment Method:</span>
-                        <span class="english-value">{{ payment.get_payment_method_display|default:"________________" }}</span>
+                        <span class="english-value">{{ payment.payment_method|default:"________________" }}</span>
                     </div>
                     
                     {% if payment.payment_method == 'check' %}
@@ -320,7 +320,7 @@
                     {% if payment.check_status %}
                     <div class="english-detail">
                         <span class="english-label">Check Status:</span>
-                        <span class="english-value">{{ payment.get_check_status_display }}</span>
+                        <span class="english-value">{{ payment.check_status }}</span>
                     </div>
                     {% endif %}
                     
@@ -334,7 +334,7 @@
                     
                     <div class="english-detail">
                         <span class="english-label">For Building:</span>
-                        <span class="english-value">{{ lease.unit.property.name|default:"________________" }}</span>
+                        <span class="english-value">{{ lease.unit.building.name|default:"________________" }}</span>
                     </div>
                     
                     <div class="english-detail">
