@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-07 14:38+0400\n"
+"POT-Creation-Date: 2025-10-07 14:53+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -812,7 +812,7 @@ msgstr ""
 msgid "تم تحديث حالة الشيك بنجاح."
 msgstr ""
 
-#: dashboard/views.py:634 templates/registration/login.html:63
+#: dashboard/views.py:634 templates/registration/login.html:74
 msgid "كلمة المرور"
 msgstr ""
 
@@ -821,7 +821,7 @@ msgid "موظف"
 msgstr ""
 
 #: dashboard/views.py:642 templates/dashboard/user_management.html:32
-#: templates/registration/login.html:47
+#: templates/registration/login.html:58
 msgid "اسم المستخدم"
 msgstr ""
 
@@ -2068,30 +2068,34 @@ msgstr ""
 msgid "تسجيل الدخول"
 msgstr ""
 
-#: templates/registration/login.html:40
+#: templates/registration/login.html:44
+msgid "اللغة"
+msgstr ""
+
+#: templates/registration/login.html:51
 msgid "تسجيل الدخول إلى النظام"
 msgstr ""
 
-#: templates/registration/login.html:42
+#: templates/registration/login.html:53
 msgid "اسم المستخدم أو كلمة المرور غير صحيحة."
 msgstr ""
 
-#: templates/registration/login.html:79 templates/registration/login.html:132
+#: templates/registration/login.html:90 templates/registration/login.html:143
 msgid "إظهار كلمة المرور"
 msgstr ""
 
-#: templates/registration/login.html:102
+#: templates/registration/login.html:113
 msgid "تذكرني"
 msgstr ""
 
-#: templates/registration/login.html:111
+#: templates/registration/login.html:122
 msgid "نسيت كلمة المرور؟"
 msgstr ""
 
-#: templates/registration/login.html:115
+#: templates/registration/login.html:126
 msgid "دخول"
 msgstr ""
 
-#: templates/registration/login.html:132
+#: templates/registration/login.html:143
 msgid "إخفاء كلمة المرور"
 msgstr ""
