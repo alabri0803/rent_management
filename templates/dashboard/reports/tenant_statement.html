@@ -4,29 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        @font-face { font-family: 'Tajawal'; src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); }
-        body { font-family: 'Tajawal', sans-serif; direction: rtl; text-align: right; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .details { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .details td { padding: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: right; }
-        th { background-color: #f2f2f2; }
+        @font-face { 
+            font-family: 'Tajawal'; 
+            src: url(https://fonts.gstatic.com/s/tajawal/v9/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2'); 
+        }
+        body { 
+            font-family: 'Tajawal', Arial, sans-serif; 
+            font-size: 12px;
+            margin: 0;
+            padding: 10px;
+            background: white;
+        }
+        .container { 
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+        .header { 
+            text-align: center; 
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+        }
+        .header h1 { font-size: 20px; margin: 5px 0; }
+        .header h2 { font-size: 16px; margin: 3px 0; font-weight: normal; }
+        .main-content { display: flex; gap: 20px; }
+        .arabic-section, .english-section { flex: 1; }
+        .arabic-section { direction: rtl; text-align: right; }
+        .english-section { direction: ltr; text-align: left; font-family: Arial, sans-serif; }
+        .details-table { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
+        .details-table td { padding: 6px; border: 1px solid #ddd; }
+        .details-table strong { font-weight: bold; }
+        .payments-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .payments-table th, .payments-table td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+        .payments-table th { background-color: #f2f2f2; font-weight: bold; }
+        .section-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>{% trans "كشف حساب مستأجر" %}</h1></div>
-    <table class="details">
-        <tr><td><strong>{% trans "المستأجر" %}:</strong></td><td>{{ lease.tenant.name }}</td><td><strong>{% trans "تاريخ الطباعة" %}:</strong></td><td>{{ today|date:"d M Y" }}</td></tr>
-        <tr><td><strong>{% trans "رقم العقد" %}:</strong></td><td>{{ lease.contract_number }}</td><td><strong>{% trans "الوحدة" %}:</strong></td><td>{{ lease.unit }}</td></tr>
-        <tr><td><strong>{% trans "فترة العقد" %}:</strong></td><td colspan="3">{{ lease.start_date|date:"d M Y" }} - {{ lease.end_date|date:"d M Y" }}</td></tr>
-    </table>
-    <h3>{% trans "سجل الدفعات" %}</h3>
-    <table>
-        <thead><tr><th>{% trans "تاريخ الدفع" %}</th><th>{% trans "دفعة عن شهر/سنة" %}</th><th>{% trans "المبلغ" %}</th></tr></thead>
-        <tbody>
-            {% for payment in payments %}<tr><td>{{ payment.payment_date|date:"d M Y" }}</td><td>{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</td></tr>{% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="header">
+            <h1>{% trans "كشف حساب مستأجر" %} / Tenant Statement</h1>
+        </div>
+
+        <div class="main-content">
+            <!-- Arabic Section -->
+            <div class="arabic-section">
+                <div class="section-title">البيانات</div>
+                <table class="details-table">
+                    <tr><td><strong>{% trans "المستأجر" %}:</strong></td><td>{{ lease.tenant.name }}</td></tr>
+                    <tr><td><strong>{% trans "رقم العقد" %}:</strong></td><td>{{ lease.contract_number }}</td></tr>
+                    <tr><td><strong>{% trans "الوحدة" %}:</strong></td><td>{{ lease.unit.building.name }} - {{ lease.unit.unit_number }}</td></tr>
+                    <tr><td><strong>{% trans "فترة العقد" %}:</strong></td><td>{{ lease.start_date|date:"d/m/Y" }} - {{ lease.end_date|date:"d/m/Y" }}</td></tr>
+                    <tr><td><strong>{% trans "تاريخ الطباعة" %}:</strong></td><td>{{ today|date:"d/m/Y" }}</td></tr>
+                </table>
+
+                <div class="section-title">سجل الدفعات</div>
+                <table class="payments-table">
+                    <thead><tr><th>{% trans "تاريخ الدفع" %}</th><th>{% trans "عن شهر/سنة" %}</th><th>{% trans "المبلغ" %}</th></tr></thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr><td>{{ payment.payment_date|date:"d/m/Y" }}</td><td>{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td>{{ payment.amount|floatformat:2 }} {% trans "ر.ع" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- English Section -->
+            <div class="english-section">
+                <div class="section-title">Details</div>
+                <table class="details-table">
+                    <tr><td><strong>Tenant:</strong></td><td>{{ lease.tenant.name_en|default:lease.tenant.name }}</td></tr>
+                    <tr><td><strong>Contract No:</strong></td><td>{{ lease.contract_number }}</td></tr>
+                    <tr><td><strong>Unit:</strong></td><td>{{ lease.unit.building.name_en|default:lease.unit.building.name }} - {{ lease.unit.unit_number }}</td></tr>
+                    <tr><td><strong>Contract Period:</strong></td><td>{{ lease.start_date|date:"Y-m-d" }} to {{ lease.end_date|date:"Y-m-d" }}</td></tr>
+                    <tr><td><strong>Print Date:</strong></td><td>{{ today|date:"Y-m-d" }}</td></tr>
+                </table>
+
+                <div class="section-title">Payment History</div>
+                <table class="payments-table">
+                    <thead><tr><th>Payment Date</th><th>For Month/Year</th><th>Amount</th></tr></thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr><td>{{ payment.payment_date|date:"Y-m-d" }}</td><td>{{ payment.payment_for_month }}/{{ payment.payment_for_year }}</td><td>{{ payment.amount|floatformat:2 }} OMR</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
