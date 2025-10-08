@@ -25,6 +25,8 @@ def send_otp_view(request):
     """
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number', '').strip()
+        if not phone_number.startswith('+968') or len(phone_number) != 12 or not phone_number[1:].isdigit():
+            return JsonResponse({'success': False, 'message': _('يرجى إدخال رقم هاتف عماني يبدأ بـ +968 ويتبعه 8 أرقام')})
         
         if not phone_number:
             return JsonResponse({
@@ -82,6 +84,8 @@ def verify_otp_view(request):
     """
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number', '').strip()
+        if not phone_number.startswith('+968') or len(phone_number) != 12 or not phone_number[1:].isdigit():
+            return JsonResponse({'success': False, 'message': _('يرجى إدخال رقم هاتف عماني يبدأ بـ +968 ويتبعه 8 أرقام')})
         otp_code = request.POST.get('otp_code', '').strip()
         
         if not phone_number or not otp_code:

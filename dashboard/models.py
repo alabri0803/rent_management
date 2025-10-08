@@ -11,6 +11,7 @@ import datetime
 from django.db.models import Sum
 import secrets
 import string
+from django.core.validators import RegexValidator
 
 class Company(models.Model):
     name = models.CharField(_("اسم الشركة"), max_length=200)
@@ -379,7 +380,7 @@ class InvoiceItem(models.Model):
 class UserProfile(models.Model):
     """Extended user profile to add phone number for OTP authentication"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_("المستخدم"))
-    phone_number = models.CharField(_("رقم الهاتف"), max_length=15, blank=True, null=True, help_text=_("رقم الهاتف للتحقق عبر OTP"))
+    phone_number = models.CharField(_("رقم الهاتف"), max_length=15, blank=True, null=True, help_text=_("رقم الهاتف للتحقق عبر OTP"), validators=[RegexValidator(regex=r'^\+968\d{8}$', message=_("الرجاء إدخال رقم هاتف عماني صالح يبدأ بـ +968 (8 أرقام بعد المقدمة)"))])
     
     class Meta:
         verbose_name = _("ملف المستخدم")
@@ -393,7 +394,7 @@ class OTP(models.Model):
     """OTP model for storing verification codes"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otps', verbose_name=_("المستخدم"))
     code = models.CharField(_("رمز التحقق"), max_length=6)
-    phone_number = models.CharField(_("رقم الهاتف"), max_length=15)
+    phone_number = models.CharField(_("رقم الهاتف"), max_length=15, validators=[RegexValidator(regex=r'^\+968\d{8}$', message=_("الرجاء إدخال رقم هاتف عماني صالح يبدأ بـ +968 (8 أرقام بعد المقدمة)"))])
     created_at = models.DateTimeField(_("تاريخ الإنشاء"), auto_now_add=True)
     expires_at = models.DateTimeField(_("تاريخ الانتهاء"))
     is_used = models.BooleanField(_("مستخدم"), default=False)

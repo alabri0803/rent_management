@@ -78,6 +78,9 @@ class EnhancedLoginView(LoginView):
         Handle OTP login
         """
         phone_number = request.POST.get('phone_number', '').strip()
+        if not phone_number.startswith('+968') or len(phone_number) != 12 or not phone_number[1:].isdigit():
+            messages.error(request, _('يرجى إدخال رقم هاتف عماني يبدأ بـ +968 ويتبعه 8 أرقام'))
+            return self.render_to_response(self.get_context_data())
         otp_code = request.POST.get('otp_code', '').strip()
         
         if not phone_number:
@@ -116,6 +119,8 @@ def send_login_otp(request):
     Send OTP for login (AJAX endpoint)
     """
     phone_number = request.POST.get('phone_number', '').strip()
+    if not phone_number.startswith('+968') or len(phone_number) != 12 or not phone_number[1:].isdigit():
+        return JsonResponse({'success': False, 'message': _('يرجى إدخال رقم هاتف عماني يبدأ بـ +968 ويتبعه 8 أرقام')})
     
     if not phone_number:
         return JsonResponse({
