@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "إعداد رقم الهاتف" %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">{% trans "إعداد رقم الهاتف" %}</h1>
+            
+            <p class="text-sm text-gray-600 mb-6">
+                {% trans "أضف رقم هاتفك لتمكين تسجيل الدخول عبر رمز التحقق" %}
+            </p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-2">
+                        {% trans "رقم الهاتف" %}
+                    </label>
+                    <input type="tel" name="phone_number" id="phone_number" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333] focus:border-transparent"
+                           placeholder="+966501234567" value="{% if profile %}{{ profile.phone_number }}{% endif %}">
+                    <p class="text-xs text-gray-500 mt-1">
+                        {% trans "أدخل رقم الهاتف مع رمز الدولة" %}
+                    </p>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="submit" class="flex-1 bg-[#993333] text-white py-2 px-4 rounded-md hover:bg-[#7c2a2a] transition-colors">
+                        {% trans "حفظ" %}
+                    </button>
+                    <a href="{% url 'profile' %}" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors text-center">
+                        {% trans "إلغاء" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

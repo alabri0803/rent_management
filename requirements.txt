@@ -58,3 +58,6 @@ deep-translator
 openpyxl
 django-allauth
 PyJWT
+# Optional SMS dependencies (uncomment if using SMS services)
+# twilio
+# boto3

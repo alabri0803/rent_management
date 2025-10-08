@@ -166,6 +166,8 @@ LOGIN_URL = '/accounts/login/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTHENTICATION_BACKENDS = (
+    'dashboard.auth_backends.EmailUsernameBackend',
+    'dashboard.auth_backends.OTPSMSBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
@@ -199,3 +201,16 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
     }
 }
+
+# SMS Configuration
+SMS_PROVIDER = 'console'  # Options: 'console', 'twilio', 'aws_sns'
+
+# Twilio Configuration (if using Twilio)
+# TWILIO_ACCOUNT_SID = 'your_twilio_account_sid'
+# TWILIO_AUTH_TOKEN = 'your_twilio_auth_token'
+# TWILIO_PHONE_NUMBER = 'your_twilio_phone_number'
+
+# AWS SNS Configuration (if using AWS SNS)
+# AWS_ACCESS_KEY_ID = 'your_aws_access_key_id'
+# AWS_SECRET_ACCESS_KEY = 'your_aws_secret_access_key'
+# AWS_SNS_REGION = 'us-east-1'

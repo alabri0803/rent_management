@@ -1963,3 +1963,159 @@ msgstr "بحث"
 msgid "Two tenants were not found."
 msgstr "لم يتم العثور على مستأجرين."
 
+#: dashboard/models.py:385
+msgid "User Profile"
+msgstr "ملف المستخدم"
+
+#: dashboard/models.py:386
+msgid "User Profiles"
+msgstr "ملفات المستخدمين"
+
+#: dashboard/models.py:382
+msgid "Phone number for OTP verification"
+msgstr "رقم الهاتف للتحقق عبر OTP"
+
+#: dashboard/models.py:394
+msgid "OTP"
+msgstr "رمز التحقق"
+
+#: dashboard/models.py:395
+msgid "OTPs"
+msgstr "رموز التحقق"
+
+#: dashboard/models.py:396
+msgid "Verification Code"
+msgstr "رمز التحقق"
+
+#: dashboard/models.py:397
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+#: dashboard/models.py:398
+msgid "Creation Date"
+msgstr "تاريخ الإنشاء"
+
+#: dashboard/models.py:399
+msgid "Expiry Date"
+msgstr "تاريخ الانتهاء"
+
+#: dashboard/models.py:400
+msgid "Used"
+msgstr "مستخدم"
+
+#: dashboard/models.py:401
+msgid "Purpose"
+msgstr "الغرض"
+
+#: dashboard/models.py:405
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: dashboard/models.py:406
+msgid "Reset Password"
+msgstr "إعادة تعيين كلمة المرور"
+
+#: dashboard/models.py:407
+msgid "Phone Verification"
+msgstr "التحقق من رقم الهاتف"
+
+#: templates/registration/login.html:60
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: templates/registration/login.html:63
+msgid "Verification Code"
+msgstr "رمز التحقق"
+
+#: templates/registration/login.html:150
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+#: templates/registration/login.html:166
+msgid "Send Verification Code"
+msgstr "إرسال رمز التحقق"
+
+#: templates/registration/login.html:171
+msgid "Verification Code"
+msgstr "رمز التحقق"
+
+#: templates/registration/login.html:183
+msgid "Enter the 6-digit code sent to your phone"
+msgstr "أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك"
+
+#: templates/registration/login.html:187
+msgid "Login"
+msgstr "دخول"
+
+#: templates/registration/login.html:194
+msgid "Sending..."
+msgstr "جاري الإرسال..."
+
+#: dashboard/auth_views.py:45
+msgid "Username and password are required"
+msgstr "اسم المستخدم وكلمة المرور مطلوبان"
+
+#: dashboard/auth_views.py:62
+msgid "Username or password is incorrect"
+msgstr "اسم المستخدم أو كلمة المرور غير صحيحة"
+
+#: dashboard/auth_views.py:78
+msgid "Phone number is required"
+msgstr "رقم الهاتف مطلوب"
+
+#: dashboard/auth_views.py:83
+msgid "Verification code is required"
+msgstr "رمز التحقق مطلوب"
+
+#: dashboard/auth_views.py:98
+msgid "Verification code is incorrect or expired"
+msgstr "رمز التحقق غير صحيح أو منتهي الصلاحية"
+
+#: dashboard/otp_views.py:23
+msgid "Phone number is required"
+msgstr "رقم الهاتف مطلوب"
+
+#: dashboard/otp_views.py:31
+msgid "No user registered with this number"
+msgstr "لا يوجد مستخدم مسجل بهذا الرقم"
+
+#: dashboard/otp_views.py:39
+msgid "Exceeded the allowed limit of code sending attempts. Try again later"
+msgstr "تم تجاوز الحد المسموح من محاولات إرسال الرمز. حاول مرة أخرى لاحقاً"
+
+#: dashboard/otp_views.py:47
+msgid "Failed to send message. Try again"
+msgstr "فشل في إرسال الرسالة. حاول مرة أخرى"
+
+#: dashboard/otp_views.py:51
+msgid "Verification code sent to your phone"
+msgstr "تم إرسال رمز التحقق إلى رقم هاتفك"
+
+#: dashboard/otp_views.py:55
+msgid "An error occurred. Try again"
+msgstr "حدث خطأ. حاول مرة أخرى"
+
+#: dashboard/otp_views.py:59
+msgid "Invalid method"
+msgstr "طريقة غير صحيحة"
+
+#: dashboard/otp_views.py:71
+msgid "Phone number and verification code are required"
+msgstr "رقم الهاتف ورمز التحقق مطلوبان"
+
+#: dashboard/otp_views.py:87
+msgid "Login successful"
+msgstr "تم تسجيل الدخول بنجاح"
+
+#: dashboard/otp_views.py:92
+msgid "Verification code is incorrect or expired"
+msgstr "رمز التحقق غير صحيح أو منتهي الصلاحية"
+
+#: dashboard/otp_views.py:97
+msgid "An error occurred. Try again"
+msgstr "حدث خطأ. حاول مرة أخرى"
+
+#: dashboard/otp_views.py:101
+msgid "Invalid method"
+msgstr "طريقة غير صحيحة"
+

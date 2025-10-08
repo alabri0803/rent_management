@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth import views as auth_views
 from dashboard.views import login_redirect
+from dashboard.auth_views import EnhancedLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,12 +31,23 @@ urlpatterns = [
 # Language-prefixed URLs
 urlpatterns += i18n_patterns(
     path('login-redirect/', login_redirect, name='login_redirect'),
+    path('accounts/login/', EnhancedLoginView.as_view(), name='login'),  # Override default login
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('portal/', include('portal.urls')), # Portal is the homepage
     prefix_default_language=True # Don't prefix the default language (ar)
 )
+
+# Add OTP authentication endpoints (not language-prefixed for API compatibility)
+from dashboard.auth_views import send_login_otp, verify_login_otp
+from dashboard.otp_views import send_phone_verification_otp
+
+urlpatterns += [
+    path('api/auth/send-otp/', send_login_otp, name='api_send_login_otp'),
+    path('api/auth/verify-otp/', verify_login_otp, name='api_verify_login_otp'),
+    path('api/auth/send-phone-otp/', send_phone_verification_otp, name='api_send_phone_otp'),
+]
 
 # Serve media files during development
 if settings.DEBUG:

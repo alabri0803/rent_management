@@ -15,6 +15,12 @@ from .views import (
     CompanyUpdateView, UpdateTenantRatingView,
     InvoiceListView, InvoiceDetailView, InvoiceCreateView, InvoiceUpdateView, InvoiceDeleteView,
 )
+from .auth_views import (
+    EnhancedLoginView, send_login_otp, verify_login_otp, user_profile,
+)
+from .otp_views import (
+    send_otp_view, verify_otp_view, setup_phone_number, verify_phone_number, send_phone_verification_otp
+)
 from .export_views import (
     export_tenants_excel,
     export_leases_excel,
@@ -117,4 +123,9 @@ urlpatterns = [
     path('invoices/new/', InvoiceCreateView.as_view(), name='invoice_create'),
     path('invoices/<int:pk>/edit/', InvoiceUpdateView.as_view(), name='invoice_update'),
     path('invoices/<int:pk>/delete/', InvoiceDeleteView.as_view(), name='invoice_delete'),
+    
+    # Authentication & Profile
+    path('profile/', user_profile, name='profile'),
+    path('setup-phone/', setup_phone_number, name='setup_phone'),
+    path('verify-phone/', verify_phone_number, name='verify_phone'),
 ]

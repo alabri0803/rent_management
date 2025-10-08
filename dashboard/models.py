@@ -9,6 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 import datetime
 from django.db.models import Sum
+import secrets
+import string
 
 class Company(models.Model):
     name = models.CharField(_("اسم الشركة"), max_length=200)
@@ -372,3 +374,57 @@ class InvoiceItem(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class UserProfile(models.Model):
+    """Extended user profile to add phone number for OTP authentication"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_("المستخدم"))
+    phone_number = models.CharField(_("رقم الهاتف"), max_length=15, blank=True, null=True, help_text=_("رقم الهاتف للتحقق عبر OTP"))
+    
+    class Meta:
+        verbose_name = _("ملف المستخدم")
+        verbose_name_plural = _("ملفات المستخدمين")
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.phone_number or 'لا يوجد رقم هاتف'}"
+
+
+class OTP(models.Model):
+    """OTP model for storing verification codes"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otps', verbose_name=_("المستخدم"))
+    code = models.CharField(_("رمز التحقق"), max_length=6)
+    phone_number = models.CharField(_("رقم الهاتف"), max_length=15)
+    created_at = models.DateTimeField(_("تاريخ الإنشاء"), auto_now_add=True)
+    expires_at = models.DateTimeField(_("تاريخ الانتهاء"))
+    is_used = models.BooleanField(_("مستخدم"), default=False)
+    purpose = models.CharField(_("الغرض"), max_length=50, default='login', choices=[
+        ('login', _('تسجيل الدخول')),
+        ('reset_password', _('إعادة تعيين كلمة المرور')),
+        ('verify_phone', _('التحقق من رقم الهاتف')),
+    ])
+    
+    class Meta:
+        verbose_name = _("رمز التحقق")
+        verbose_name_plural = _("رموز التحقق")
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"OTP for {self.user.username} - {self.code}"
+    
+    @classmethod
+    def generate_code(cls, length=6):
+        """Generate a random OTP code"""
+        return ''.join(secrets.choice(string.digits) for _ in range(length))
+    
+    def is_expired(self):
+        """Check if OTP has expired"""
+        return timezone.now() > self.expires_at
+    
+    def is_valid(self):
+        """Check if OTP is valid (not used and not expired)"""
+        return not self.is_used and not self.is_expired()
+    
+    def mark_as_used(self):
+        """Mark OTP as used"""
+        self.is_used = True
+        self.save()
