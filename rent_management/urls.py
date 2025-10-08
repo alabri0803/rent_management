@@ -26,6 +26,8 @@ from dashboard.auth_views import EnhancedLoginView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('i18n/', include('django.conf.urls.i18n')), # Language switcher URL
+    # Root homepage → portal (non-localized fallback)
+    path('', include('portal.urls')),
 ]
 
 # Language-prefixed URLs
