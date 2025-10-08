@@ -2119,3 +2119,7 @@ msgstr "حدث خطأ. حاول مرة أخرى"
 msgid "Invalid method"
 msgstr "طريقة غير صحيحة"
 
+#: dashboard/views.py:684
+msgid "Please enter a valid Omani phone number starting with +968 followed by 8 digits"
+msgstr "يرجى إدخال رقم هاتف عماني صالح يبدأ بـ +968 (8 أرقام بعد المقدمة)"
+

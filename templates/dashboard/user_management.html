@@ -32,6 +32,7 @@
                     <th class="p-4">{% trans "اسم المستخدم" %}</th>
                     <th class="p-4">{% trans "الاسم الكامل" %}</th>
                     <th class="p-4">{% trans "البريد الإلكتروني" %}</th>
+                    <th class="p-4">{% trans "رقم الهاتف" %}</th>
                     <th class="p-4">{% trans "النوع" %}</th>
                     <th class="p-4">{% trans "الحالة" %}</th>
                     <th class="p-4">{% trans "تاريخ الانضمام" %}</th>
@@ -44,6 +45,13 @@
                     <td class="p-4 font-semibold">{{ user.username }}</td>
                     <td class="p-4">{{ user.get_full_name|default:"-" }}</td>
                     <td class="p-4">{{ user.email|default:"-" }}</td>
+                    <td class="p-4">
+                        {% if user.profile.phone_number %}
+                            {{ user.profile.phone_number }}
+                        {% else %}
+                            <span class="text-gray-400">-</span>
+                        {% endif %}
+                    </td>
                     <td class="p-4">
                         {% if user.is_superuser %}
                             <span class="inline-block px-3 py-1 text-sm rounded-full bg-red-100 text-red-800">
@@ -86,7 +94,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="p-6 text-center text-gray-500">
+                    <td colspan="8" class="p-6 text-center text-gray-500">
                         {% trans "لا يوجد مستخدمين" %}
                     </td>
                 </tr>

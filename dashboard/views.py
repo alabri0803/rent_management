@@ -644,10 +644,17 @@ class UserManagementForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), required=False, label=_("كلمة المرور"))
     is_staff = forms.BooleanField(required=False, label=_("موظف"))
     is_active = forms.BooleanField(required=False, initial=True, label=_("نشط"))
+    phone_number = forms.CharField(
+        max_length=15, 
+        required=False, 
+        label=_("رقم الهاتف"),
+        help_text=_("رقم الهاتف العماني يبدأ بـ +968"),
+        widget=forms.TextInput(attrs={'placeholder': '+968XXXXXXXX'})
+    )
     
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active']
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'is_staff', 'is_active']
         labels = {
             'username': _('اسم المستخدم'),
             'first_name': _('الاسم الأول'),
@@ -655,13 +662,48 @@ class UserManagementForm(forms.ModelForm):
             'email': _('البريد الإلكتروني'),
         }
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Load phone number from UserProfile if editing
+        if self.instance and self.instance.pk:
+            try:
+                profile = self.instance.profile
+                self.fields['phone_number'].initial = profile.phone_number
+            except:
+                pass
+        
+        # Add CSS classes
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#993333]'})
+    
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        if phone_number:
+            # Validate Oman phone format
+            if not phone_number.startswith('+968') or len(phone_number) != 12 or not phone_number[1:].isdigit():
+                raise forms.ValidationError(_('يرجى إدخال رقم هاتف عماني صالح يبدأ بـ +968 (8 أرقام بعد المقدمة)'))
+        return phone_number
+    
     def save(self, commit=True):
         user = super().save(commit=False)
         password = self.cleaned_data.get('password')
+        phone_number = self.cleaned_data.get('phone_number')
+        
         if password:
             user.set_password(password)
+        
         if commit:
             user.save()
+            # Create or update UserProfile
+            from .models import UserProfile
+            profile, created = UserProfile.objects.get_or_create(
+                user=user,
+                defaults={'phone_number': phone_number}
+            )
+            if not created:
+                profile.phone_number = phone_number
+                profile.save()
+        
         return user
 
 class UserManagementView(StaffRequiredMixin, ListView):
@@ -671,7 +713,8 @@ class UserManagementView(StaffRequiredMixin, ListView):
     paginate_by = 20
     
     def get_queryset(self):
-        return User.objects.all().order_by('-date_joined')
+        from .models import UserProfile
+        return User.objects.select_related('profile').all().order_by('-date_joined')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
