@@ -212,6 +212,28 @@ class Lease(models.Model):
     def __str__(self):
         return f"{self.contract_number} - {self.tenant.name}"
 
+    @property
+    def lease_period_display(self):
+        """Return the lease period between start_date and end_date as 'X سنة، Y شهر، Z يوم'.
+        Components with zero values are omitted. If all are zero, returns '0 يوم'.
+        """
+        rd = relativedelta(self.end_date, self.start_date)
+        years = rd.years or 0
+        months = rd.months or 0
+        days = rd.days or 0
+
+        parts = []
+        if years:
+            parts.append(f"{years} " + _("سنة"))
+        if months:
+            parts.append(f"{months} " + _("شهر"))
+        if days:
+            parts.append(f"{days} " + _("يوم"))
+
+        if not parts:
+            parts.append("0 " + _("يوم"))
+        return "، ".join(parts)
+
 class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ('cash', _('نقداً')),

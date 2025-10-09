@@ -26,6 +26,7 @@
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "رقم العقد" %}</th>
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "المستأجر" %}</th>
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "الوحدة" %}</th>
+                    <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "فترة العقد" %}</th>
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "تاريخ الانتهاء" %}</th>
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "أيام متبقية" %}</th>
                     <th class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{% trans "الإيجار الشهري" %}</th>
@@ -41,6 +42,7 @@
                     </td>
                     <td class="p-3 md:p-4 text-xs md:text-sm">{{ lease.tenant.name }}</td>
                     <td class="p-3 md:p-4 text-xs md:text-sm">{{ lease.unit }}</td>
+                    <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{{ lease.lease_period_display }}</td>
                     <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">{{ lease.end_date|date:"d M Y" }}</td>
                     <td class="p-3 md:p-4 text-xs md:text-sm whitespace-nowrap">
                         {% if lease.days_until_expiry != None %}
@@ -66,7 +68,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8" class="p-6 text-center text-gray-500 text-sm">{% trans "لم يتم العثور على عقود." %}</td></tr>
+                <tr><td colspan="9" class="p-6 text-center text-gray-500 text-sm">{% trans "لم يتم العثور على عقود." %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
